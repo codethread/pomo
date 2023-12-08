@@ -2,6 +2,7 @@
   "type": "module",
   "scripts": {
     "dev": "tauri dev",
+    "build": "tauri build",
     "dev:client": "vite client",
     "build:client": "vite build client",
     "lint:client": "eslint client --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
