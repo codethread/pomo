@@ -6,7 +6,7 @@ export function assertIsError(err: any): asserts err is Error {
 
 export const validNodenvs = ['production', 'development', 'test'] as const;
 
-export type Nodenv = typeof validNodenvs[number];
+export type Nodenv = (typeof validNodenvs)[number];
 
 export function assertValidNodenv(env: string): asserts env is Nodenv {
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

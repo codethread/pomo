@@ -18,9 +18,9 @@ export const getRoot = (() => {
 
 export const themers: Themers = { setPalette, setColors };
 
-export type Colors = typeof colors[number];
+export type Colors = (typeof colors)[number];
 
-export type Palette = typeof palette[number];
+export type Palette = (typeof palette)[number];
 
 /**
  * Theme color set using an existing color variable from the `Colors`

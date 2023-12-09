@@ -7,7 +7,8 @@
     "build:client": "vite build client",
     "lint:client": "eslint client --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "machine": "xstate typegen \"client/src/machines/**/machine.*\"",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format:client": "prettier --write --ignore-path .gitignore client"
   },
   "dependencies": {
     "@tauri-apps/api": "^1.5.1",
