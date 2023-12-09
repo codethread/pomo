@@ -1,68 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --col-null: 255 0 198;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* --------------------------------------------------------------------------
+   * colour palette 
+   * ------------------------------------------------------------------------ */
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  /* main */
+  --col-bg: var(--col-null);
+  --col-bg-alt: var(--col-null);
+  --col-fg: var(--col-null);
+  --col-fg-alt: var(--col-null);
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+  /* base */
+  --col-base0: var(--col-null);
+  --col-base1: var(--col-null);
+  --col-base2: var(--col-null);
+  --col-base3: var(--col-null);
+  --col-base4: var(--col-null);
+  --col-base5: var(--col-null);
+  --col-base6: var(--col-null);
+  --col-base7: var(--col-null);
+  --col-base8: var(--col-null);
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
+  /* colours */
+  --col-grey: var(--col-null);
+  --col-red: var(--col-null);
+  --col-orange: var(--col-null);
+  --col-green: var(--col-null);
+  --col-teal: var(--col-null);
+  --col-yellow: var(--col-null);
+  --col-blue: var(--col-null);
+  --col-dark-blue: var(--col-null);
+  --col-magenta: var(--col-null);
+  --col-violet: var(--col-null);
+  --col-cyan: var(--col-null);
+  --col-dark-cyan: var(--col-null);
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+  /* --------------------------------------------------------------------------
+   * Theme
+   * ------------------------------------------------------------------------ */
+  --col-text: var(--col-fg);
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+  --color-background: 46 52 64;
+  --color-backgroundSubtle: 59 66 82;
+  --color-backgroundBright: 67 76 94;
+  --color-backgroundBrightest: 76 86 106;
+  --color-fgDim: 216 222 233;
+  --color-fg: 229 233 240;
+  --color-fgBrightest: 236 239 244;
+  --color-primary: 143 188 187;
+  --color-bright: 136 192 208;
+  --color-secondary: 129 161 193;
+  --color-tertiary: 94 129 172;
+  --color-error: 191 97 106;
+  --color-warning: 235 203 139;
+  --color-good: 163 190 140;
 }

@@ -6,12 +6,21 @@
     "dev:client": "vite client",
     "build:client": "vite build client",
     "lint:client": "eslint client --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "machine": "xstate typegen \"client/src/machines/**/machine.*\"",
     "preview": "vite preview"
   },
   "dependencies": {
     "@tauri-apps/api": "^1.5.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "@heroicons/react": "^1.0.6",
+    "@xstate/cli": "0.1.5",
+    "@xstate/inspect": "^0.7.0",
+    "@xstate/react": "2.0.0",
+    "classnames": "^2.3.1",
+    "lodash.merge": "4.6.2",
+    "ws": "8.5.0",
+    "xstate": "^4.31.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.7",
@@ -25,7 +34,11 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
     "typescript": "^5.2.2",
-    "vite": "^5.0.0"
+    "vite": "^5.0.0",
+    "@types/lodash.merge": "4.6.6",
+    "autoprefixer": "^10.4.7",
+    "postcss": "^8.4.14",
+    "tailwindcss": "^3.0.24"
   },
   "volta": {
     "node": "20.10.0"

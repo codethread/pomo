@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .input {
+    @apply rounded border border-thmBackgroundSubtle bg-thmBackgroundBright p-2 text-thmFg outline-none;
+  }
+
+  .input:focus {
+    @apply ring ring-thmBright;
+  }
+
+  .input[data-error='true'] {
+    @apply text-thmError ring-1 ring-thmError;
+  }
+
+  .input[data-error='true']:focus {
+    @apply ring;
+  }
+}

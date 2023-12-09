@@ -1,35 +1,31 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import React, { useLayoutEffect } from 'react';
+import { inspect } from '@xstate/inspect';
+import { useSelector } from '@xstate/react';
+import { useMachines } from '@client/hooks';
 
-function App() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
+interface IApp {
+  children: React.ReactNode;
+  shouldInspect: boolean;
 }
 
-export default App;
+export function App({ children, shouldInspect }: IApp): JSX.Element {
+  useLayoutEffect(() => {
+    if (shouldInspect) {
+      inspect({
+        iframe: false,
+      });
+    }
+  });
+  const main = useMachines();
+  const loaded = useSelector(main, (c) => c.context.loaded);
+
+  // annoying workaround to make sure all child actors are ready
+  if (!loaded) {
+    return <p data-testid="providers-loading">...booting</p>;
+  }
+  return (
+    <div id="App-loaded" className="h-screen w-screen">
+      {children}
+    </div>
+  );
+}

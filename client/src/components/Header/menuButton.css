@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .bar {
+    position: absolute;
+    left: 0;
+    height: 2px;
+    background-color: theme('colors.thmFgDim');
+    opacity: 1;
+    transform: rotate(0deg);
+    transition: all 0.2s;
+
+    transform-origin: center;
+  }
+
+  .menu-button:hover .bar {
+    background-color: theme('colors.thmPrimary');
+  }
+  .menu-button:focus .bar {
+    background-color: theme('colors.thmPrimary');
+  }
+
+  .menu-button:hover .bar.showClose {
+    background-color: theme('colors.thmWarn');
+  }
+  .menu-button:focus .bar.showClose {
+    background-color: theme('colors.thmWarn');
+  }
+}
+
+.bar.top {
+  top: 0;
+}
+
+.bar.middle {
+  top: 6px;
+}
+
+.bar.bottom {
+  top: 12px;
+}
+
+.menu-button:hover .bar.middle {
+  left: 4px;
+}
+
+.bar.top.showClose {
+  transform: rotate(45deg);
+  top: 6px;
+}
+
+.bar.middle.showClose {
+  left: 15px;
+  opacity: 0;
+}
+
+.bar.bottom.showClose {
+  top: 6px;
+  transform: rotate(-45deg);
+}
