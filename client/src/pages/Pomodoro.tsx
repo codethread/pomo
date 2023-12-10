@@ -1,4 +1,3 @@
-import React from 'react';
 import { usePomodoro, useTimer } from '@client/hooks';
 import { Countdown } from '@client/components';
 import { TimerType } from '@shared/types';

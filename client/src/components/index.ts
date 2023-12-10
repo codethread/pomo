@@ -1,8 +1,5 @@
-// I have no idea why this is a special child ???
-import { InputSelectFactory } from './Inputs';
-
-export { InputSelectFactory };
 export {
+  InputSelect,
   type IInputSelect,
   type IInputNumber,
   InputPassword,

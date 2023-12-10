@@ -1,10 +1,7 @@
-import { Button, FormItem, InputSelectFactory } from '@client/components';
+import { Button, FormItem, InputSelect } from '@client/components';
 import { useBridge, useConfig } from '@client/hooks';
 import { ThemeName, themes } from '@client/theme';
-import React from 'react';
 import { Setting } from './Setting';
-
-const InputSelect = InputSelectFactory<ThemeName>();
 
 export function Theme(): JSX.Element {
   const { storeUpdate, config } = useConfig();
@@ -14,7 +11,7 @@ export function Theme(): JSX.Element {
   return (
     <Setting variant="simple" heading="Theme" onSubmit={() => {}}>
       <FormItem label="Set the current theme" id={id}>
-        <InputSelect
+        <InputSelect<ThemeName>
           id={id}
           onChange={(theme) => {
             storeUpdate({ theme });
