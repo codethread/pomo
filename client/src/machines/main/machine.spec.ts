@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { createFakeBridge } from '@electron/ipc/createFakeBridge';
+import { createFakeBridge } from '@test/createFakeBridge';
 import { DeepPartial, emptyConfig, HookContext, TimerHooks, UserConfig } from '@shared/types';
 import { ticks } from '@test/tick';
 import { merge } from '@shared/merge';
@@ -46,12 +45,12 @@ const { CONFIG, POMODORO, TIMER } = actorIds;
 const { PAUSE, PLAY, START, STOP } = timerModel.events;
 
 beforeEach(() => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
 });
 
 afterEach(() => {
-  jest.runOnlyPendingTimers();
-  jest.useRealTimers();
+  vi.runOnlyPendingTimers();
+  vi.useRealTimers();
 });
 
 describe('mainMachine', () => {
@@ -93,12 +92,12 @@ describe('mainMachine', () => {
 
   it('should invoke integrations when events fire', async () => {
     const hooks: TimerHooks = {
-      onStartHook: jest.fn(),
-      onTickHook: jest.fn(),
-      onPauseHook: jest.fn(),
-      onPlayHook: jest.fn(),
-      onStopHook: jest.fn(),
-      onCompleteHook: jest.fn(),
+      onStartHook: vi.fn(),
+      onTickHook: vi.fn(),
+      onPauseHook: vi.fn(),
+      onPlayHook: vi.fn(),
+      onStopHook: vi.fn(),
+      onCompleteHook: vi.fn(),
     };
 
     const pomoDuration = 1;

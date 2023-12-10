@@ -1,4 +1,4 @@
-import { createFakeBridge } from '@electron/ipc/createFakeBridge';
+import { createFakeBridge } from '@test/createFakeBridge';
 import { merge } from '@shared/merge';
 import { emptyConfig, UserConfig } from '@shared/types';
 import { interpret } from 'xstate';
@@ -9,6 +9,7 @@ import mainModel from '../main/model';
 import { parentMachine } from '../testHelpers/machines';
 import { getActor } from '../utils';
 import { timerSettingsModel } from './model';
+import { getElectronBridgeOrMock } from '@client/getElectronBridgeOrMock';
 
 const { TIMER_SETTINGS, CONFIG } = actorIds;
 const { CANCEL, UPDATE, SAVE } = timerSettingsModel.events;
@@ -27,7 +28,7 @@ describe('timerSettings machine', () => {
       parentEvents: Object.keys(mainModel.events),
       childId: CONFIG,
       childMachine: configMachineFactory({
-        bridge: createFakeBridge(),
+        bridge: getElectronBridgeOrMock(),
         configOverride: config,
       }),
     });
@@ -176,7 +177,6 @@ describe('timerSettings machine', () => {
         expect(timerSettingsMachine.getSnapshot()?.hasTag('errors')).toBe(false);
 
         timerSettingsMachine.send(SAVE());
-        const c = timerSettingsMachine.getSnapshot();
 
         await waitFor(configMachine, (s) => s.hasTag('idle'));
 

@@ -4,17 +4,17 @@ import { inspect as _inspect } from '@xstate/inspect';
 import React, { useState } from 'react';
 import { IInspector, Inspector } from './Inspector';
 
-jest.mock('@xstate/inspect', () => ({
-  inspect: jest.fn(),
+vi.mock('@xstate/inspect', () => ({
+  inspect: vi.fn(),
 }));
 
-const inspect = jest.mocked(_inspect);
+const inspect = vi.mocked(_inspect);
 
 describe('Inspector', () => {
   const renderW = async (props?: IInspector) =>
     renderNoProviders(<InspectorWrapper toggleable={props?.toggleable} />);
 
-  const disconnectSpy = jest.fn();
+  const disconnectSpy = vi.fn();
   let inspectorReturnsInstance = true;
 
   beforeAll(() => {

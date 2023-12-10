@@ -24,7 +24,7 @@ interface TestOverrides extends IPomodoroMachine {
 }
 
 function runTest(overrides?: TestOverrides) {
-  const spy = jest.fn();
+  const spy = vi.fn();
 
   const { context, dontWait, config } = overrides ?? {};
   const parent = createMachine(
@@ -67,12 +67,12 @@ function runTest(overrides?: TestOverrides) {
 }
 
 beforeEach(() => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
 });
 
 afterEach(() => {
-  jest.runOnlyPendingTimers();
-  jest.useRealTimers();
+  vi.runOnlyPendingTimers();
+  vi.useRealTimers();
 });
 
 describe('pomodoro machine', () => {

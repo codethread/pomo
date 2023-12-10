@@ -1,8 +1,7 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ForceError } from '@test/ForceError';
 import { LoggerProvider, BridgeProvider } from '@client/hooks/providers';
-import { createFakeBridge } from '@electron/ipc/createFakeBridge';
+import { createFakeBridge } from '@test/createFakeBridge';
 import ErrorBoundary from './ErrorBoundary';
 
 interface IRender {
@@ -10,8 +9,8 @@ interface IRender {
 }
 
 function renderW({ shouldError = false }: IRender = {}) {
-  const spyError = jest.fn();
-  const spyInfo = jest.fn();
+  const spyError = vi.fn();
+  const spyInfo = vi.fn();
 
   render(
     <BridgeProvider bridge={createFakeBridge({ info: spyInfo, error: spyError })}>
@@ -42,11 +41,11 @@ describe('Error Boundary', () => {
   describe('when there is an error', () => {
     beforeAll(() => {
       // even though the error is caught, there is some mechanic that causes the error to be logged
-      jest.spyOn(console, 'error').mockImplementation(() => {});
+      vi.spyOn(console, 'error').mockImplementation(() => {});
     });
 
     afterAll(() => {
-      jest.mocked(console).error.mockRestore();
+      vi.mocked(console).error.mockRestore();
     });
 
     it('renders the error component and logs the error', () => {

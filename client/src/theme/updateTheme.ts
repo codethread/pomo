@@ -23,4 +23,4 @@ export function updateTheme(theme: ThemeName): void {
 
 export type UpdateTheme = typeof updateTheme;
 
-export type ThemeName = (typeof themes)[number];
+export type ThemeName = typeof themes[number];

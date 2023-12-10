@@ -1,14 +1,23 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import path from 'path';
 import react from '@vitejs/plugin-react-swc';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  test: {
+    globals: true,
+    setupFiles: [
+      path.resolve(__dirname, './src/testHelpers/test.setup.ts'),
+      path.resolve(__dirname, './src/testHelpers/setupTests.ts'),
+    ],
+    environment: 'jsdom',
+  },
   resolve: {
     alias: {
       '@shared': path.resolve(__dirname, './src/utils'),
       '@client': path.resolve(__dirname, './src'),
-      '@test': path.resolve(__dirname, './testHelpers'),
+      '@test': path.resolve(__dirname, './src/testHelpers'),
     },
   },
   plugins: [react()],

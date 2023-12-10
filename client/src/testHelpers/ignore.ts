@@ -33,7 +33,7 @@ export function ignoreWarnings(reason: string, ...ignorePatterns: RegExp[]): voi
   beforeAll(() => {
     const ogWarn = console.warn;
 
-    jest.spyOn(console, 'warn').mockImplementation((...args: string[]) => {
+    vi.spyOn(console, 'warn').mockImplementation((...args: string[]) => {
       const [message = ''] = args;
       if (!ignorePatterns.some((pat) => pat.test(message))) {
         ogWarn(...args);
@@ -42,7 +42,7 @@ export function ignoreWarnings(reason: string, ...ignorePatterns: RegExp[]): voi
   });
 
   afterAll(() => {
-    (console.warn as jest.Mock).mockRestore();
+    (console.warn as vi.Mock).mockRestore();
   });
 }
 
@@ -79,7 +79,7 @@ export function ignoreWarnings(reason: string, ...ignorePatterns: RegExp[]): voi
 export function ignoreErrors(reason: string, ...ignorePatterns: RegExp[]): void {
   beforeEach(() => {
     const ogError = console.error;
-    jest.spyOn(console, 'error').mockImplementation((...args: string[]) => {
+    vi.spyOn(console, 'error').mockImplementation((...args: string[]) => {
       const [message = ''] = args;
       if (!ignorePatterns.some((pat) => pat.test(message))) {
         ogError(...args);
@@ -88,6 +88,6 @@ export function ignoreErrors(reason: string, ...ignorePatterns: RegExp[]): void 
   });
 
   afterEach(() => {
-    // (console.error as jest.Mock).mockRestore();
+    // (console.error as vi.Mock).mockRestore();
   });
 }

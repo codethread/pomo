@@ -6,10 +6,10 @@ import { act } from '@testing-library/react';
  */
 export function tick(duration: number): void {
   act(() => {
-    jest.advanceTimersByTime(duration * 1000);
+    vi.advanceTimersByTime(duration * 1000);
   });
 }
 
 export function ticks(duration: number): void {
-  jest.advanceTimersByTime(duration * 1000);
+  vi.advanceTimersByTime(duration * 1000);
 }

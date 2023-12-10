@@ -11,16 +11,16 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 beforeEach(() => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
 });
 
 const hooks: TimerHooks = {
-  onStartHook: jest.fn(),
-  onTickHook: jest.fn(),
-  onPauseHook: jest.fn(),
-  onPlayHook: jest.fn(),
-  onStopHook: jest.fn(),
-  onCompleteHook: jest.fn(),
+  onStartHook: vi.fn(),
+  onTickHook: vi.fn(),
+  onPauseHook: vi.fn(),
+  onPlayHook: vi.fn(),
+  onStopHook: vi.fn(),
+  onCompleteHook: vi.fn(),
 };
 
 async function initTest() {
@@ -50,13 +50,13 @@ const {
 } = pageModel;
 
 beforeEach(() => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
 });
 
 afterEach(() => {
   act(() => {
-    jest.runOnlyPendingTimers();
-    jest.useRealTimers();
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
   });
 });
 

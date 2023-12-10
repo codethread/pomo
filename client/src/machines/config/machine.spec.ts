@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { interpret } from 'xstate';
 import { waitFor } from 'xstate/lib/waitFor';
-import { createFakeBridge } from '@electron/ipc/createFakeBridge';
 import { merge } from '@shared/merge';
 import { err, ok } from '@shared/Result';
 import { DeepPartial, emptyConfig, IBridge, UserConfig } from '@shared/types';
@@ -11,29 +10,26 @@ import { getActor, actorIds } from '@client/machines';
 import mainModel from '../main/model';
 import configMachineFactory from './machine';
 import { configModel } from './model';
+import { getElectronBridgeOrMock } from '@client/getElectronBridgeOrMock';
 
 const { CONFIG } = actorIds;
 const { UPDATE, RESET } = configModel.events;
 
 interface TestOverrides {
-  /**
-   * Don't wait for the machine to have left the 'loading' state
-   */
-  dontWait?: true;
   bridge?: Partial<IBridge>;
   config?: DeepPartial<UserConfig>;
 }
 
 async function runTest(overrides?: TestOverrides) {
-  const spy = jest.fn();
+  const spy = vi.fn();
 
-  const { bridge, config, dontWait } = overrides ?? {};
+  const { bridge, config } = overrides ?? {};
 
   const parent = parentMachine({
     parentEvents: Object.keys(mainModel.events),
     childId: CONFIG,
     childMachine: configMachineFactory({
-      bridge: createFakeBridge(bridge),
+      bridge: getElectronBridgeOrMock(bridge),
       configOverride: config && merge(emptyConfig, config),
     }),
   });
@@ -46,12 +42,12 @@ async function runTest(overrides?: TestOverrides) {
 
   service.start();
   const configMachine = getActor(service, CONFIG);
+  const initial = configMachine.getSnapshot();
 
-  if (!dontWait) {
-    await waitFor(configMachine, (m) => !m.hasTag('loading'), { timeout: 100 });
-  }
+  await waitFor(configMachine, (m) => !m.hasTag('loading'), { timeout: 100 });
 
   return {
+    initial,
     parent: service,
     configMachine,
     spy,
@@ -60,14 +56,14 @@ async function runTest(overrides?: TestOverrides) {
 
 describe('config machine', () => {
   it('should start in a loading state', async () => {
-    const { configMachine } = await runTest({ dontWait: true });
+    const { initial } = await runTest();
 
-    expect(configMachine.getSnapshot()?.value).toBe('loading');
+    expect(initial?.value).toBe('loading');
   });
 
   describe('when config fails to load', () => {
     it('should return the default config, broadcast it and log a warning', async () => {
-      const spy = jest.fn();
+      const spy = vi.fn();
 
       const { configMachine, spy: storeSpy } = await runTest({
         bridge: {
@@ -107,7 +103,7 @@ describe('config machine', () => {
 
   describe("when config is DI'd", () => {
     it('should return the users config', async () => {
-      const storeSpy = jest.fn();
+      const storeSpy = vi.fn();
 
       const { configMachine } = await runTest({
         bridge: {

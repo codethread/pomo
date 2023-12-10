@@ -61,7 +61,7 @@ describe('slack integrations', () => {
         hooks.onStopHook(ctx);
 
         expect(spies.slackSetPresence).toHaveBeenCalledWith(expect.anything(), 'active');
-        expect(spies.slackSetSnooze).toHaveBeenCalledWith(expect.anything(), 0);
+        expect(spies.slackEndSnooze).toHaveBeenCalledWith(expect.anything());
         expect(spies.slackSetProfile).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({
@@ -77,7 +77,7 @@ describe('slack integrations', () => {
         hooks.onCompleteHook(ctx);
 
         expect(spies.slackSetPresence).toHaveBeenCalledWith(expect.anything(), 'active');
-        expect(spies.slackSetSnooze).toHaveBeenCalledWith(expect.anything(), 0);
+        expect(spies.slackEndSnooze).toHaveBeenCalledWith(expect.anything());
         expect(spies.slackSetProfile).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({

@@ -1,6 +1,6 @@
 import { merge } from '@shared/merge';
 import { DeepPartial, emptyConfig, HookContext } from '@shared/types';
-import { createMockBridge, Spies } from '@test/createMockBridge';
+import { createFakeBridge, Spies } from '@client/testHelpers/createFakeBridge';
 
 export interface TestSetup {
   ctx: HookContext;
@@ -8,7 +8,7 @@ export interface TestSetup {
 }
 
 export function createCtx(overrides?: DeepPartial<HookContext>): TestSetup {
-  const spies = createMockBridge();
+  const spies = createFakeBridge();
 
   const config = merge(
     emptyConfig,

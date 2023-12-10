@@ -10,15 +10,15 @@ import { tick } from '@test/tick';
 import { Pomodoro } from './Pomodoro';
 
 beforeEach(() => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
 });
 
 afterEach(() => {
   const button = screen.queryByRole('button', { name: T.pomoTimer.stop });
   if (button) userEvent.click(button);
   act(() => {
-    jest.runOnlyPendingTimers();
-    jest.useRealTimers();
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
   });
 });
 

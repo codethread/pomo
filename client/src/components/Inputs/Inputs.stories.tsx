@@ -53,7 +53,7 @@ export const InputNumber: ComponentStory<StoryArgs> = (args) => (
 InputNumber.args = {};
 
 const options = ['burger', 'bacon', 'sausage'] as const;
-const InputSelectC = InputSelectFactory<(typeof options)[number]>();
+const InputSelectC = InputSelectFactory<typeof options[number]>();
 
 export const InputSelect: ComponentStory<StoryArgs> = (args) => (
   <PageWrapper wrapped={args.wrapped} padded centered>

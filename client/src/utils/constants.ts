@@ -19,7 +19,7 @@ const isDev = nodenv === 'development';
 const isProd = nodenv === 'production';
 /**
  * Test mode
- * Set for Unit tests via Jest
+ * Set for Unit tests via vi
  * Allows for certain backdoors to be exposed such as forcing errors for testing
  */
 const isTest = nodenv === 'test';

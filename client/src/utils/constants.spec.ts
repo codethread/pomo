@@ -21,7 +21,7 @@ describe('constants', () => {
     validNodenvs.forEach((env) => {
       describe(`when valid nodenv of "${env}"`, () => {
         it('sets nodenv', () => {
-          jest.resetModules();
+          vi.resetModules();
           process.env.NODE_ENV = env;
           expect(import('./constants')).resolves.not.toThrowError();
         });
@@ -33,7 +33,7 @@ describe('constants', () => {
     invalidNodenvs.forEach((env) => {
       describe(`when invalid nodenv of "${JSON.stringify(env)}"`, () => {
         it('throws error', () => {
-          jest.resetModules();
+          vi.resetModules();
           process.env.NODE_ENV = env;
           expect(import('./constants')).rejects.toThrowError();
         });
@@ -57,7 +57,7 @@ describe('constants', () => {
 
     collections.forEach((collection) => {
       it(`when env is "${collection.env} env flags are set correctly`, async () => {
-        jest.resetModules();
+        vi.resetModules();
         process.env.NODE_ENV = collection.env;
         const { isDev, isProd, isTest } = await import('./constants');
         expect(isDev).toBe(collection.isDev);
@@ -73,7 +73,7 @@ describe('constants', () => {
         process.env.NODE_ENV = 'development';
         process.env.INTEGRATION = 'true';
 
-        jest.resetModules();
+        vi.resetModules();
         const { isIntegration } = await import('./constants');
         expect(isIntegration).toBe(false);
       });
@@ -85,7 +85,7 @@ describe('constants', () => {
           process.env.NODE_ENV = 'production';
           process.env.INTEGRATION = 'true';
 
-          jest.resetModules();
+          vi.resetModules();
           const { isIntegration } = await import('./constants');
           expect(isIntegration).toBe(true);
         });
@@ -96,7 +96,7 @@ describe('constants', () => {
           process.env.NODE_ENV = 'production';
           process.env.INTEGRATION = 'false';
 
-          jest.resetModules();
+          vi.resetModules();
           const { isIntegration } = await import('./constants');
           expect(isIntegration).toBe(false);
         });

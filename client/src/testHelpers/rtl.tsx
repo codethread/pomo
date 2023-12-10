@@ -3,12 +3,12 @@ import { ErrorBoundary } from '@client/components';
 import { IMachinesProvider } from '@client/hooks/machines';
 import { BridgeProvider, LoggerProvider, MachinesProvider } from '@client/hooks/providers';
 import { createFakeHooks } from '@client/machines';
-import { createFakeBridge } from '@electron/ipc/createFakeBridge';
+import { createFakeBridge } from '@test/createFakeBridge';
 import { IBridge } from '@shared/types';
 import { render, RenderOptions, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import React, { ReactElement } from 'react';
 
-jest.mock('@xstate/inspect');
+vi.mock('@xstate/inspect');
 
 interface Options {
   renderOptions?: Omit<RenderOptions, 'queries'>;

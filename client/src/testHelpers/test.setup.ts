@@ -1,23 +1,19 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// eslint-disable-next-line import/no-extraneous-dependencies
+import { expect } from 'vitest';
 import diff from 'jest-diff';
 
 import { isErr, isOk, Result } from '@shared/Result';
 import { pick } from '@shared/pick';
 
-declare global {
-  // TODO investigate
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace jest {
-    interface Matchers<R> {
-      toMatchResult<A, B>(expected: Result<A, B>): R;
-    }
-  }
-}
+// declare global {
+//   // TODO investigate
+//   // eslint-disable-next-line @typescript-eslint/no-namespace
+//   namespace vi {
+//     interface Matchers<R> {
+//       toMatchResult<A, B>(expected: Result<A, B>): R;
+//     }
+//   }
+// }
 
 expect.extend({
   toMatchResult(got: Result<any, any>, expected: Result<any, any>) {
@@ -64,22 +60,22 @@ expect.extend({
       didPass: boolean,
       expectedVal: any,
       recieved: any,
-      jestThis: any
+      viThis: any
     ): () => string {
       return didPass
         ? () =>
-            `${jestThis.utils.matcherHint('toDeepEqual')}\n\n` +
-            `Expected: not ${jestThis.utils.printExpected(expectedVal)}\n` +
-            `Received: ${jestThis.utils.printReceived(recieved)}`
+            `${viThis.utils.matcherHint('toDeepEqual')}\n\n` +
+            `Expected: not ${viThis.utils.printExpected(expectedVal)}\n` +
+            `Received: ${viThis.utils.printReceived(recieved)}`
         : () => {
             const diffString = diff(expectedVal.val, recieved.val, {
-              expand: jestThis.expand,
+              expand: viThis.expand,
             });
-            return `${jestThis.utils.matcherHint('toDeepEqual')}\n\n${
+            return `${viThis.utils.matcherHint('toDeepEqual')}\n\n${
               diffString?.includes('- Expect')
                 ? `Difference:\n\n${diffString}`
-                : `Expected: ${jestThis.utils.printExpected(expectedVal)}\n` +
-                  `Received: ${jestThis.utils.printReceived(recieved)}`
+                : `Expected: ${viThis.utils.printExpected(expectedVal)}\n` +
+                  `Received: ${viThis.utils.printReceived(recieved)}`
             }`;
           };
     }

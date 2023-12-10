@@ -3,9 +3,9 @@ import { renderNoProviders, screen } from '@test/rtl';
 import * as _constants from '@shared/constants';
 import { testWrap } from './testComp';
 
-jest.mock('@shared/constants');
+vi.mock('@shared/constants');
 
-const constants = jest.mocked(_constants);
+const constants = vi.mocked(_constants);
 
 describe('nullComp', () => {
   describe('in tests', () => {
