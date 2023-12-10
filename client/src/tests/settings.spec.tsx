@@ -8,7 +8,6 @@ import { pageModel, userActions } from '@test/pageModels';
 import { act, render, screen } from '@test/rtl';
 import { tick } from '@test/tick';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -84,7 +83,7 @@ when the user changes the timer duration to 57`, () => {
   });
 });
 
-describe(`given a 5 minute timer is running
+describe.only(`given a 5 minute timer is running
 when the user changes the timer settings to 57 minutes`, () => {
   test('the timer keeps ticking down for the original 5 minutes without pause', async () => {
     await initTest();
