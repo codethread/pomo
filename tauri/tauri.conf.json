@@ -56,11 +56,22 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
-        "resizable": true,
+        "height": 300,
+        "resizable": false,
         "title": "pomo",
-        "width": 800
+        "width": 300,
+        "visible": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "hiddenTitle": true,
+        "minimizable": false,
+        "titleBarStyle": "Overlay"
       }
-    ]
+    ],
+    "systemTray": {
+      "iconPath": "icons/32x32.png",
+      "iconAsTemplate": true,
+      "menuOnLeftClick": false
+    }
   }
 }
