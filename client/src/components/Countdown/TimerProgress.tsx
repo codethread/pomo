@@ -29,7 +29,8 @@ export function TimerProgressC({ duration, mins, seconds, state }: ITimerProgres
         style={{
           transform: 'rotate(-90deg)',
           transformOrigin: 'center',
-          transition: state === 'inactive' ? 'all 0.2s' : 'all 1s',
+          transitionProperty: 'all',
+          transitionDuration: state === 'inactive' ? '0.2s' : '1s',
           transitionTimingFunction: 'linear',
         }}
         cx={50}

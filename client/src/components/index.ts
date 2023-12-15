@@ -11,7 +11,6 @@ export * as Icons from './Icons';
 export * from './Box';
 export * from './Checkbox/Checkbox';
 export { default as ErrorBoundary } from './ErrorBoundary/ErrorBoundary';
-export * from './Inspector';
 export * from './LineBreak';
 export * from './Header/MenuButton';
 export * from './testWrap/testComp';

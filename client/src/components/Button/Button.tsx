@@ -85,7 +85,6 @@ export function Button({
           className={classNames(
             colors,
             'h-[40px] w-[40px] rounded-full p-0 lowercase shadow-none  outline-none focus:ring focus:ring-thmBright disabled:text-thmBackgroundBrightest',
-            width,
             className
           )}
           {...props}

@@ -10,27 +10,13 @@ export function getElectronBridgeOrMock(bridge?: Partial<IBridge>): IBridge {
       window.open(url);
       return Promise.resolve();
     },
-    windowFocus() {
-      throw new Error('Method not implemented.');
-    },
-    setTrayIcon() {
-      throw new Error('Method not implemented.');
-    },
-    setTrayTitle() {
-      throw new Error('Method not implemented.');
-    },
-    slackSetProfile(auth, status) {
-      throw new Error('Method not implemented.');
-    },
-    slackSetSnooze(auth, minutes) {
-      throw new Error('Method not implemented.');
-    },
-    slackEndSnooze(auth) {
-      throw new Error('Method not implemented.');
-    },
-    slackSetPresence(auth, state) {
-      throw new Error('Method not implemented.');
-    },
+    windowFocus() {},
+    setTrayIcon() {},
+    setTrayTitle() {},
+    slackSetProfile(auth, status) {},
+    slackSetSnooze(auth, minutes) {},
+    slackEndSnooze(auth) {},
+    slackSetPresence(auth, state) {},
     info(...args) {
       console.log(...args);
     },
@@ -40,15 +26,9 @@ export function getElectronBridgeOrMock(bridge?: Partial<IBridge>): IBridge {
     error(err) {
       console.error(err);
     },
-    nodenv() {
-      throw new Error('Method not implemented.');
-    },
-    isProd() {
-      throw new Error('Method not implemented.');
-    },
-    isTest() {
-      throw new Error('Method not implemented.');
-    },
+    nodenv() {},
+    isProd() {},
+    isTest() {},
     async isDev() {
       return ok(true);
     },

@@ -4,7 +4,6 @@ import { TimerActorRef } from '@client/machines';
 import { PauseIcon, PlayIcon, StopIcon } from '@heroicons/react/solid';
 import { displayNum } from '@shared/format';
 import { useActor } from '@xstate/react';
-import React from 'react';
 import './countdown.css';
 
 export interface ICountdown {
