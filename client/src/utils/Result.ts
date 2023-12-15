@@ -20,6 +20,7 @@ export const ok = <O, E = string>(arg: O): Ok<O, E> => ({
   flatMap: (cb) => cb(arg),
   chain: async (cb) => cb(arg),
   match: ({ Ok }) => Ok(arg),
+  expect: () => arg,
 });
 
 export const err = <E = string, O = string>(arg: E): Err<O, E> => ({
@@ -30,6 +31,9 @@ export const err = <E = string, O = string>(arg: E): Err<O, E> => ({
   flatMap: () => err(arg),
   chain: async () => Promise.resolve(err(arg)),
   match: ({ Err }) => Err(arg),
+  expect: (message) => {
+    throw new Error(message);
+  },
 });
 
 // TODO there is an issue in here if you try to flatMap from two different error types, but I've spent too long on this already and most useful functionality is there
@@ -41,6 +45,7 @@ export interface Err<O, E = string> {
   flatMap: <A>(cb: (arg: O) => Result<A, E>) => Result<A, E>;
   chain: <A>(cb: (arg: O) => Promise<Result<A, E>>) => Promise<Result<A, E>>;
   match: <R, T>(handlers: { Err: (e: E) => R; Ok: (o: O) => T }) => R;
+  expect: (message: string) => O;
 }
 
 export interface Ok<O, E = string> {
@@ -51,6 +56,7 @@ export interface Ok<O, E = string> {
   flatMap: <A>(cb: (arg: O) => Result<A, E>) => Result<A, E>;
   chain: <A>(cb: (arg: O) => Promise<Result<A, E>>) => Promise<Result<A, E>>;
   match: <R, T>(handlers: { Err: (e: E) => R; Ok: (o: O) => T }) => T;
+  expect: (message: string) => O;
 }
 
 export const isErr = <O, E>(result: Result<O, E>): result is Err<O, E> => !result.ok;

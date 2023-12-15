@@ -84,14 +84,14 @@ type SlackErr =
       error: 'invalid_auth';
     };
 
-export type IBridge = {
+export type IBridge<T = UserConfig> = {
   windowFocus(): Promise<void>;
   setTrayIcon(): Promise<void>;
   setTrayTitle(): Promise<void>;
   openExternal(url: string): Promise<void>;
-  storeRead<T>(): Promise<Result<T>>;
-  storeUpdate<T>(value: DeepPartial<T>): Promise<Result<T>>;
-  storeReset<T>(): Promise<Result<T>>;
+  storeRead(): Promise<Result<T>>;
+  storeUpdate(value: DeepPartial<T>): Promise<Result<T>>;
+  storeReset(): Promise<Result<T>>;
   slackSetProfile(auth: SlackAuth, status: SlackStatus): Promise<Result<SlackOk, SlackErr>>;
   slackSetSnooze(auth: SlackAuth, minutes: number): Promise<Result<SlackOk, SlackErr>>;
   slackEndSnooze(auth: SlackAuth): Promise<Result<SlackOk, SlackErr>>;

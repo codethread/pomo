@@ -1,10 +1,10 @@
-import { getElectronBridgeOrMock } from '@client/getElectronBridgeOrMock';
+import { setupBridge } from '@client/bridge/setup';
 import { IBridge } from '@shared/types';
 
 export type Spies = Record<keyof IBridge, vi.Mock>;
 
 export function createFakeBridge(overrides?: Partial<Spies>): Spies {
-  const handlerMethods = getElectronBridgeOrMock();
+  const handlerMethods = setupBridge();
   return {
     ...Object.keys(handlerMethods).reduce(
       (acc, cur) => ({

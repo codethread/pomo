@@ -9,7 +9,7 @@ import mainModel from '../main/model';
 import { parentMachine } from '../testHelpers/machines';
 import { getActor } from '../utils';
 import { timerSettingsModel } from './model';
-import { getElectronBridgeOrMock } from '@client/getElectronBridgeOrMock';
+import { setupBridge } from '@client/bridge/setup';
 
 const { TIMER_SETTINGS, CONFIG } = actorIds;
 const { CANCEL, UPDATE, SAVE } = timerSettingsModel.events;
@@ -28,7 +28,7 @@ describe('timerSettings machine', () => {
       parentEvents: Object.keys(mainModel.events),
       childId: CONFIG,
       childMachine: configMachineFactory({
-        bridge: getElectronBridgeOrMock(),
+        bridge: setupBridge(),
         configOverride: config,
       }),
     });
