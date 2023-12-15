@@ -1,4 +1,3 @@
-import React from 'react';
 import { isTest } from '@shared/constants';
 
 export function testWrap<A>(Component: A, testId: string): A {

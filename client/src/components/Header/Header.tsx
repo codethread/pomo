@@ -1,5 +1,4 @@
 import { Pages } from '@client/pages/PageManager';
-import React from 'react';
 import { Box, MenuButton } from '@client/components';
 import pj from '../../../../package.json';
 

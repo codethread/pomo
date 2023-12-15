@@ -7,7 +7,6 @@ import {
   EmojiHappyIcon,
   PencilIcon,
 } from '@heroicons/react/solid';
-import React from 'react';
 import { Button } from '@client/components';
 
 interface INavigation {

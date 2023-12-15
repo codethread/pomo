@@ -1,4 +1,3 @@
-import React from 'react';
 import classNames from 'classnames';
 
 export type IInputText = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'type'> &

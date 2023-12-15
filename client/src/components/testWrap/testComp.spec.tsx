@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderNoProviders, screen } from '@test/rtl';
 import * as _constants from '@shared/constants';
 import { testWrap } from './testComp';

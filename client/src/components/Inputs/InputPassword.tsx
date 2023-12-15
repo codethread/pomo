@@ -1,5 +1,5 @@
-import React from 'react';
 import classNames from 'classnames';
+import { forwardRef } from 'react';
 
 export type IInputPassword = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -11,7 +11,7 @@ export type IInputPassword = Omit<
     onChange(n: string): void;
   };
 
-export const InputPassword = React.forwardRef<HTMLInputElement, IInputPassword>(
+export const InputPassword = forwardRef<HTMLInputElement, IInputPassword>(
   ({ id, hasError, value, onChange, className, type = 'password', ...props }, ref) => (
     <input
       ref={ref}

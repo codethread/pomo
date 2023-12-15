@@ -2,7 +2,6 @@
 import { Result } from '@shared/Result';
 import { Nodenv } from '@shared/asserts';
 import { ThemeName } from '@client/theme';
-import React from 'react';
 
 export interface ILogger extends Console {
   info: (...msg: any[]) => void;

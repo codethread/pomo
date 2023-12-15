@@ -15,14 +15,12 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* TODO: lift out to own file */
-    "types": ["vitest/globals"],
-
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+
+    /* test only */
+    "types": ["vitest/globals"],
 
     "baseUrl": "./",
     "paths": {
@@ -32,5 +30,6 @@
     }
   },
   "include": ["src"],
+  // "exclude": ["node_modules", "src/**/*.spec.ts", "src/**/*.spec.tsx", "**/testHelpers/**"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

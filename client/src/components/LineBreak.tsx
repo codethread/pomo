@@ -1,4 +1,3 @@
-import React from 'react';
 import { IChildren } from '@shared/types';
 
 export function LineBreak({ children }: IChildren): JSX.Element {

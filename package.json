@@ -9,7 +9,8 @@
     "machine": "xstate typegen \"client/src/machines/**/machine.*\"",
     "preview": "vite preview",
     "format:client": "prettier --write --ignore-path .gitignore client",
-    "test:client": "vitest --config ./client/vite.config.ts"
+    "test:client": "vitest --config ./client/vite.config.ts",
+    "ts": "tsc --noEmit --project ./client/tsconfig.json"
   },
   "dependencies": {
     "@heroicons/react": "^1.0.6",

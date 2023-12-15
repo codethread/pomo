@@ -5,16 +5,6 @@ import diff from 'jest-diff';
 import { isErr, isOk, Result } from '@shared/Result';
 import { pick } from '@shared/pick';
 
-// declare global {
-//   // TODO investigate
-//   // eslint-disable-next-line @typescript-eslint/no-namespace
-//   namespace vi {
-//     interface Matchers<R> {
-//       toMatchResult<A, B>(expected: Result<A, B>): R;
-//     }
-//   }
-// }
-
 expect.extend({
   toMatchResult(got: Result<any, any>, expected: Result<any, any>) {
     if (isOk(got) && isOk(expected)) {

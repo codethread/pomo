@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { Mock } from 'vitest';
 /**
  * Disable console.warn for each provided msgs regexp.
  *
@@ -42,7 +43,7 @@ export function ignoreWarnings(reason: string, ...ignorePatterns: RegExp[]): voi
   });
 
   afterAll(() => {
-    (console.warn as vi.Mock).mockRestore();
+    (console.warn as Mock).mockRestore();
   });
 }
 

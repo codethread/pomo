@@ -1,5 +1,4 @@
 import { assertUnreachable } from '@shared/asserts';
-import React from 'react';
 import { testWrap } from '@client/components';
 
 export interface ITimerProgress {

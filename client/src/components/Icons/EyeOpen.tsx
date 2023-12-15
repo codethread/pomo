@@ -1,4 +1,3 @@
-import React from 'react';
 import { SvgSize, useIcon } from './useIcon';
 
 export function EyeOpen(props: SvgSize): JSX.Element {
