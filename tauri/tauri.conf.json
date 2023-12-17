@@ -72,7 +72,8 @@
         "skipTaskbar": true,
         "hiddenTitle": true,
         "minimizable": false,
-        "titleBarStyle": "Overlay"
+        "titleBarStyle": "Overlay",
+        "decorations": false
       }
     ],
     "systemTray": {
