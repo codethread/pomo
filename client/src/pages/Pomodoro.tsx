@@ -1,5 +1,5 @@
-import { usePomodoro, useTimer } from '@client/hooks';
-import { Countdown } from '@client/components';
+import { useBridge, usePomodoro, useTimer } from '@client/hooks';
+import { Button, Countdown } from '@client/components';
 import { TimerType } from '@shared/types';
 import { assertUnreachable } from '@shared/asserts';
 
@@ -12,9 +12,19 @@ export function Pomodoro(): JSX.Element | null {
   const duration = state.context.timers[value];
 
   const title = getTitle(value);
+  const b = useBridge();
 
   return timerRef ? (
     <>
+      <Button
+        onClick={() => {
+          b.slackEndSnooze({
+            domain: 'perkbox',
+          });
+        }}
+      >
+        Test
+      </Button>
       <Countdown timerRef={timerRef} title={title} duration={duration} />
       <div style={{ display: 'none' }}>
         <p>completed pomos: {pomo}</p>

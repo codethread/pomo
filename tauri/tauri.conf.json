@@ -12,7 +12,14 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "all": false,
+      "http": {
+        "scope": ["https://*.slack.com/api/*"],
+        "all": true
+      },
+      "shell": {
+        "open": true
+      }
     },
     "bundle": {
       "active": true,

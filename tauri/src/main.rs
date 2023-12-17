@@ -17,6 +17,11 @@ fn main() {
     let tray = SystemTray::new().with_menu(tray_menu);
 
     tauri::Builder::default()
+        .setup(|app| {
+            // hide icon from dock
+            app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+            Ok(())
+        })
         .system_tray(tray)
         .on_system_tray_event(|app, event| match event {
             tauri::SystemTrayEvent::LeftClick { position, .. } => {

@@ -1,29 +1,32 @@
 import { IBridge, emptyConfig } from '@shared/types';
 import { ok } from '@shared/Result';
 import { createStore } from './store';
+import { slackRepository } from './slack';
+import { open } from '@tauri-apps/api/shell';
 
 export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
   // TODO need to handle running in browser with fake bridge
 
   const logger: Console = console;
+  const store = await createStore(logger, {
+    name: 'pomo',
+    defaults: emptyConfig,
+  });
+  const slack = await slackRepository({ logger });
 
   return {
     ...logger,
-    ...(await createStore(logger, {
-      name: 'pomo',
-      defaults: emptyConfig,
-    })),
+    ...store,
+    ...slack,
     async openExternal(url) {
-      window.open(url);
+      console.log('spawn');
+      await open(url);
+      console.log('donw');
       return Promise.resolve();
     },
     async windowFocus() {},
     async setTrayIcon() {},
     async setTrayTitle() {},
-    async slackSetProfile(auth, status) {},
-    async slackSetSnooze(auth, minutes) {},
-    async slackEndSnooze(auth) {},
-    async slackSetPresence(auth, state) {},
     async nodenv() {
       return ok('development');
     },
