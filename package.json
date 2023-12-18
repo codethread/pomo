@@ -1,5 +1,6 @@
 {
   "type": "module",
+  "version": "0.1.1",
   "scripts": {
     "dev": "tauri dev",
     "build": "tauri build",
@@ -56,6 +57,5 @@
   },
   "volta": {
     "node": "20.10.0"
-  },
-  "version": "0.1.0"
+  }
 }
