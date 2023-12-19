@@ -3,6 +3,7 @@ import { ok } from '@shared/Result';
 import { createStore } from './store';
 import { slackRepository } from './slack';
 import { open } from '@tauri-apps/api/shell';
+import { appWindow } from '@tauri-apps/api/window';
 
 export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
   // TODO need to handle running in browser with fake bridge
@@ -19,12 +20,12 @@ export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
     ...store,
     ...slack,
     async openExternal(url) {
-      console.log('spawn');
       await open(url);
-      console.log('donw');
       return Promise.resolve();
     },
-    async windowFocus() {},
+    async windowFocus() {
+      await appWindow.setFocus();
+    },
     async setTrayIcon() {},
     async setTrayTitle() {},
     async nodenv() {

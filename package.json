@@ -1,7 +1,7 @@
 {
   "type": "module",
-  "version": "0.1.3",
   "scripts": {
+    "tauri": "tauri",
     "dev": "tauri dev",
     "build": "tauri build",
     "dev:client": "vite client",

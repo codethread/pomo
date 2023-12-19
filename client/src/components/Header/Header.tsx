@@ -1,5 +1,6 @@
 import { Pages } from '@client/pages/PageManager';
 import { Box, MenuButton } from '@client/components';
+import pj from '../../../../package.json';
 
 export interface IHeader {
   onClick: () => void;
@@ -16,7 +17,7 @@ export function Header({ onClick, page, showClose }: IHeader): JSX.Element {
       </Box>
       <Box className="text-sm text-thmBackgroundBrightest">
         <p>Beta</p>
-        <p className="text-xs">0.1.3</p>
+        <p className="text-xs">{pj.version}</p>
       </Box>
     </header>
   );
