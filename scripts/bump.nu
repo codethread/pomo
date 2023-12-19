@@ -3,10 +3,10 @@ const confile = "tauri/tauri.conf.json"
 def main [--major] {
   let status = (git status --porcelain)
 
-  # if $status != "" {
-  #   print "Unstaged work, commit it"
-  #   exit 1
-  # }
+  if $status != "" {
+    print "Unstaged work, commit it"
+    exit 1
+  }
 
   open $confile
     | update package.version { |p| 
@@ -20,7 +20,7 @@ def main [--major] {
     }
     | save $confile -f
 
-  exec $"($env.PWD)/node_modules/.bin/prettier" --write $confile
+  ^$"($env.PWD)/node_modules/.bin/prettier" --write $confile
 
   let newV = open $confile | get package.version
   git add $confile
