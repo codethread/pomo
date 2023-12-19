@@ -5,5 +5,5 @@ def main [] {
     | parse "{maj}.{min}.{pat}" | first 
     | $"($in.maj).(($in.min | into int) + 1).0" 
   }
-  | save tauri/tauri.conf.json)
+  | save tauri/tauri.conf.json -f)
 }
