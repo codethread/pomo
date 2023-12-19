@@ -25,7 +25,7 @@ def main [--major] {
   let newV = open $confile | get package.version
   git add $confile
   git commit -m $"release v($newV)"
-  git tag $"app-($newV)"
+  git tag $"app-v($newV)"
   git push
   git push --tags
 }
