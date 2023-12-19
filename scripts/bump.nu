@@ -1,9 +1,24 @@
-def main [] {
-  (open tauri/tauri.conf.json 
-  | update package.version { |p| 
-    $p.package.version 
-    | parse "{maj}.{min}.{pat}" | first 
-    | $"($in.maj).(($in.min | into int) + 1).0" 
+const confile = "tauri/tauri.conf.json"
+
+def main [--major] {
+  let status = (git status --porcelain)
+
+  if $status != "" {
+    print "Unstaged work, commit it"
+    exit 1
   }
-  | save tauri/tauri.conf.json -f)
+
+  open $confile
+    | update package.version { |p| 
+      let v = ($p.package.version | parse "{maj}.{min}.{pat}" | first)
+
+      if $major {
+        $"(($v.maj | into int) + 1).($v.min).0" 
+      } else {
+        $"($v.maj).(($v.min | into int) + 1).0" 
+      }
+    }
+    | save $confile -f
+
+  exec $"($env.PWD)/node_modules/.bin/prettier" --write $confile
 }

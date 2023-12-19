@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "tauri": "tauri",
+    "release": "nu ./scripts/bump.nu",
     "dev": "tauri dev",
     "build": "tauri build",
     "dev:client": "vite client",
