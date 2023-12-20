@@ -26,7 +26,6 @@ export async function createStore<T>(
   logger.info(`setting up Store Repo: name "${storeConfig.name}", path: "${store.path}"`);
 
   if (!(await store.get(KEY))) {
-    console.log('no data, setting default');
     await store.clear();
     await store.set(KEY, storeConfig.defaults);
   }
@@ -51,6 +50,7 @@ export async function createStore<T>(
       const originalStore = await store.get(KEY);
       const updated = merge(originalStore, updatedStore);
       await store.set(KEY, updated);
+      await store.save();
       return ok(updated as T);
     },
   };
