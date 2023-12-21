@@ -22,6 +22,8 @@ jobs:
       # Rust bit -------------------------------------------------
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: 'aarch64-apple-darwin'
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
