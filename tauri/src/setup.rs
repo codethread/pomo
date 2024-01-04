@@ -1,34 +1,26 @@
 use std::sync::mpsc;
 
-use serde::Serialize;
 use tauri::{App, Manager, PhysicalPosition};
 
 use crate::models::{Events, State};
-
-#[derive(Serialize, Clone)]
-struct Payload {
-    foo: i32,
-}
 
 pub fn handle_setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     app.listen_global("client-event", |event| {
         println!("got window my-event with payload {:?}", event.payload());
     });
 
-    let (main_sender, main_reciever) = mpsc::channel::<Events>();
+    let (sender, reciever) = mpsc::channel::<Events>();
 
     let window = app.get_window("main").unwrap();
     let w = window.clone();
 
+    // this thread is to send messages from the worker to the client
     let _emitter = std::thread::spawn(move || loop {
-        println!("emit");
-        let event = main_reciever.recv().unwrap();
-        w.emit_all("Start", Payload { foo: 3 }).unwrap();
-        println!("emitt: {event:?}");
+        let event = reciever.recv().unwrap();
+        w.emit_all(&event.to_string(), event).unwrap();
     });
 
-    let state = State::new(main_sender);
-    app.manage(state);
+    app.manage(State::new(sender));
 
     // hide icon from dock
     app.set_activation_policy(tauri::ActivationPolicy::Accessory);

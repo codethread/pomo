@@ -88,6 +88,7 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
               className="text-thmPrimary"
               variant="icon"
               onClick={() => {
+                invoke('stop');
                 send({ type: 'STOP' });
               }}
               aria-label={T.pomoTimer.stop}

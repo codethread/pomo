@@ -12,7 +12,7 @@ fn main() {
         .system_tray(tray::create_system_tray())
         .on_system_tray_event(tray::handle_system_tray_event)
         .plugin(tauri_plugin_store::Builder::default().build())
-        .invoke_handler(tauri::generate_handler![timer::start])
+        .invoke_handler(tauri::generate_handler![timer::start, timer::stop])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

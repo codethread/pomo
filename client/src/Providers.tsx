@@ -12,8 +12,10 @@ interface IProviders {
   bridge: IBridge;
 }
 
-listen('Start', (event) => {
-  console.log({ event });
+['start', 'Start', 'tick', 'Tick'].forEach((e) => {
+  listen(e, (event) => {
+    console.log({ event });
+  });
 });
 
 export function Providers({ bridge, isDev }: IProviders): JSX.Element {

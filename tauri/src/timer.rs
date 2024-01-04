@@ -3,14 +3,16 @@ use tauri::State;
 
 use crate::models;
 
-#[derive(Clone, Serialize, Default)]
-struct Payload {
-    foo: i32,
+#[tauri::command]
+pub fn start(state: State<models::State>) {
+    let mut s = state.0.lock().unwrap();
+    s.start();
 }
 
 #[tauri::command]
-pub fn start(state: State<models::State>) {
-    state.start();
+pub fn stop(state: State<models::State>) {
+    let mut s = state.0.lock().unwrap();
+    s.stop();
 }
 
 // pause
