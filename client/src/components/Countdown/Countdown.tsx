@@ -5,6 +5,7 @@ import { PauseIcon, PlayIcon, StopIcon } from '@heroicons/react/solid';
 import { displayNum } from '@shared/format';
 import { useActor } from '@xstate/react';
 import './countdown.css';
+import { invoke } from '@tauri-apps/api';
 
 export interface ICountdown {
   timerRef: TimerActorRef;
@@ -72,6 +73,7 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
               data-test-id="start-button"
               variant="icon"
               onClick={() => {
+                invoke('start');
                 send({ type: 'START' });
               }}
               aria-label={T.pomoTimer.start}

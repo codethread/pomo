@@ -1,0 +1,11 @@
+[package]
+name = 'lib'
+edition.workspace = true
+version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+timer = "0.2.0"
