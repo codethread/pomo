@@ -1,15 +1,22 @@
+use lib::TimePayload;
 use tauri::State;
 
 use crate::models;
 
 #[tauri::command]
-pub fn start(state: State<models::State>) {
-    state.0.lock().unwrap().start();
+pub fn start(state: State<models::State>, minutes: u8, seconds: u8, timerid: String) {
+    let id = timerid;
+    println!("{}", &id);
+    state
+        .0
+        .lock()
+        .unwrap()
+        .start(TimePayload::new(minutes, seconds, id));
 }
 
 #[tauri::command]
-pub fn stop(state: State<models::State>) {
-    state.0.lock().unwrap().stop();
+pub fn stop(state: State<models::State>, id: String) {
+    state.0.lock().unwrap().stop(id);
 }
 
 #[tauri::command]

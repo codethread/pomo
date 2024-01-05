@@ -6,6 +6,7 @@ export interface Typegen0 {
     updateTimerConfig: 'UPDATE';
     updateTimer: '_TICK';
     onTickHook: '_TICK';
+    updateNow: 'FORCE_UPDATE';
     onPlayHook: 'PLAY';
     onStartHook: 'xstate.init';
     onPauseHook: 'PAUSE';
@@ -15,15 +16,15 @@ export interface Typegen0 {
   internalEvents: {
     '': { type: '' };
     'xstate.init': { type: 'xstate.init' };
-    'done.invoke.second-timer': {
-      type: 'done.invoke.second-timer';
+    'done.invoke.updater': {
+      type: 'done.invoke.updater';
       data: unknown;
       __tip: 'See the XState TS docs to learn how to strongly type this.';
     };
-    'error.platform.second-timer': { type: 'error.platform.second-timer'; data: unknown };
+    'error.platform.updater': { type: 'error.platform.updater'; data: unknown };
   };
   invokeSrcNameMap: {
-    countOneSecond: 'done.invoke.second-timer';
+    updater: 'done.invoke.updater';
   };
   missingImplementations: {
     actions: never;
@@ -32,7 +33,7 @@ export interface Typegen0 {
     delays: never;
   };
   eventsCausingServices: {
-    countOneSecond: 'START' | '' | '_TICK' | 'PLAY';
+    updater: 'START' | '' | 'PLAY';
   };
   eventsCausingGuards: {
     shouldAutoStart: '';

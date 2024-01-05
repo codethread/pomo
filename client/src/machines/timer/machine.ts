@@ -2,8 +2,8 @@ import { ActorRefFrom, assign, createMachine } from 'xstate';
 import { sendParent } from 'xstate/lib/actions';
 import pomodoroModel from '../pomodoro/model';
 import model, { TimerContext, TimerEvents } from './model';
-
-const ONE_SECOND = 1000;
+import { listen, once } from '@tauri-apps/api/event';
+import { invoke } from '@tauri-apps/api';
 
 const timerMachine = createMachine(
   {
@@ -26,14 +26,15 @@ const timerMachine = createMachine(
       },
       playing: {
         invoke: {
-          id: 'second-timer',
-          src: 'countOneSecond',
+          id: 'updater',
+          src: 'updater',
         },
         on: {
           _TICK: [
             { cond: 'isTimerFinished', target: 'complete' },
-            { actions: ['updateTimer', 'onTickHook'], target: 'playing' },
+            { actions: ['updateTimer', 'onTickHook'] },
           ],
+          FORCE_UPDATE: { actions: 'updateNow' },
           PAUSE: 'paused',
           STOP: 'stopped',
         },
@@ -50,6 +51,13 @@ const timerMachine = createMachine(
         type: 'final',
       },
       stopped: {
+        invoke: {
+          id: 'stopper',
+          src:
+            ({ id }) =>
+            () =>
+              invoke('stop', { id }),
+        },
         entry: ['onStopHook'],
         type: 'final',
       },
@@ -57,10 +65,28 @@ const timerMachine = createMachine(
   },
   {
     services: {
-      countOneSecond: () => (sendBack) => {
-        const id = setInterval(() => sendBack('_TICK'), ONE_SECOND);
-        return () => clearInterval(id);
-      },
+      updater:
+        ({ seconds, minutes, id }) =>
+        async (sendBack) => {
+          console.log({ id });
+          invoke('start', { seconds, minutes, timerid: id }).catch((e) => console.error(e));
+          console.log('start');
+
+          const list = await Promise.all([
+            once(`setTime_${id}`, (e: any) => {
+              sendBack({
+                type: 'FORCE_UPDATE',
+                seconds: e.payload.seconds as number,
+                minutes: e.payload.minutes as number,
+              });
+            }),
+            listen(`tick_${id}`, () => {
+              sendBack('_TICK');
+            }),
+          ]);
+
+          return () => list.forEach((c) => c());
+        },
     },
     guards: {
       isTimerFinished: ({ minutes, seconds }) => minutes === 0 && seconds === 1,
@@ -68,6 +94,10 @@ const timerMachine = createMachine(
       shouldAutoStart: ({ autoStart }) => autoStart,
     },
     actions: {
+      updateNow: assign((_, e) => ({
+        minutes: e.minutes,
+        seconds: e.seconds,
+      })),
       updateTimer: assign(({ minutes, seconds }) =>
         seconds === 0 ? { minutes: minutes - 1, seconds: 59 } : { minutes, seconds: seconds - 1 }
       ),

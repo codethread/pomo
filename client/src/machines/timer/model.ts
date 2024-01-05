@@ -4,6 +4,7 @@ import { createModel } from 'xstate/lib/model';
 
 const timerModel = createModel(
   {
+    id: '',
     minutes: 0,
     seconds: 0,
     type: 'pomo',
@@ -17,6 +18,7 @@ const timerModel = createModel(
       STOP: () => ({}),
       _TICK: () => ({}),
       UPDATE: (mins: number) => ({ data: mins }),
+      FORCE_UPDATE: (seconds: number, minutes: number) => ({ minutes, seconds }),
     },
   }
 );

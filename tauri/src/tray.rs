@@ -1,7 +1,9 @@
 use tauri::{
-    AppHandle, CustomMenuItem, Manager, PhysicalPosition, SystemTray, SystemTrayEvent,
+    AppHandle, CustomMenuItem, Manager, PhysicalPosition, State, SystemTray, SystemTrayEvent,
     SystemTrayMenu, SystemTrayMenuItem,
 };
+
+use crate::models;
 
 pub fn create_system_tray() -> SystemTray {
     // here `"quit".to_string()` defines the menu item id, and the second parameter is the menu item label.
@@ -27,7 +29,14 @@ pub fn handle_system_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 .unwrap();
             match window.is_visible().unwrap() {
                 true => window.hide().unwrap(),
-                false => window.show().unwrap(),
+                false => {
+                    window.show().unwrap();
+                    app.state::<models::State>()
+                        .0
+                        .lock()
+                        .unwrap()
+                        .time("main".to_string());
+                }
             };
         }
         tauri::SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {

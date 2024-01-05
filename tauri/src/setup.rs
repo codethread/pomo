@@ -1,14 +1,10 @@
-use std::sync::mpsc;
-
 use tauri::{App, Manager, PhysicalPosition};
 
-pub fn handle_setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
-    app.listen_global("client-event", |event| {
-        println!("got window my-event with payload {:?}", event.payload());
-    });
+use crate::models;
 
+pub fn handle_setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     let window = app.get_window("main").unwrap();
-    app.manage(crate::models::State::new(window.clone()));
+    app.manage(models::State::new(window.clone()));
 
     // hide icon from dock
     app.set_activation_policy(tauri::ActivationPolicy::Accessory);

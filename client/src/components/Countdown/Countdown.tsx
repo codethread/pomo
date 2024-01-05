@@ -73,7 +73,6 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
               data-test-id="start-button"
               variant="icon"
               onClick={() => {
-                invoke('start');
                 send({ type: 'START' });
               }}
               aria-label={T.pomoTimer.start}
@@ -88,7 +87,6 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
               className="text-thmPrimary"
               variant="icon"
               onClick={() => {
-                invoke('stop');
                 send({ type: 'STOP' });
               }}
               aria-label={T.pomoTimer.stop}
