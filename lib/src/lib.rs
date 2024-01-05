@@ -1,37 +1,21 @@
 use std::{
     collections::HashMap,
     sync::{mpsc, Arc},
-    thread::{sleep, JoinHandle},
+    thread::sleep,
     time::Duration,
 };
 
-use serde::Serialize;
+mod events;
+use events::Events;
+pub use events::EventsToClient;
 
-type Emit = Arc<dyn Fn(Events) + Send + Sync>;
+type Emit = Arc<dyn Fn(EventsToClient) + Send + Sync>;
 
 pub struct App {
     /// handles for each timer
     timers: HashMap<u8, mpsc::Sender<Events>>,
     /// this is a callback through which the worker communicates with tauri
     emitter: Emit,
-}
-
-#[derive(Debug, Copy, Clone, Serialize)]
-pub enum Events {
-    Start,
-    Stop,
-    Tick,
-}
-
-impl std::fmt::Display for Events {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let s = match self {
-            Events::Start => "start",
-            Events::Stop => "stop",
-            Events::Tick => "tick",
-        };
-        write!(f, "{s}")
-    }
 }
 
 impl App {
@@ -53,7 +37,7 @@ impl App {
                 if let Ok(Events::Stop) = timer_reciever.try_recv() {
                     break;
                 }
-                emitter(Events::Tick);
+                emitter(EventsToClient::Tick);
             });
 
             self.timers.insert(1, timer_sender);

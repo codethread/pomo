@@ -1,13 +1,13 @@
 use std::sync::{mpsc, Arc, Mutex};
 
-use lib::{App, Events};
+use lib::{App, EventsToClient};
 use tauri::{Manager, Window};
 
 pub struct State(pub Mutex<App>);
 
 impl State {
     pub fn new(window: Window) -> Self {
-        let emitter = move |e: Events| {
+        let emitter = move |e: EventsToClient| {
             window.emit_all(&e.to_string(), e).unwrap();
         };
 
