@@ -13,3 +13,6 @@ license = ""
 repository = ""
 # this was set by tauri
 rust-version = "1.60"
+
+[workspace.dependencies]
+serde = { version = "1.0", features = ["derive"] }
