@@ -1,4 +1,4 @@
-use std::sync::{mpsc, Mutex};
+use std::sync::{mpsc, Arc, Mutex};
 
 use lib::{App, Events};
 use tauri::{Manager, Window};
@@ -7,13 +7,10 @@ pub struct State(pub Mutex<App>);
 
 impl State {
     pub fn new(window: Window) -> Self {
-        let (sender, reciever) = mpsc::channel::<lib::Events>();
-        // this thread is to send messages from the worker to the client
-        let _emitter = std::thread::spawn(move || loop {
-            let event = reciever.recv().unwrap();
-            window.emit_all(&event.to_string(), event).unwrap();
-        });
+        let emitter = move |e: Events| {
+            window.emit_all(&e.to_string(), e).unwrap();
+        };
 
-        Self(Mutex::new(App::new(sender)))
+        Self(Mutex::new(App::new(Arc::new(emitter))))
     }
 }

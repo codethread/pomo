@@ -6,12 +6,14 @@ use std::{
 };
 
 use serde::Serialize;
+
+type Emit = Arc<dyn Fn(Events) + Send + Sync>;
+
 pub struct App {
-    _worker: JoinHandle<()>,
     /// handles for each timer
     timers: HashMap<u8, mpsc::Sender<Events>>,
-    /// this is channel through which timers can communicate back to the worker
-    sender: Arc<mpsc::Sender<Events>>,
+    /// this is a callback through which the worker communicates with tauri
+    emitter: Emit,
 }
 
 #[derive(Debug, Copy, Clone, Serialize)]
@@ -33,34 +35,17 @@ impl std::fmt::Display for Events {
 }
 
 impl App {
-    pub fn new(main_sender: mpsc::Sender<Events>) -> Self {
+    pub fn new(emitter: Emit) -> Self {
         let timers = HashMap::new();
-        let (work_sender, work_reciever) = mpsc::channel::<Events>();
 
-        let work_sender = Arc::new(work_sender);
-
-        let handle = std::thread::spawn(move || loop {
-            let event = work_reciever.recv().unwrap();
-            match event {
-                Events::Tick => {
-                    main_sender.send(Events::Tick).unwrap();
-                }
-                _ => unreachable!(),
-            }
-        });
-
-        Self {
-            _worker: handle,
-            timers,
-            sender: work_sender,
-        }
+        Self { timers, emitter }
     }
 
     pub fn start(&mut self) {
         // one day will have multple timers, for now will just use one
         if self.timers.contains_key(&1) {
         } else {
-            let sender = self.sender.clone();
+            let emitter = self.emitter.clone();
             let (timer_sender, timer_reciever) = mpsc::channel::<Events>();
 
             std::thread::spawn(move || loop {
@@ -68,7 +53,7 @@ impl App {
                 if let Ok(Events::Stop) = timer_reciever.try_recv() {
                     break;
                 }
-                sender.send(Events::Tick).unwrap();
+                emitter(Events::Tick);
             });
 
             self.timers.insert(1, timer_sender);
