@@ -1,71 +1,13 @@
-use crossbeam::channel::{self, Receiver, Sender};
-use serde::Serialize;
-use std::{
-    collections::HashMap,
-    sync::{mpsc, Arc},
-    thread::sleep,
-    time::Duration,
-};
-
-mod events;
+use crossbeam::channel;
 use events::Events;
 pub use events::EventsToClient;
+use std::{collections::HashMap, sync::Arc, thread::sleep, time::Duration};
+pub use timer::TimePayload;
+
+mod events;
+mod timer;
 
 type Emit = Arc<dyn Fn(EventsToClient) + Send + Sync>;
-
-#[derive(Serialize, Clone, Debug)]
-pub struct TimePayload {
-    pub id: String,
-    pub seconds: u8,
-    pub minutes: u8,
-    pub complete: bool,
-}
-
-impl TimePayload {
-    pub fn new(minutes: u8, seconds: u8, id: String) -> Self {
-        Self {
-            id,
-            minutes,
-            seconds,
-            complete: false,
-        }
-    }
-
-    fn countdown(&mut self) {
-        if self.complete {
-            return;
-        }
-
-        match (self.minutes, self.seconds) {
-            (0, 1) => {
-                self.seconds = 0;
-                self.complete = true
-            }
-            (_, 0) => {
-                self.seconds = 59;
-                self.minutes -= 1
-            }
-            _ => self.seconds -= 1,
-        }
-    }
-}
-
-pub struct Timer {
-    id: String,
-    channel: channel::Receiver<Events>,
-    time: TimePayload,
-    paused: bool,
-}
-
-impl Timer {
-    pub fn countdown(&mut self) {
-        self.time.countdown();
-    }
-
-    pub fn is_complete(&self) -> bool {
-        self.time.complete
-    }
-}
 
 pub struct App {
     /// handles for each timer
@@ -88,7 +30,7 @@ impl App {
         }
     }
 
-    pub fn start(&mut self, time: TimePayload) {
+    pub fn start(&mut self, time: timer::TimePayload) {
         let id = time.id.clone();
         // one day will have multple timers, for now will just use one
         if self.timers.contains_key(&id) {
@@ -97,67 +39,13 @@ impl App {
             let emitter = self.emitter.clone();
             let (timer_sender, timer_reciever) = channel::unbounded::<Events>();
 
-            std::thread::spawn(move || {
-                let mut t = Timer {
-                    id: time.id.clone(),
-                    channel: timer_reciever,
-                    time,
-                    paused: false,
-                };
-                loop {
-                    if t.paused {
-                        match t.channel.recv().unwrap() {
-                            Events::Stop => {
-                                continue;
-                            }
-                            Events::RequestTime => {
-                                emitter(EventsToClient::UpdateTime(t.time.clone()));
-                                continue;
-                            }
-                            Events::Pause => {
-                                continue;
-                            }
-                            Events::Play => {
-                                t.paused = false;
-                            }
-                        }
-                    }
-                    #[cfg(debug_assertions)]
-                    {
-                        // 100ms
-                        sleep(Duration::new(0, 100_000_000));
-                    }
-                    #[cfg(not(debug_assertions))]
-                    {
-                        sleep(Duration::new(1, 0));
-                    }
-                    // TODO this is far from ideal as there is potential for sleep
-                    // need to use a channel to recieve this at a later date
-                    if let Ok(event) = t.channel.try_recv() {
-                        match event {
-                            Events::Stop => break,
-                            Events::Pause => {
-                                t.paused = true;
-                                continue;
-                            }
-                            Events::RequestTime => {
-                                emitter(EventsToClient::UpdateTime(t.time.clone()));
-                            }
-                            Events::Play => (),
-                        }
-                    }
-                    t.countdown();
-                    println!("{} tick {:?}", t.id, t.time);
-                    emitter(EventsToClient::Tick(t.id.clone()));
-
-                    if t.is_complete() {
-                        emitter(EventsToClient::Complete(t.id.clone()));
-                        break;
-                    }
-                }
-                // TODO
-                // do something to remove this from the parent
-            });
+            let t = timer::Timer {
+                id: time.id.clone(),
+                channel: timer_reciever,
+                time,
+                paused: false,
+            };
+            std::thread::spawn(move || run_timer(t, emitter));
 
             self.current = Some(id.clone());
             self.timers.insert(id, timer_sender);
@@ -191,4 +79,60 @@ impl App {
             timer.send(Events::Play).unwrap();
         }
     }
+}
+
+fn run_timer(mut timer: timer::Timer, emitter: Emit) {
+    loop {
+        if timer.paused {
+            match timer.channel.recv().unwrap() {
+                Events::Stop => {
+                    continue;
+                }
+                Events::RequestTime => {
+                    emitter(EventsToClient::UpdateTime(timer.time.clone()));
+                    continue;
+                }
+                Events::Pause => {
+                    continue;
+                }
+                Events::Play => {
+                    timer.paused = false;
+                }
+            }
+        }
+        #[cfg(debug_assertions)]
+        {
+            // 100ms
+            sleep(Duration::new(0, 100_000_000));
+        }
+        #[cfg(not(debug_assertions))]
+        {
+            sleep(Duration::new(1, 0));
+        }
+        // TODO this is far from ideal as there is potential for sleep
+        // need to use a channel to recieve this at a later date
+        if let Ok(event) = timer.channel.try_recv() {
+            match event {
+                Events::Stop => break,
+                Events::Pause => {
+                    timer.paused = true;
+                    continue;
+                }
+                Events::RequestTime => {
+                    emitter(EventsToClient::UpdateTime(timer.time.clone()));
+                }
+                Events::Play => (),
+            }
+        }
+        timer.countdown();
+        println!("{} tick {:?}", timer.id, timer.time);
+        emitter(EventsToClient::Tick(timer.id.clone()));
+
+        if timer.is_complete() {
+            emitter(EventsToClient::Complete(timer.id.clone()));
+            break;
+        }
+    }
+    // TODO
+    // do something to remove this from the parent
 }
