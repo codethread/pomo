@@ -32,7 +32,7 @@ const timerMachine = createMachine(
         on: {
           _TICK: [
             { cond: 'isTimerFinished', target: 'complete' },
-            { actions: ['updateTimer', 'onTickHook'] },
+            { actions: ['updateTimer', 'onTickHook', 'updatedStarted'] },
           ],
           FORCE_UPDATE: { actions: 'updateNow' },
           PAUSE: 'paused',
@@ -40,6 +40,13 @@ const timerMachine = createMachine(
         },
       },
       paused: {
+        invoke: {
+          id: 'pauser',
+          src:
+            ({ id }) =>
+            () =>
+              invoke('pause', { id }),
+        },
         entry: ['onPauseHook'],
         on: {
           PLAY: { target: 'playing', actions: ['onPlayHook'] },
@@ -66,24 +73,29 @@ const timerMachine = createMachine(
   {
     services: {
       updater:
-        ({ seconds, minutes, id }) =>
+        ({ seconds, minutes, id, started }) =>
         async (sendBack) => {
-          console.log({ id });
-          invoke('start', { seconds, minutes, timerid: id }).catch((e) => console.error(e));
-          console.log('start');
+          console.log({ seconds, minutes, id, started });
+          let list: any = [];
+          if (started) {
+            invoke('play', { id });
+          } else {
+            invoke('start', { seconds, minutes, timerid: id });
 
-          const list = await Promise.all([
-            once(`setTime_${id}`, (e: any) => {
-              sendBack({
-                type: 'FORCE_UPDATE',
-                seconds: e.payload.seconds as number,
-                minutes: e.payload.minutes as number,
-              });
-            }),
-            listen(`tick_${id}`, () => {
-              sendBack('_TICK');
-            }),
-          ]);
+            const t = await Promise.all([
+              once(`setTime_${id}`, (e: any) => {
+                sendBack({
+                  type: 'FORCE_UPDATE',
+                  seconds: e.payload.seconds as number,
+                  minutes: e.payload.minutes as number,
+                });
+              }),
+              listen(`tick_${id}`, () => {
+                sendBack('_TICK');
+              }),
+            ]);
+            list.push(...t);
+          }
 
           return () => list.forEach((c) => c());
         },
@@ -104,6 +116,9 @@ const timerMachine = createMachine(
 
       updateTimerConfig: assign({
         minutes: (_, { data }) => data,
+      }),
+      updatedStarted: assign({
+        started: () => true,
       }),
 
       onStartHook: sendParent((c) => pomodoroModel.events.TIMER_START(c)),

@@ -13,4 +13,6 @@ pub enum EventsToClient {
 pub enum Events {
     Stop,
     RequestTime,
+    Pause,
+    Play,
 }

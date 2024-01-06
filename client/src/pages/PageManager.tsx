@@ -1,7 +1,7 @@
 import { Header, Slack, Theme, Timer } from '@client/components';
 import { useTimerSettings } from '@client/hooks';
 import { assertUnreachable } from '@shared/asserts';
-import React, { useReducer } from 'react';
+import { useReducer } from 'react';
 import { Navigation } from './Navigation';
 import { Pomodoro } from './Pomodoro';
 

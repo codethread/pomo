@@ -9,6 +9,7 @@ const timerModel = createModel(
     seconds: 0,
     type: 'pomo',
     autoStart: false,
+    started: false,
   } as HookContext['timer'],
   {
     events: {

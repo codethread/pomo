@@ -20,6 +20,11 @@ pub fn stop(state: State<models::State>, id: String) {
 }
 
 #[tauri::command]
-pub fn pause(state: State<models::State>) {
-    state.0.lock().unwrap().pause();
+pub fn pause(state: State<models::State>, id: String) {
+    state.0.lock().unwrap().pause(id);
+}
+
+#[tauri::command]
+pub fn play(state: State<models::State>, id: String) {
+    state.0.lock().unwrap().play(id);
 }

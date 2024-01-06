@@ -11,3 +11,4 @@ rust-version.workspace = true
 chrono = "0.4.31"
 serde = {workspace = true}
 timer = "0.2.0"
+crossbeam = "0.8.3"

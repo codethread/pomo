@@ -128,6 +128,7 @@ export interface HookContext {
     seconds: number;
     type: TimerType;
     autoStart: boolean;
+    started: boolean;
   };
   config: UserConfig;
   bridge: IBridge;

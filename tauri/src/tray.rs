@@ -31,11 +31,12 @@ pub fn handle_system_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                 true => window.hide().unwrap(),
                 false => {
                     window.show().unwrap();
+                    // TODO needs to be a client event to request the current time on wake
                     app.state::<models::State>()
                         .0
                         .lock()
                         .unwrap()
-                        .time("main".to_string());
+                        .time("not used yet".to_string());
                 }
             };
         }

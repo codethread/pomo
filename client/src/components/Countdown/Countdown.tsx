@@ -53,6 +53,7 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
         }}
       >
         <p
+          className="tabular-nums"
           style={{
             fontSize: 38,
             textAlign: 'center',

@@ -3,6 +3,7 @@
 export interface Typegen0 {
   '@@xstate/typegen': true;
   eventsCausingActions: {
+    updatedStarted: 'START';
     updateTimerConfig: 'UPDATE';
     updateTimer: '_TICK';
     onTickHook: '_TICK';

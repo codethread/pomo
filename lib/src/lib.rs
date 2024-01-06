@@ -1,3 +1,4 @@
+use crossbeam::channel::{self, Receiver, Sender};
 use serde::Serialize;
 use std::{
     collections::HashMap,
@@ -51,8 +52,9 @@ impl TimePayload {
 
 pub struct Timer {
     id: String,
-    channel: mpsc::Receiver<Events>,
+    channel: channel::Receiver<Events>,
     time: TimePayload,
+    paused: bool,
 }
 
 impl Timer {
@@ -67,16 +69,23 @@ impl Timer {
 
 pub struct App {
     /// handles for each timer
-    timers: HashMap<String, mpsc::Sender<Events>>,
+    timers: HashMap<String, channel::Sender<Events>>,
     /// this is a callback through which the worker communicates with tauri
     emitter: Emit,
+    /// temporary hack to figure out the current running timer, will do something more robust in
+    /// future when there are multiple timers
+    current: Option<String>,
 }
 
 impl App {
     pub fn new(emitter: Emit) -> Self {
         let timers = HashMap::new();
 
-        Self { timers, emitter }
+        Self {
+            timers,
+            emitter,
+            current: None,
+        }
     }
 
     pub fn start(&mut self, time: TimePayload) {
@@ -86,15 +95,33 @@ impl App {
             println!("timer exists {}", &id)
         } else {
             let emitter = self.emitter.clone();
-            let (timer_sender, timer_reciever) = mpsc::channel::<Events>();
+            let (timer_sender, timer_reciever) = channel::unbounded::<Events>();
 
             std::thread::spawn(move || {
                 let mut t = Timer {
                     id: time.id.clone(),
                     channel: timer_reciever,
                     time,
+                    paused: false,
                 };
                 loop {
+                    if t.paused {
+                        match t.channel.recv().unwrap() {
+                            Events::Stop => {
+                                continue;
+                            }
+                            Events::RequestTime => {
+                                emitter(EventsToClient::UpdateTime(t.time.clone()));
+                                continue;
+                            }
+                            Events::Pause => {
+                                continue;
+                            }
+                            Events::Play => {
+                                t.paused = false;
+                            }
+                        }
+                    }
                     #[cfg(debug_assertions)]
                     {
                         // 100ms
@@ -109,9 +136,14 @@ impl App {
                     if let Ok(event) = t.channel.try_recv() {
                         match event {
                             Events::Stop => break,
-                            Events::RequestTime => {
-                                emitter(EventsToClient::UpdateTime(t.time.clone()))
+                            Events::Pause => {
+                                t.paused = true;
+                                continue;
                             }
+                            Events::RequestTime => {
+                                emitter(EventsToClient::UpdateTime(t.time.clone()));
+                            }
+                            Events::Play => (),
                         }
                     }
                     t.countdown();
@@ -123,8 +155,11 @@ impl App {
                         break;
                     }
                 }
+                // TODO
+                // do something to remove this from the parent
             });
 
+            self.current = Some(id.clone());
             self.timers.insert(id, timer_sender);
         }
     }
@@ -133,14 +168,27 @@ impl App {
         if let Some(timer) = self.timers.get_mut(&id) {
             timer.send(Events::Stop).unwrap();
             self.timers.remove(&id).unwrap();
+            self.current = None;
         }
     }
 
-    pub fn time(&self, id: String) {
+    pub fn time(&self, _: String) {
+        if let Some(current) = &self.current {
+            if let Some(timer) = self.timers.get(current) {
+                timer.send(Events::RequestTime).unwrap();
+            }
+        }
+    }
+
+    pub fn pause(&self, id: String) {
         if let Some(timer) = self.timers.get(&id) {
-            timer.send(Events::RequestTime).unwrap();
+            timer.send(Events::Pause).unwrap();
         }
     }
 
-    pub fn pause(&self) {}
+    pub fn play(&self, id: String) {
+        if let Some(timer) = self.timers.get(&id) {
+            timer.send(Events::Play).unwrap();
+        }
+    }
 }
