@@ -5,6 +5,7 @@ import { PauseIcon, PlayIcon, StopIcon } from '@heroicons/react/solid';
 import { displayNum } from '@shared/format';
 import { useActor } from '@xstate/react';
 import './countdown.css';
+import { invoke } from '@tauri-apps/api';
 
 export interface ICountdown {
   timerRef: TimerActorRef;
@@ -52,6 +53,7 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
         }}
       >
         <p
+          className="tabular-nums"
           style={{
             fontSize: 38,
             textAlign: 'center',

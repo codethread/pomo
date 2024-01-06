@@ -123,10 +123,12 @@ export type CssSize = `${string}${CssSizeUnits}`;
 
 export interface HookContext {
   timer: {
+    id: string;
     minutes: number;
     seconds: number;
     type: TimerType;
     autoStart: boolean;
+    started: boolean;
   };
   config: UserConfig;
   bridge: IBridge;

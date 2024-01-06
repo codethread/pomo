@@ -46,7 +46,13 @@ function pomodoroMachine({ context }: IPomodoroMachine) {
             id: actorIds.TIMER,
             src: timerMachine,
             data: ({ timers: { pomo }, autoStart: { beforePomo } }) =>
-              ({ minutes: pomo, seconds: 0, type: 'pomo', autoStart: beforePomo } as TimerContext),
+              ({
+                minutes: pomo,
+                seconds: 0,
+                type: 'pomo',
+                autoStart: beforePomo,
+                id: Math.random().toFixed(6).slice(2, -1),
+              } as TimerContext),
           },
           on: {
             TIMER_STOPPED: { target: 'pomo', actions: ['onStopHook'] },
@@ -70,6 +76,7 @@ function pomodoroMachine({ context }: IPomodoroMachine) {
                 seconds: 0,
                 type: 'short',
                 autoStart: beforeShortBreak,
+                id: Math.random().toFixed(6).slice(2, -1),
               } as TimerContext),
             onDone: { target: 'pomo' },
           },
@@ -90,6 +97,7 @@ function pomodoroMachine({ context }: IPomodoroMachine) {
                 seconds: 0,
                 type: 'long',
                 autoStart: beforeLongBreak,
+                id: Math.random().toFixed(6).slice(2, -1),
               } as TimerContext),
             onDone: { target: 'pomo' },
           },

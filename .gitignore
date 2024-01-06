@@ -7,3 +7,6 @@ dist
 dist-ssr
 *.local
 .env*
+
+*.typegen.ts
+target

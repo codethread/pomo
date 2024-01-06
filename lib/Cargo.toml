@@ -1,0 +1,14 @@
+[package]
+name = 'lib'
+edition.workspace = true
+version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+chrono = "0.4.31"
+serde = {workspace = true}
+timer = "0.2.0"
+crossbeam = "0.8.3"
