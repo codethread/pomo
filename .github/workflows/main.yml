@@ -1,9 +1,9 @@
 name: 'publish'
 
-# This will trigger the action on each push to the `release` branch.
+# This will trigger a publish when a tag is pushed
 on:
   push:
-    branches:
+    tags:
       - '*'
 
 jobs:
