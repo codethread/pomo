@@ -8,5 +8,5 @@ dist-ssr
 *.local
 .env*
 
-# *.typegen.ts
+*.typegen.ts
 target

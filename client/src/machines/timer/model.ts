@@ -18,7 +18,6 @@ const timerModel = createModel(
       PAUSE: () => ({}),
       STOP: () => ({}),
       _TICK: () => ({}),
-      NOPE: () => ({}),
       UPDATE: (mins: number) => ({ data: mins }),
       FORCE_UPDATE: (seconds: number, minutes: number) => ({ minutes, seconds }),
     },
