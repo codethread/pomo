@@ -2,8 +2,10 @@ import { TimerContext, TimerEvents } from '../timer/model';
 import { listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api';
 
-export function clockMachine({ id }: TimerContext) {
-  return (sendBack: (e: TimerEvents) => void, recieve: (e: any) => void) => {
+export type ClockMachine = typeof clockMachine;
+export const clockMachine =
+  ({ id }: TimerContext) =>
+  (sendBack: (e: TimerEvents) => void, recieve: (e: any) => void) => {
     recieve((e: any) => {
       const {
         data: { seconds, minutes, id },
@@ -44,4 +46,3 @@ export function clockMachine({ id }: TimerContext) {
       });
     };
   };
-}
