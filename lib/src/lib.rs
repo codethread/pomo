@@ -43,7 +43,7 @@ impl App {
                 id: time.id.clone(),
                 channel: timer_reciever,
                 time,
-                paused: false,
+                paused: true,
             };
             std::thread::spawn(move || run_timer(t, emitter));
 

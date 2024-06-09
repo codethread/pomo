@@ -1,19 +1,31 @@
-import { IBridge, emptyConfig } from '@shared/types';
+import { IBridge, IClientLogger, emptyConfig } from '@shared/types';
 import { ok } from '@shared/Result';
 import { createStore } from './store';
 import { slackRepository } from './slack';
 import { open } from '@tauri-apps/api/shell';
 import { appWindow } from '@tauri-apps/api/window';
+import { prodClient } from './http';
 
 export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
   // TODO need to handle running in browser with fake bridge
 
-  const logger: Console = console;
+  const logger: IClientLogger = {
+    async warn(...msg) {
+      console.warn(...msg);
+    },
+    async info(...msg) {
+      console.info(...msg);
+    },
+    async error(...msg) {
+      console.error(...msg);
+    },
+  };
   const store = await createStore(logger, {
     name: 'pomo',
     defaults: emptyConfig,
   });
-  const slack = await slackRepository({ logger });
+
+  const slack = slackRepository({ logger, client: await prodClient() });
 
   return {
     ...logger,

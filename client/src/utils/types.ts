@@ -3,12 +3,11 @@ import { Result } from '@shared/Result';
 import { Nodenv } from '@shared/asserts';
 import { ThemeName } from '@client/theme';
 
-export interface ILogger extends Console {
-  info: (...msg: any[]) => void;
-  errorWithContext(context: string): (err: Error | string) => void;
-}
-
-export type IClientLogger = Pick<ILogger, 'error' | 'info' | 'warn'>;
+export type IClientLogger = {
+  info(...msg: any): Promise<void>;
+  warn(...msg: any): Promise<void>;
+  error(...msg: any): Promise<void>;
+};
 
 export type TimerType = keyof UserConfig['timers'];
 
@@ -84,7 +83,7 @@ type SlackErr =
       error: 'invalid_auth';
     };
 
-export type IBridge<T = UserConfig> = {
+export type IBridge<T = UserConfig> = IClientLogger & {
   windowFocus(): Promise<void>;
   setTrayIcon(): Promise<void>;
   setTrayTitle(): Promise<void>;
@@ -96,9 +95,6 @@ export type IBridge<T = UserConfig> = {
   slackSetSnooze(auth: SlackAuth, minutes: number): Promise<Result<SlackOk, SlackErr>>;
   slackEndSnooze(auth: SlackAuth): Promise<Result<SlackOk, SlackErr>>;
   slackSetPresence(auth: SlackAuth, state: 'active' | 'away'): Promise<Result<SlackOk, SlackErr>>;
-  info(): Promise<void>;
-  warn(): Promise<void>;
-  error(): Promise<void>;
   nodenv(): Promise<Result<Nodenv>>;
   isProd(): Promise<Result<boolean>>;
   isTest(): Promise<Result<boolean>>;
@@ -129,6 +125,7 @@ export interface HookContext {
     type: TimerType;
     autoStart: boolean;
     started: boolean;
+    _listnerRef: any;
   };
   config: UserConfig;
   bridge: IBridge;

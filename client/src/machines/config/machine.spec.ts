@@ -10,7 +10,7 @@ import { getActor, actorIds } from '@client/machines';
 import mainModel from '../main/model';
 import configMachineFactory from './machine';
 import { configModel } from './model';
-import { setupBridge } from '@client/bridge/setup';
+import { createFakeBridge } from '@client/testHelpers/createFakeBridge';
 
 const { CONFIG } = actorIds;
 const { UPDATE, RESET } = configModel.events;
@@ -29,7 +29,7 @@ async function runTest(overrides?: TestOverrides) {
     parentEvents: Object.keys(mainModel.events),
     childId: CONFIG,
     childMachine: configMachineFactory({
-      bridge: setupBridge(bridge),
+      bridge: createFakeBridge(bridge),
       configOverride: config && merge(emptyConfig, config),
     }),
   });

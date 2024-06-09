@@ -9,7 +9,9 @@ impl State {
     pub fn new(window: Window) -> Self {
         let emitter = move |e: EventsToClient| match e {
             EventsToClient::Tick(id) => {
-                window.emit_all(&format!("tick_{}", &id), ()).unwrap();
+                if window.is_visible().is_ok_and(|p| p == true) {
+                    window.emit_all(&format!("tick_{}", &id), ()).unwrap();
+                }
             }
             EventsToClient::Complete(id) => {
                 window.show().unwrap();
