@@ -1,4 +1,3 @@
-import { themeMachine } from '@client/machines/theme/machine';
 import { type UpdateTheme } from '@client/theme';
 import { IBridge, TimerHooks, UserConfig } from '@shared/types';
 import { assign, createMachine, forwardTo, InterpreterFrom } from 'xstate';
@@ -27,7 +26,7 @@ const mainMachineFactory = ({ pomodoro, bridge, actions, updateTheme }: IMainMac
       initial: 'active',
       on: {
         CONFIG_LOADED: {
-          actions: [forwardTo(actorIds.POMODORO), forwardTo(actorIds.THEME), 'setLoaded'],
+          actions: [forwardTo(actorIds.POMODORO), 'updateTheme', 'setLoaded'],
         },
         TIMER_PAUSE: { actions: 'onTimerPause' },
         TIMER_PLAY: { actions: 'onTimerPlay' },
@@ -41,22 +40,15 @@ const mainMachineFactory = ({ pomodoro, bridge, actions, updateTheme }: IMainMac
           invoke: [
             { id: actorIds.POMODORO, src: pomodoroMachineFactory(pomodoro) },
             { id: actorIds.CONFIG, src: configMachine({ bridge }) },
-            {
-              id: actorIds.THEME,
-              src: themeMachine.withConfig({
-                actions: {
-                  updateTheme: (_, e) => {
-                    updateTheme(e.data.theme);
-                  },
-                },
-              }),
-            },
           ],
         },
       },
     },
     {
       actions: {
+        updateTheme: (_, e) => {
+          updateTheme(e.data.theme);
+        },
         setLoaded: assign((_, { data }) => ({
           config: data,
           loaded: true,
