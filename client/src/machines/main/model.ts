@@ -1,5 +1,5 @@
 import { createModel } from 'xstate/lib/model';
-import { IBridge, UserConfig } from '@shared/types';
+import { UserConfig } from '@shared/types';
 import { ContextFrom, EventFrom } from 'xstate';
 import { TimerContext } from '../timer/model';
 

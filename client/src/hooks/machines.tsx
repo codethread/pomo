@@ -1,8 +1,7 @@
-import { useActor, useInterpret, useSelector } from '@xstate/react';
-import { createContext, useContext, useEffect } from 'react';
+import { useActor, useSelector } from '@xstate/react';
+import { createContext, useContext } from 'react';
 import {
   actorIds,
-  mainMachine,
   MainService,
   PomodoroActorRef,
   TimerSettingsActorRef,
