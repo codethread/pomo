@@ -17,7 +17,6 @@ export function assertEventType<TE extends EventObject, TType extends TE['type']
   }
 }
 
- 
 export function nullActor(overrides?: Partial<ActorRef<any, any>>): ActorRef<any, any> {
   return {
     id: 'null',
@@ -34,15 +33,9 @@ export function nullActor(overrides?: Partial<ActorRef<any, any>>): ActorRef<any
 /**
  * Get an actor from another actor, not to be used with React's hooks.
  */
-export function getActor<K extends keyof typeof actorIds>(
-   
-  service: any,
-  id: K
-): Actors[K] {
-   
+export function getActor<K extends keyof typeof actorIds>(service: any, id: K): Actors[K] {
   const actor = service.children.get(id) as Actors[K] | undefined;
   if (!actor) {
-     
     throw new ActorError(service, id);
   }
   return actor;

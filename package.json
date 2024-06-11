@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "format:client": "prettier --write --ignore-path .gitignore client",
     "test:client": "vitest --config ./client/vite.config.ts",
+    "check": "pnpm test:client --run && pnpm lint:client && prettier --ignore-path .gitignore client",
     "ts": "tsc --noEmit --project ./client/tsconfig.json"
   },
   "dependencies": {

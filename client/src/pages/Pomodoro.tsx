@@ -13,8 +13,6 @@ export function Pomodoro(): JSX.Element | null {
 
   const title = getTitle(value);
 
-  console.log({ title, duration, value, timerRef: !!timerRef });
-
   return timerRef ? (
     <>
       <Countdown timerRef={timerRef} title={title} duration={duration} />

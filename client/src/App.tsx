@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { inspect } from '@xstate/inspect';
 import { useSelector } from '@xstate/react';
 import { useMachines } from '@client/hooks';

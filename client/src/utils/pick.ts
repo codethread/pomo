@@ -1,4 +1,3 @@
- 
 export function pick<A extends Record<string, any>, B extends keyof A>(
   obj: A,
   keys: B[]

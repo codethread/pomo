@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import { ReactNode, createContext, useContext } from 'react';
 import { IClientLogger } from '@shared/types';
 import { useBridge } from './useBridge';
 
@@ -13,7 +13,7 @@ export const useLogger = (): IClientLogger => {
 };
 
 interface ILoggerProvider {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function LoggerProvider({ children }: ILoggerProvider): JSX.Element {

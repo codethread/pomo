@@ -7,7 +7,6 @@ interface Parent<A> {
   childId: keyof typeof actorIds;
 }
 
- 
 export function parentMachine<A extends AnyStateMachine>({
   childMachine,
   parentEvents,

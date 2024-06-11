@@ -13,7 +13,6 @@ export * from './Checkbox/Checkbox';
 export { default as ErrorBoundary } from './ErrorBoundary/ErrorBoundary';
 export * from './LineBreak';
 export * from './Header/MenuButton';
-export * from './testWrap/testComp';
 export * from './ScrollBar/ScrollBar';
 export * from './Countdown/TimerProgress';
 export * from './Countdown/Countdown';

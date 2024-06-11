@@ -1,7 +1,6 @@
- 
 import { updateTheme } from '@client/theme';
 import { useActor, useInterpret, useSelector } from '@xstate/react';
-import React, { createContext, useContext, useEffect } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 import {
   actorIds,
   mainMachine,
@@ -79,7 +78,6 @@ export const useConfigService = (): ConfigActorRef => {
   return config;
 };
 
- 
 export const usePomodoro = () => {
   const service = usePomodoroService();
   return useActor(service);

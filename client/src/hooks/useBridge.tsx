@@ -1,5 +1,5 @@
 import { IBridge } from '@shared/types';
-import React, { createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
 
 const bridgeContext = createContext<IBridge | null>(null);
 

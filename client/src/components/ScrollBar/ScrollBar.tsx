@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { testWrap } from '../testWrap/testComp';
+import { useEffect, useState } from 'react';
 import './scrollbar.css';
 
-function ScrollBarC(): JSX.Element | null {
+export function ScrollBar(): JSX.Element | null {
   const [showScroll, setShowScroll] = useState(false);
 
   useEffect(() => {
@@ -33,5 +32,3 @@ function ScrollBarC(): JSX.Element | null {
   return null;
   // return showScroll ? <ScrollbarStyle /> : null;
 }
-
-export const ScrollBar = testWrap(ScrollBarC, 'scroll-bar');
