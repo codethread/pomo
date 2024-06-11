@@ -4,17 +4,21 @@ import { PageManager } from '@client/pages';
 import { IBridge } from '@shared/types';
 import { App } from './App';
 import { hooks } from './integrations';
+import { ClockMachine } from './machines/clock/machine';
 
 interface IProviders {
   isDev: boolean;
   bridge: IBridge;
+  services: {
+    clock: ClockMachine;
+  };
 }
 
-export function Providers({ bridge, isDev }: IProviders): JSX.Element {
+export function Providers({ bridge, isDev, services }: IProviders): JSX.Element {
   return (
     <BridgeProvider bridge={bridge}>
       <LoggerProvider>
-        <MachinesProvider hooks={hooks}>
+        <MachinesProvider hooks={hooks} services={services}>
           <ErrorBoundary>
             <ScrollBar />
             <App shouldInspect={isDev}>

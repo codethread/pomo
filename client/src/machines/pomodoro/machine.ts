@@ -14,8 +14,9 @@ import timerMachine from '../timer/machine';
 import timerModel, { TimerContext } from '../timer/model';
 import mainModel from '../main/model';
 import model, { PomodoroEvents, PomodoroModel } from './model';
+import { ClockMachine } from '../clock/machine';
 
-function pomodoroMachine({ context }: IPomodoroMachine) {
+function pomodoroMachine({ context, clock }: IPomodoroMachine) {
   return createMachine(
     {
       id: 'pomodoroMachine',
@@ -44,7 +45,7 @@ function pomodoroMachine({ context }: IPomodoroMachine) {
         pomo: {
           invoke: {
             id: actorIds.TIMER,
-            src: timerMachine,
+            src: timerMachine.withConfig({ services: { clock } }),
             data: ({ timers: { pomo }, autoStart: { beforePomo } }) =>
               ({
                 minutes: pomo,
@@ -69,7 +70,7 @@ function pomodoroMachine({ context }: IPomodoroMachine) {
         short: {
           invoke: {
             id: actorIds.TIMER,
-            src: timerMachine,
+            src: timerMachine.withConfig({ services: { clock } }),
             data: ({ timers: { short }, autoStart: { beforeShortBreak } }) =>
               ({
                 minutes: short,
@@ -90,7 +91,7 @@ function pomodoroMachine({ context }: IPomodoroMachine) {
         long: {
           invoke: {
             id: actorIds.TIMER,
-            src: timerMachine,
+            src: timerMachine.withConfig({ services: { clock } }),
             data: ({ timers: { long }, autoStart: { beforeLongBreak } }) =>
               ({
                 minutes: long,
@@ -160,6 +161,7 @@ export type PomodoroActorRef = ActorRefFrom<PomodoroMachine>;
 
 export interface IPomodoroMachine {
   context?: DeepPartial<ContextFrom<typeof model>>;
+  clock: ClockMachine;
 }
 
 export default pomodoroMachine;

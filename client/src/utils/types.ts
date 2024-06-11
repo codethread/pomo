@@ -4,6 +4,7 @@ import { Nodenv } from '@shared/asserts';
 import { ThemeName } from '@client/theme';
 
 export type IClientLogger = {
+  debug(...msg: any): Promise<void>;
   info(...msg: any): Promise<void>;
   warn(...msg: any): Promise<void>;
   error(...msg: any): Promise<void>;
@@ -85,8 +86,8 @@ type SlackErr =
 
 export type IBridge<T = UserConfig> = IClientLogger & {
   windowFocus(): Promise<void>;
-  setTrayIcon(): Promise<void>;
-  setTrayTitle(): Promise<void>;
+  setTrayIcon(msg: string): Promise<void>;
+  setTrayTitle(msg: string): Promise<void>;
   openExternal(url: string): Promise<void>;
   storeRead(): Promise<Result<T>>;
   storeUpdate(value: DeepPartial<T>): Promise<Result<T>>;
@@ -124,8 +125,6 @@ export interface HookContext {
     seconds: number;
     type: TimerType;
     autoStart: boolean;
-    started: boolean;
-    _listnerRef: any;
   };
   config: UserConfig;
   bridge: IBridge;

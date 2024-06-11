@@ -9,6 +9,7 @@ import { getActor } from '../utils';
 import { createFakeHooks } from '../createFakeHooks';
 import mainMachineFactory, { MainService } from './machine';
 import timerModel from '../timer/model';
+import { fakeClockMachine } from '../clock/fakeClock';
 
 interface Overrides {
   actions?: Partial<TimerHooks>;
@@ -17,7 +18,7 @@ interface Overrides {
 
 function getService(overrides?: Overrides): MainService {
   const machine = mainMachineFactory({
-    pomodoro: {}, // TODO this needs a rename and optional overrides
+    pomodoro: { clock: fakeClockMachine }, // TODO this needs a rename and optional overrides
     bridge: createFakeBridge(),
     actions: { ...createFakeHooks(), ...overrides?.actions },
     configOverride: overrides?.configOverride && merge(emptyConfig, overrides.configOverride),
@@ -121,7 +122,13 @@ describe('mainMachine', () => {
     timerActor.send(START());
 
     expect(hooks.onStartHook).toHaveBeenCalledWith<[HookContext]>({
-      timer: { minutes: pomoDuration, seconds: 0, type: 'pomo', autoStart: false },
+      timer: {
+        minutes: pomoDuration,
+        seconds: 0,
+        type: 'pomo',
+        autoStart: false,
+        id: expect.anything(),
+      },
       bridge: expect.anything(),
       config: expect.anything(),
     });

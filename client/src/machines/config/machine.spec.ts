@@ -4,7 +4,6 @@ import { waitFor } from 'xstate/lib/waitFor';
 import { merge } from '@shared/merge';
 import { err, ok } from '@shared/Result';
 import { DeepPartial, emptyConfig, IBridge, UserConfig } from '@shared/types';
-import { createMockFn } from '@test/createMockFn';
 import { parentMachine } from '@client/machines/testHelpers/machines';
 import { getActor, actorIds } from '@client/machines';
 import mainModel from '../main/model';
@@ -123,7 +122,7 @@ describe('config machine', () => {
   describe('when config is updated', () => {
     it('should update the config and broadcast the change', async () => {
       const updatedConfig = merge(emptyConfig, { timers: { pomo: 222 } });
-      const mock = createMockFn<IBridge['storeUpdate']>().mockResolvedValue(ok(updatedConfig));
+      const mock = vi.fn().mockResolvedValue(ok(updatedConfig));
       const { configMachine, spy } = await runTest({
         bridge: {
           storeRead: async () => ok(merge(emptyConfig, { timers: { pomo: 612 } })),

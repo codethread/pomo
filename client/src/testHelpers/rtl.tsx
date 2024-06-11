@@ -5,8 +5,14 @@ import { BridgeProvider, LoggerProvider, MachinesProvider } from '@client/hooks/
 import { createFakeHooks } from '@client/machines';
 import { createFakeBridge } from '@test/createFakeBridge';
 import { IBridge } from '@shared/types';
-import { render, RenderOptions, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import {
+  render as ogRender,
+  RenderOptions,
+  screen,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import React, { ReactElement } from 'react';
+import { fakeClockMachine } from '@client/machines/clock/fakeClock';
 
 vi.mock('@xstate/inspect');
 
@@ -18,7 +24,7 @@ interface Options {
 async function renderAsync(ui: ReactElement, options?: Options): Promise<Rendered> {
   const { overrides, renderOptions } = options ?? {};
 
-  const view = render(ui, {
+  const view = ogRender(ui, {
     wrapper: ({ children }) => <Providers {...overrides}>{children}</Providers>,
     ...renderOptions,
   });
@@ -29,13 +35,14 @@ async function renderAsync(ui: ReactElement, options?: Options): Promise<Rendere
 }
 
 export * from '@testing-library/react';
-export { renderAsync as render, render as renderNoProviders };
+export const render = renderAsync;
+export const renderNoProviders = ogRender;
 
 //-----------------------------------------------------------------------------
 // PRIVATES
 //-----------------------------------------------------------------------------
 
-type Rendered = ReturnType<typeof render>;
+type Rendered = ReturnType<typeof ogRender>;
 
 interface Overrides {
   bridge?: Partial<IBridge>;
@@ -48,7 +55,10 @@ export function Providers({ children, bridge, hooks }: Overrides): JSX.Element {
     <BridgeProvider bridge={{ ...createFakeBridge(), ...bridge }}>
       <LoggerProvider>
         <ErrorBoundary>
-          <MachinesProvider hooks={{ ...createFakeHooks(), ...hooks }}>
+          <MachinesProvider
+            hooks={{ ...createFakeHooks(), ...hooks }}
+            services={{ clock: fakeClockMachine }}
+          >
             <App shouldInspect={false}>{children}</App>
           </MachinesProvider>
         </ErrorBoundary>

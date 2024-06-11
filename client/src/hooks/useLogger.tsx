@@ -24,6 +24,7 @@ export function LoggerProvider({ children }: ILoggerProvider): JSX.Element {
         info: bridge.info,
         error: bridge.error,
         warn: bridge.warn,
+        debug: bridge.debug,
       }}
     >
       {children}

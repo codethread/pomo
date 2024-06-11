@@ -20,7 +20,7 @@
     "noFallthroughCasesInSwitch": true,
 
     /* test only */
-    /* "types": ["vitest/globals"], */
+    "types": ["vitest/globals"],
 
     "baseUrl": "./",
     "paths": {

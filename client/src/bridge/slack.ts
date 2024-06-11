@@ -52,7 +52,7 @@ export const slackRepository = ({ logger, client }: SlackParams): SlackRepositor
 
   return {
     async slackSetProfile(auth, { text, emoji, expiration }) {
-      console.log({ auth });
+      logger.debug({ auth });
       return slackReq<SlackOk>(
         '/users.profile.set',
         {
@@ -81,7 +81,7 @@ export const slackRepository = ({ logger, client }: SlackParams): SlackRepositor
   };
 };
 
-function slackClient(logger: ILogger, client: HttpClient) {
+function slackClient(logger: IClientLogger, client: HttpClient) {
   return async function slackReq<A extends SlackOk>(
     path: string,
     payload: any,

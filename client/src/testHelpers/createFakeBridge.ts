@@ -6,15 +6,10 @@ import { IBridge, IClientLogger, emptyConfig } from '@shared/types';
 
 export function createFakeBridge(overrides?: Partial<IBridge>): IBridge {
   const logger: IClientLogger = {
-    async warn(...msg) {
-      console.warn(...msg);
-    },
-    async info(...msg) {
-      console.info(...msg);
-    },
-    async error(...msg) {
-      console.error(...msg);
-    },
+    async debug() {},
+    async warn() {},
+    async info() {},
+    async error() {},
   };
 
   const store = fakeStoreRepoFactory({

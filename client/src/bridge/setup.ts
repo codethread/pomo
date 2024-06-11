@@ -7,9 +7,10 @@ import { appWindow } from '@tauri-apps/api/window';
 import { prodClient } from './http';
 
 export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
-  // TODO need to handle running in browser with fake bridge
-
   const logger: IClientLogger = {
+    async debug(...msg) {
+      console.debug(...msg);
+    },
     async warn(...msg) {
       console.warn(...msg);
     },
@@ -20,6 +21,7 @@ export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
       console.error(...msg);
     },
   };
+
   const store = await createStore(logger, {
     name: 'pomo',
     defaults: emptyConfig,

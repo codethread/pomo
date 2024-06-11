@@ -14,6 +14,7 @@ import {
 } from '@client/machines';
 import { TimerHooks } from '@shared/types';
 import { useBridge } from './useBridge';
+import { ClockMachine } from '@client/machines/clock/machine';
 
 const machinesConfig = createContext<MainService | null>(null);
 
@@ -22,18 +23,31 @@ const { Provider } = machinesConfig;
 export interface IMachinesProvider {
   children: React.ReactNode;
   hooks: TimerHooks;
+  services: {
+    clock: ClockMachine;
+  };
 }
 
-export function MachinesProvider({ children, hooks }: IMachinesProvider): JSX.Element {
+export function MachinesProvider({ children, hooks, services }: IMachinesProvider): JSX.Element {
   const bridge = useBridge();
 
   useEffect(() => {
     bridge.info('client starting');
   }, [bridge]);
 
-  const main = useInterpret(mainMachine({ bridge, actions: hooks, pomodoro: {}, updateTheme }), {
-    devTools: true,
-  });
+  const main = useInterpret(
+    mainMachine({
+      bridge,
+      actions: hooks,
+      pomodoro: {
+        clock: services.clock,
+      },
+      updateTheme,
+    }),
+    {
+      devTools: true,
+    }
+  );
 
   return <Provider value={main}>{children}</Provider>;
 }

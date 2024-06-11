@@ -1,6 +1,6 @@
-import type { ClockMachine } from '../machine';
+import type { ClockMachine } from './machine';
 
-export const clockMachine: ClockMachine = () => {
+export const fakeClockMachine: ClockMachine = () => {
   let timer: NodeJS.Timeout | undefined = undefined;
   const stopTimer = () => {
     if (timer) clearInterval(timer);
