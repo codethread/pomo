@@ -8,7 +8,7 @@ import {
 } from '@client/components';
 import { EyeClosed, EyeOpen } from '@client/components/Icons';
 import { IChildren } from '@shared/types';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { IInputText, InputText } from '../Inputs';
 
 interface IFormCheckbox extends IFormItem {

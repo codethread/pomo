@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import { useState, ReactNode } from 'react';
 import './checkbox.css';
 
 export interface ICheckbox {
@@ -7,7 +7,7 @@ export interface ICheckbox {
   initiallyChecked: boolean;
   hasError?: boolean;
   disabled?: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
   ariaLabel?: string;
   className?: string;
   onChange(checked: boolean): void;

@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function pick<A extends Record<string, any>, B extends keyof A>(
   obj: A,
   keys: B[]

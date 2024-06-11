@@ -1,6 +1,6 @@
 import { FormItemCheckbox } from '@client/components/Form/FormItem';
 import { useConfig } from '@client/hooks';
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { useActor } from '@xstate/react';
 import T from '@client/copy';
 import { Button, FormItemNumber } from '@client/components';

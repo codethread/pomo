@@ -1,14 +1,16 @@
-import MockDate from 'mockdate';
+// import MockDate from 'mockdate';
 import { timeInFuture } from './clock';
 
 describe('clock', () => {
   describe('timeInFuture', () => {
     beforeEach(() => {
-      MockDate.set('Jan 01, 2000 10:00:00');
+      // MockDate.set('Jan 01, 2000 10:00:00');
+      vi.setSystemTime(new Date('Jan 01, 2000 10:00:00'));
     });
 
     afterEach(() => {
-      MockDate.reset();
+      // MockDate.reset();
+      vi.useRealTimers();
     });
 
     interface Test {

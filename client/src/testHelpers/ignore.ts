@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Mock } from 'vitest';
 /**
  * Disable console.warn for each provided msgs regexp.

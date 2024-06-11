@@ -1,16 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { interpret } from 'xstate';
 import { waitFor } from 'xstate/lib/waitFor';
 import { merge } from '@shared/merge';
 import { err, ok } from '@shared/Result';
 import { DeepPartial, emptyConfig, IBridge, UserConfig } from '@shared/types';
-import { createMockFn } from '@test/createMockFn';
 import { parentMachine } from '@client/machines/testHelpers/machines';
 import { getActor, actorIds } from '@client/machines';
 import mainModel from '../main/model';
 import configMachineFactory from './machine';
 import { configModel } from './model';
-import { setupBridge } from '@client/bridge/setup';
+import { createFakeBridge } from '@client/testHelpers/createFakeBridge';
 
 const { CONFIG } = actorIds;
 const { UPDATE, RESET } = configModel.events;
@@ -29,7 +27,7 @@ async function runTest(overrides?: TestOverrides) {
     parentEvents: Object.keys(mainModel.events),
     childId: CONFIG,
     childMachine: configMachineFactory({
-      bridge: setupBridge(bridge),
+      bridge: createFakeBridge(bridge),
       configOverride: config && merge(emptyConfig, config),
     }),
   });
@@ -123,7 +121,7 @@ describe('config machine', () => {
   describe('when config is updated', () => {
     it('should update the config and broadcast the change', async () => {
       const updatedConfig = merge(emptyConfig, { timers: { pomo: 222 } });
-      const mock = createMockFn<IBridge['storeUpdate']>().mockResolvedValue(ok(updatedConfig));
+      const mock = vi.fn().mockResolvedValue(ok(updatedConfig));
       const { configMachine, spy } = await runTest({
         bridge: {
           storeRead: async () => ok(merge(emptyConfig, { timers: { pomo: 612 } })),

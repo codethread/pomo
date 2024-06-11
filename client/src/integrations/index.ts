@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
 import { HookContext, TimerHooks } from '@shared/types';
 import { osHooks } from './os';
 import { slackHooks } from './slack';

@@ -1,5 +1,5 @@
 import { Box, Checkbox } from '@client/components';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 interface ISettingCommon {
   heading: string;

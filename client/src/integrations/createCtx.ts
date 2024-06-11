@@ -1,6 +1,9 @@
 import { merge } from '@shared/merge';
-import { DeepPartial, emptyConfig, HookContext } from '@shared/types';
-import { createFakeBridge, Spies } from '@client/testHelpers/createFakeBridge';
+import { DeepPartial, emptyConfig, HookContext, IBridge } from '@shared/types';
+import { createFakeBridge } from '@client/testHelpers/createFakeBridge';
+import { Mock } from 'vitest';
+
+type Spies = Record<keyof IBridge, Mock>;
 
 export interface TestSetup {
   ctx: HookContext;
@@ -8,7 +11,16 @@ export interface TestSetup {
 }
 
 export function createCtx(overrides?: DeepPartial<HookContext>): TestSetup {
-  const spies = createFakeBridge();
+  const bridge = createFakeBridge();
+  const spies = {
+    ...Object.keys(bridge).reduce(
+      (acc, cur) => ({
+        ...acc,
+        [cur]: vi.fn(),
+      }),
+      {} as Spies
+    ),
+  };
 
   const config = merge(
     emptyConfig,
@@ -28,6 +40,7 @@ export function createCtx(overrides?: DeepPartial<HookContext>): TestSetup {
     bridge: spies,
     config,
     timer: {
+      id: 'ctx id',
       autoStart: false,
       minutes: 17,
       seconds: 3,

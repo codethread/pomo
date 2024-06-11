@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/consistent-type-assertions, @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type */
-import { updateTheme } from '@client/theme';
 import { useActor, useInterpret, useSelector } from '@xstate/react';
-import React, { createContext, useContext, useEffect } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 import {
   actorIds,
   mainMachine,
@@ -12,31 +10,8 @@ import {
   ConfigActorRef,
   ActorError,
 } from '@client/machines';
-import { TimerHooks } from '@shared/types';
-import { useBridge } from './useBridge';
 
-const machinesConfig = createContext<MainService | null>(null);
-
-const { Provider } = machinesConfig;
-
-export interface IMachinesProvider {
-  children: React.ReactNode;
-  hooks: TimerHooks;
-}
-
-export function MachinesProvider({ children, hooks }: IMachinesProvider): JSX.Element {
-  const bridge = useBridge();
-
-  useEffect(() => {
-    bridge.info('client starting');
-  }, [bridge]);
-
-  const main = useInterpret(mainMachine({ bridge, actions: hooks, pomodoro: {}, updateTheme }), {
-    devTools: true,
-  });
-
-  return <Provider value={main}>{children}</Provider>;
-}
+export const machinesConfig = createContext<MainService | null>(null);
 
 export const useMachines = (): MainService => {
   const context = useContext(machinesConfig);
@@ -65,7 +40,6 @@ export const useConfigService = (): ConfigActorRef => {
   return config;
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
 export const usePomodoro = () => {
   const service = usePomodoroService();
   return useActor(service);

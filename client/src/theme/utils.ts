@@ -66,7 +66,7 @@ function setColors(values: Record<string, ThemeValue>, _?: { strict: true }): vo
  */
 function setPalette(values: Record<Palette, ThemeVarValue>, options: { strict: true }): void;
 function setPalette(values: Partial<Record<Palette, ThemeVarValue>>): void;
-function setPalette(values: Record<string, ThemeVarValue>, options?: { strict: true }): void {
+function setPalette(values: Record<string, ThemeVarValue>, _?: { strict: true }): void {
   const r = getRoot();
   Object.entries(values).forEach(([col, val]) => {
     r.setProperty(col, val);

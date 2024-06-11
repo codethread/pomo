@@ -1,9 +1,6 @@
-import { ActorRefFrom, assign, createMachine } from 'xstate';
-import { sendParent } from 'xstate/lib/actions';
+import { ActorRefFrom, assign, createMachine, sendParent, sendTo } from 'xstate';
 import pomodoroModel from '../pomodoro/model';
 import model, { TimerContext, TimerEvents } from './model';
-import { listen, once } from '@tauri-apps/api/event';
-import { invoke } from '@tauri-apps/api';
 
 const timerMachine = createMachine(
   {
@@ -15,8 +12,13 @@ const timerMachine = createMachine(
       context: {} as TimerContext,
     },
     context: model.initialContext,
+    invoke: {
+      id: 'clock',
+      src: 'clock',
+    },
     states: {
       ready: {
+        entry: ['createTimer'],
         always: [{ cond: 'shouldAutoStart', target: 'playing' }],
         on: {
           START: { target: 'playing' },
@@ -25,29 +27,20 @@ const timerMachine = createMachine(
         exit: 'onStartHook',
       },
       playing: {
-        invoke: {
-          id: 'updater',
-          src: 'updater',
-        },
+        entry: ['startTimer'],
         on: {
           _TICK: [
             { cond: 'isTimerFinished', target: 'complete' },
-            { actions: ['updateTimer', 'onTickHook', 'updatedStarted'] },
+            { actions: ['updateTimer', 'onTickHook'] },
           ],
+          _COMPLETE: 'complete',
           FORCE_UPDATE: { actions: 'updateNow' },
           PAUSE: 'paused',
           STOP: 'stopped',
         },
       },
       paused: {
-        invoke: {
-          id: 'pauser',
-          src:
-            ({ id }) =>
-            () =>
-              invoke('pause', { id }),
-        },
-        entry: ['onPauseHook'],
+        entry: ['pauseTimer', 'onPauseHook'],
         on: {
           PLAY: { target: 'playing', actions: ['onPlayHook'] },
           STOP: 'stopped',
@@ -58,50 +51,14 @@ const timerMachine = createMachine(
         type: 'final',
       },
       stopped: {
-        invoke: {
-          id: 'stopper',
-          src:
-            ({ id }) =>
-            () =>
-              invoke('stop', { id }),
-        },
-        entry: ['onStopHook'],
+        entry: ['stopTimer', 'onStopHook'],
         type: 'final',
       },
     },
   },
   {
-    services: {
-      updater:
-        ({ seconds, minutes, id, started }) =>
-        async (sendBack) => {
-          console.log({ seconds, minutes, id, started });
-          let list: any = [];
-          if (started) {
-            invoke('play', { id });
-          } else {
-            invoke('start', { seconds, minutes, timerid: id });
-
-            const t = await Promise.all([
-              once(`setTime_${id}`, (e: any) => {
-                sendBack({
-                  type: 'FORCE_UPDATE',
-                  seconds: e.payload.seconds as number,
-                  minutes: e.payload.minutes as number,
-                });
-              }),
-              listen(`tick_${id}`, () => {
-                sendBack('_TICK');
-              }),
-            ]);
-            list.push(...t);
-          }
-
-          return () => list.forEach((c) => c());
-        },
-    },
     guards: {
-      isTimerFinished: ({ minutes, seconds }) => minutes === 0 && seconds === 1,
+      isTimerFinished: ({ minutes, seconds }) => minutes === 0 && seconds <= 1,
 
       shouldAutoStart: ({ autoStart }) => autoStart,
     },
@@ -117,9 +74,6 @@ const timerMachine = createMachine(
       updateTimerConfig: assign({
         minutes: (_, { data }) => data,
       }),
-      updatedStarted: assign({
-        started: () => true,
-      }),
 
       onStartHook: sendParent((c) => pomodoroModel.events.TIMER_START(c)),
       onPauseHook: sendParent((c) => pomodoroModel.events.TIMER_PAUSE(c)),
@@ -127,6 +81,11 @@ const timerMachine = createMachine(
       onStopHook: sendParent((c) => pomodoroModel.events.TIMER_STOPPED(c)),
       onTickHook: sendParent((c) => pomodoroModel.events.TIMER_TICK(c)),
       onCompleteHook: sendParent((c) => pomodoroModel.events.TIMER_COMPLETE(c)),
+
+      createTimer: sendTo('clock', (c) => ({ type: 'create', data: c })),
+      startTimer: sendTo('clock', (c) => ({ type: 'play', data: c })),
+      pauseTimer: sendTo('clock', (c) => ({ type: 'pause', data: c })),
+      stopTimer: sendTo('clock', (c) => ({ type: 'stop', data: c })),
     },
   }
 );

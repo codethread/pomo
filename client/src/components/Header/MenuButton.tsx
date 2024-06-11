@@ -1,5 +1,4 @@
-import React, { MouseEventHandler } from 'react';
-import { testWrap } from '../testWrap/testComp';
+import { MouseEventHandler } from 'react';
 import './menuButton.css';
 
 interface IBar {
@@ -15,7 +14,7 @@ interface IHamburgerC {
   showClose: boolean;
 }
 
-function HamburgerC({ showClose }: IHamburgerC): JSX.Element {
+function Hamburger({ showClose }: IHamburgerC): JSX.Element {
   return (
     <div
       aria-hidden
@@ -31,8 +30,6 @@ function HamburgerC({ showClose }: IHamburgerC): JSX.Element {
     </div>
   );
 }
-
-const Hamburger = testWrap(HamburgerC, 'hamburger');
 
 interface IMenuButton {
   onClick: MouseEventHandler<HTMLButtonElement>;

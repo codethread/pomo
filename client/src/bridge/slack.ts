@@ -1,6 +1,6 @@
 import { err, ok, Result } from '@shared/Result';
-import { ILogger } from '@shared/types';
-import { getClient, Client, Body } from '@tauri-apps/api/http';
+import { HttpClient, httpJson } from './http';
+import { IClientLogger } from '@shared/types';
 
 export interface SlackAuth {
   domain: string;
@@ -43,16 +43,16 @@ export interface SlackRepository {
 }
 
 interface SlackParams {
-  logger: ILogger;
+  logger: IClientLogger;
+  client: HttpClient;
 }
 
-export const slackRepository = async ({ logger }: SlackParams): Promise<SlackRepository> => {
-  const client = await getClient();
+export const slackRepository = ({ logger, client }: SlackParams): SlackRepository => {
   const slackReq = slackClient(logger, client);
 
   return {
     async slackSetProfile(auth, { text, emoji, expiration }) {
-      console.log({ auth });
+      logger.debug({ auth });
       return slackReq<SlackOk>(
         '/users.profile.set',
         {
@@ -81,19 +81,17 @@ export const slackRepository = async ({ logger }: SlackParams): Promise<SlackRep
   };
 };
 
-function slackClient(logger: ILogger, client: Client) {
+function slackClient(logger: IClientLogger, client: HttpClient) {
   return async function slackReq<A extends SlackOk>(
     path: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     payload: any,
     auth: SlackAuth
   ): Promise<Result<A, SlackErr>> {
     try {
       const { dCookie, dSCookie, token, domain } = auth;
-      console.log({ auth });
       const res = await client.post<A | SlackErr>(
         `https://${domain}.slack.com/api${path}`,
-        Body.json(payload),
+        httpJson(payload),
         {
           headers: {
             authorization: `Bearer ${token}`,
@@ -106,11 +104,10 @@ function slackClient(logger: ILogger, client: Client) {
           },
         }
       );
-      console.log(res);
 
-      // logger.info(`SLACK -->`, res.requestUrl, JSON.stringify(payload));
-      // logger.info('SLACK <--', res.body);
-      // return res.body.ok ? ok(res.body) : err(res.body);
+      logger.info(`SLACK -->`, res.url, JSON.stringify(payload));
+      logger.info('SLACK <--', res.data);
+      return (res.ok ? ok(res.data) : err(res.data)) as any;
     } catch (e: unknown) {
       logger.error(e);
       return err<SlackErr, A>({ ok: false, error: 'connection_error' });

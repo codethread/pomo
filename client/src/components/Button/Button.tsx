@@ -1,8 +1,7 @@
-/* eslint-disable react/button-has-type */
 import { assertUnreachable } from '@shared/asserts';
 import { IChildren } from '@shared/types';
 import classNames from 'classnames';
-import React, { ButtonHTMLAttributes } from 'react';
+import { ButtonHTMLAttributes } from 'react';
 import './button.css';
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &

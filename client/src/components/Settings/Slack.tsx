@@ -1,7 +1,7 @@
 import { Button, FormItemPassword } from '@client/components';
 import { FormItemCheckbox, FormItemText } from '@client/components/Form/FormItem';
 import { useBridge, useConfig } from '@client/hooks';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Setting } from './Setting';
 
 export function Slack(): JSX.Element | null {

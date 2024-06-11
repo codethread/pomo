@@ -7,7 +7,6 @@ interface Parent<A> {
   childId: keyof typeof actorIds;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parentMachine<A extends AnyStateMachine>({
   childMachine,
   parentEvents,

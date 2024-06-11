@@ -115,7 +115,7 @@ export default function configMachine({ bridge, configOverride }: IConfigMachine
           }
 
           const r = await bridge.storeRead();
-          console.log({ r });
+          bridge.debug({ storeRead: r });
           return r.match({
             Ok: (config) => config,
             Err: (e) => {

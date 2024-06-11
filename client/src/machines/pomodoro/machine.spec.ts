@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { merge } from '@shared/merge';
 import { emptyConfig, UserConfig } from '@shared/types';
 import { ticks } from '@test/tick';
@@ -9,13 +8,14 @@ import timerModel from '../timer/model';
 import { getActor } from '../utils';
 import pomodoroMachineFactory, { IPomodoroMachine } from './machine';
 import pomodoroModel from './model';
+import { fakeClockMachine } from '../clock/fakeClock';
 
 const { POMODORO, TIMER } = actorIds;
 const { CONFIG_LOADED } = pomodoroModel.events;
 const { PAUSE, PLAY, START, STOP } = timerModel.events;
 const parentEvents = Object.keys(mainModel.events);
 
-interface TestOverrides extends IPomodoroMachine {
+interface TestOverrides extends Omit<IPomodoroMachine, 'clock'> {
   /**
    * Don't wait for the machine to have left the 'loading' state
    */
@@ -34,11 +34,11 @@ function runTest(overrides?: TestOverrides) {
       states: {
         running: {
           on: Object.fromEntries(
-            parentEvents.map((e) => [e, { actions: (ctx, event) => spy({ ctx, event }) }])
-          ),
+            parentEvents.map((e) => [e, { actions: (ctx: any, event: any) => spy({ ctx, event }) }])
+          ) as any,
           invoke: {
             id: POMODORO,
-            src: pomodoroMachineFactory({ context }),
+            src: pomodoroMachineFactory({ context, clock: fakeClockMachine }),
           },
         },
       },
@@ -388,7 +388,7 @@ describe('pomodoro machine', () => {
         const res = runTest({ config });
         const { getTimerMachine } = res;
 
-        repeat(config.longBreakEvery - 1, (c) => {
+        repeat(config.longBreakEvery - 1, () => {
           getTimerMachine().send(START());
           // wait for timer to complete
           ticks(60);
@@ -535,7 +535,7 @@ function repeat(count: number, cb: (iteration: number) => void): void {
   let c = 1;
   while (c <= count) {
     cb(c);
-    // eslint-disable-next-line no-plusplus
+
     c++;
   }
 }

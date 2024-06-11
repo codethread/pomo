@@ -1,5 +1,4 @@
-import { SlackAuth } from '@electron/repositories/slack/slack';
-import { TimerHooks, UserConfig } from '@shared/types';
+import { SlackAuth, TimerHooks, UserConfig } from '@shared/types';
 import { timeInFuture } from './clock';
 
 export const slackHooks: TimerHooks = {

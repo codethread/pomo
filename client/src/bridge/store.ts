@@ -1,7 +1,7 @@
 import { Result, ok } from '@shared/Result';
 import mergeMutate from 'lodash.merge';
 import { merge } from '@shared/merge';
-import { DeepPartial } from '@shared/types';
+import { DeepPartial, IClientLogger } from '@shared/types';
 import { Store } from 'tauri-plugin-store-api';
 
 interface StoreConfig<T> {
@@ -17,7 +17,7 @@ export interface StoreRepository<T> {
 const KEY = 'store';
 
 export async function createStore<T>(
-  logger: Console,
+  logger: IClientLogger,
   storeConfig: StoreConfig<T>
 ): Promise<StoreRepository<T>> {
   // TODO: update with zod later
