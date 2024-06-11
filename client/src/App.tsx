@@ -15,7 +15,7 @@ export function App({ children, shouldInspect }: IApp): JSX.Element {
         iframe: false,
       });
     }
-  });
+  }, [shouldInspect]);
   const main = useMachines();
   const loaded = useSelector(main, (c) => c.context.loaded);
 

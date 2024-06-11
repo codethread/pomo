@@ -5,7 +5,6 @@ import { PauseIcon, PlayIcon, StopIcon } from '@heroicons/react/solid';
 import { displayNum } from '@shared/format';
 import { useActor } from '@xstate/react';
 import './countdown.css';
-import { invoke } from '@tauri-apps/api';
 
 export interface ICountdown {
   timerRef: TimerActorRef;

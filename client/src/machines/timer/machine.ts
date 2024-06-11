@@ -1,7 +1,6 @@
 import { ActorRefFrom, assign, createMachine, sendParent, sendTo } from 'xstate';
 import pomodoroModel from '../pomodoro/model';
 import model, { TimerContext, TimerEvents } from './model';
-import { clockMachine } from '../clock/machine';
 
 const timerMachine = createMachine(
   {
@@ -87,9 +86,6 @@ const timerMachine = createMachine(
       startTimer: sendTo('clock', (c) => ({ type: 'play', data: c })),
       pauseTimer: sendTo('clock', (c) => ({ type: 'pause', data: c })),
       stopTimer: sendTo('clock', (c) => ({ type: 'stop', data: c })),
-    },
-    services: {
-      clock: clockMachine,
     },
   }
 );
