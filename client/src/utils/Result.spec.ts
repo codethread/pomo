@@ -55,7 +55,7 @@ describe('Result', () => {
       const okResult = ok(' data ') as Result<string>;
 
       // @ts-expect-error this should error before the type narrowing
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+       
       okResult.val.trim();
 
       if (isOk(okResult)) {
@@ -67,7 +67,7 @@ describe('Result', () => {
       const errResult = err('fail') as Result<string>;
 
       // @ts-expect-error this should error before the type narrowing
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+       
       errResult.reason.trim();
 
       if (isErr(errResult)) {

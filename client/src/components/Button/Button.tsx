@@ -1,4 +1,4 @@
-/* eslint-disable react/button-has-type */
+ 
 import { assertUnreachable } from '@shared/asserts';
 import { IChildren } from '@shared/types';
 import classNames from 'classnames';

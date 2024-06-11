@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 /**
  * Recursively Object.freeze() on objects and functions

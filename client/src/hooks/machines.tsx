@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/consistent-type-assertions, @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type */
+ 
 import { updateTheme } from '@client/theme';
 import { useActor, useInterpret, useSelector } from '@xstate/react';
 import React, { createContext, useContext, useEffect } from 'react';
@@ -79,7 +79,7 @@ export const useConfigService = (): ConfigActorRef => {
   return config;
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
+ 
 export const usePomodoro = () => {
   const service = usePomodoroService();
   return useActor(service);

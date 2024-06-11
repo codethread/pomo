@@ -17,7 +17,7 @@ export function assertEventType<TE extends EventObject, TType extends TE['type']
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export function nullActor(overrides?: Partial<ActorRef<any, any>>): ActorRef<any, any> {
   return {
     id: 'null',
@@ -35,14 +35,14 @@ export function nullActor(overrides?: Partial<ActorRef<any, any>>): ActorRef<any
  * Get an actor from another actor, not to be used with React's hooks.
  */
 export function getActor<K extends keyof typeof actorIds>(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   service: any,
   id: K
 ): Actors[K] {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+   
   const actor = service.children.get(id) as Actors[K] | undefined;
   if (!actor) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+     
     throw new ActorError(service, id);
   }
   return actor;

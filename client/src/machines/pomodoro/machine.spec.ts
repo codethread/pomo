@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+ 
 import { merge } from '@shared/merge';
 import { emptyConfig, UserConfig } from '@shared/types';
 import { ticks } from '@test/tick';
@@ -536,7 +536,7 @@ function repeat(count: number, cb: (iteration: number) => void): void {
   let c = 1;
   while (c <= count) {
     cb(c);
-    // eslint-disable-next-line no-plusplus
+     
     c++;
   }
 }
