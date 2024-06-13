@@ -165,3 +165,7 @@ export interface TimerHooks {
 export interface IChildren {
   children: React.ReactNode;
 }
+
+export type ICss = {
+  className?: string;
+};
