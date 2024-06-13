@@ -104,7 +104,7 @@ export type IBridge<T = UserConfig> = IClientLogger & {
   isTest(): Promise<Result<boolean>>;
   isDev(): Promise<Result<boolean>>;
   isIntegration(): Promise<Result<boolean>>;
-  statsTimerComplete(duration: number, timestamp?: string): Promise<void>;
+  statsTimerComplete(duration: number, stat: StatType, timestamp?: string): Promise<void>;
   statsRead(): Promise<Stats>;
 };
 

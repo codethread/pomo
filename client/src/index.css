@@ -61,6 +61,10 @@
   --color-good: 163 190 140;
 }
 
+body {
+  @apply bg-thmBackground;
+}
+
 input {
   background-color: transparent;
   width: 100%;

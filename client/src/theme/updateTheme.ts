@@ -1,10 +1,10 @@
 import { themers } from '@client/theme/utils';
 import { assertUnreachable } from '@shared/asserts';
-import { nord, nordLight } from './themes/nord';
+import { nord, nordLight, rosePine } from './themes/nord';
 import { oneDark } from './themes/oneDark';
 import { themeReset } from './themes/themeReset';
 
-export const themes = ['nord', 'nord-light', 'one-dark'] as const;
+export const themes = ['nord', 'nord-light', 'one-dark', 'rose-pine'] as const;
 
 export function updateTheme(theme: ThemeName): void {
   themeReset(themers);
@@ -16,6 +16,8 @@ export function updateTheme(theme: ThemeName): void {
       return nord(themers);
     case 'one-dark':
       return oneDark(themers);
+    case 'rose-pine':
+      return rosePine(themers);
     default:
       return assertUnreachable(theme);
   }
