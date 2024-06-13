@@ -2,7 +2,7 @@ on:
   - pull_request
 
 jobs:
-  cache-and-install:
+  checks:
     runs-on: ubuntu-latest
 
     steps:
