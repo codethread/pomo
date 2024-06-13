@@ -8,6 +8,14 @@ def main [--major] {
     exit 1
   }
 
+  let branch = git rev-parse --abbrev-ref HEAD
+  if $branch != "main" {
+    print "need to be on main branch"
+    exit 1
+  }
+
+  git pull
+
   open $confile
     | update package.version { |p| 
       let v = ($p.package.version | parse "{maj}.{min}.{pat}" | first)
