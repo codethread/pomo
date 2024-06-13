@@ -1,6 +1,7 @@
 import { HookContext, TimerHooks } from '@shared/types';
 import { osHooks } from './os';
 import { slackHooks } from './slack';
+import { statHooks } from './stats';
 
 export const hooks = createHooks();
 
@@ -31,6 +32,7 @@ function createHooks(): TimerHooks {
 
         slackHooks[hook](ctx);
         osHooks[hook](ctx);
+        statHooks[hook](ctx);
 
         //-----------------------------------------------------------------------------
       },

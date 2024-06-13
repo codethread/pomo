@@ -17,19 +17,20 @@ export function InputText({
   ...props
 }: IInputText): JSX.Element {
   return (
-    <input
-      data-error={hasError}
-      className={classNames('input', className)}
-      id={id}
-      type="text"
-      {...(hasError && {
-        'aria-describedby': `${id}-error`,
-      })}
-      value={value}
-      onChange={({ target: { value: n } }) => {
-        onChange(n);
-      }}
-      {...props}
-    />
+    <div className={classNames('input', className)} data-error={hasError}>
+      <input
+        className="w-100%"
+        id={id}
+        type="text"
+        {...(hasError && {
+          'aria-describedby': `${id}-error`,
+        })}
+        value={value}
+        onChange={({ target: { value: n } }) => {
+          onChange(n);
+        }}
+        {...props}
+      />
+    </div>
   );
 }

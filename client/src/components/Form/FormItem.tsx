@@ -117,7 +117,7 @@ export function FormItem({
 }: IChildren & IFormItem): JSX.Element {
   const id = _id ?? `${label}form-input`;
   return (
-    <div className="flex max-w-md flex-col gap-1">
+    <div className="flex flex-1 max-w-md flex-col gap-1">
       <label htmlFor={id} aria-label={ariaLabel}>
         {label}
       </label>

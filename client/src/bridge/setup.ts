@@ -1,4 +1,4 @@
-import { IBridge, IClientLogger, emptyConfig } from '@shared/types';
+import { IBridge, IClientLogger, emptyConfig, emptyStats } from '@shared/types';
 import { ok } from '@shared/Result';
 import { createStore } from './store';
 import { slackRepository } from './slack';
@@ -23,8 +23,13 @@ export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
   };
 
   const store = await createStore(logger, {
-    name: 'pomo',
+    name: 'store',
     defaults: emptyConfig,
+  });
+
+  const stats = await createStore(logger, {
+    name: 'stats',
+    defaults: emptyStats,
   });
 
   const slack = slackRepository({ logger, client: await prodClient() });
@@ -56,6 +61,14 @@ export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
     },
     async isIntegration() {
       return ok(true);
+    },
+    async statsTimerComplete(duration, timestamp) {
+      stats.storeUpdate({
+        completed: [{ duration, timestamp: timestamp ?? new Date().toISOString() }],
+      });
+    },
+    async statsRead() {
+      return stats.storeRead().then((r) => r.expect('could not read stats'));
     },
     ...bridge,
   };

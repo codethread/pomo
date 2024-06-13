@@ -4,8 +4,8 @@ import {
   ChatAlt2Icon,
   ChevronRightIcon,
   ClockIcon,
-  EmojiHappyIcon,
   PencilIcon,
+  ChartPieIcon,
 } from '@heroicons/react/solid';
 import { Button } from '@client/components';
 
@@ -22,6 +22,7 @@ export function Navigation({ onNavigate, page }: INavigation): JSX.Element {
         <NavItem onNavigate={onNavigate} page={page} name="Slack Settings" Icon={ChatAlt2Icon} />
         <NavItem onNavigate={onNavigate} page={page} name="Timer Settings" Icon={AdjustmentsIcon} />
         <NavItem onNavigate={onNavigate} page={page} name="Theme Settings" Icon={PencilIcon} />
+        <NavItem onNavigate={onNavigate} page={page} name="Stats" Icon={ChartPieIcon} />
       </ul>
     </div>
   );

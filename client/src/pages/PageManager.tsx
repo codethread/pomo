@@ -4,8 +4,9 @@ import { assertUnreachable } from '@shared/asserts';
 import { useReducer } from 'react';
 import { Navigation } from './Navigation';
 import { Pomodoro } from './Pomodoro';
+import { Stats } from './Stats';
 
-export type Pages = 'Slack Settings' | 'Theme Settings' | 'Timer Settings' | 'Timer';
+export type Pages = 'Slack Settings' | 'Theme Settings' | 'Timer Settings' | 'Timer' | 'Stats';
 
 export interface IPageManager {
   initialPage?: Pages;
@@ -52,6 +53,8 @@ function Page({ page }: { page: Pages }): JSX.Element {
       return <Slack />;
     case 'Theme Settings':
       return <Theme />;
+    case 'Stats':
+      return <Stats />;
     default:
       return assertUnreachable(page);
   }

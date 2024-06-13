@@ -28,6 +28,10 @@ export const emptyConfig: UserConfig = {
   theme: 'nord',
 };
 
+export const emptyStats: Stats = {
+  completed: [],
+};
+
 export interface UserConfig {
   timers: {
     pomo: number;
@@ -100,7 +104,18 @@ export type IBridge<T = UserConfig> = IClientLogger & {
   isTest(): Promise<Result<boolean>>;
   isDev(): Promise<Result<boolean>>;
   isIntegration(): Promise<Result<boolean>>;
+  statsTimerComplete(duration: number, timestamp?: string): Promise<void>;
+  statsRead(): Promise<Stats>;
 };
+
+export interface Stats {
+  completed: Array<{
+    timestamp: string;
+    /** seconds of work done */
+    duration: number;
+    /** count of pomodoros done */
+  }>;
+}
 
 export type Partial2Deep<T> = {
   [P in keyof T]?: Partial<T[P]>;

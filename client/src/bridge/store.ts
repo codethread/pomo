@@ -14,23 +14,25 @@ export interface StoreRepository<T> {
   storeReset(): Promise<Result<T>>;
 }
 
-const KEY = 'store';
+let store = null as unknown as Store;
 
 export async function createStore<T>(
   logger: IClientLogger,
   storeConfig: StoreConfig<T>
 ): Promise<StoreRepository<T>> {
-  // TODO: update with zod later
-  const store = new Store(storeConfig.name);
-
-  logger.info(`setting up Store Repo: name "${storeConfig.name}", path: "${store.path}"`);
+  if (!store) {
+    store = new Store('pomo');
+    logger.info(`setting up Store Repo: name "pomo", path: "${store.path}"`);
+  }
+  const KEY = storeConfig.name;
 
   if (!(await store.get(KEY))) {
     await store.clear();
     await store.set(KEY, storeConfig.defaults);
   }
 
-  // TODO handle migrations
+  // TODO: handle migrations
+  // TODO: update with zod later
 
   return {
     async storeRead() {
@@ -47,6 +49,7 @@ export async function createStore<T>(
       return ok(data as T);
     },
     async storeUpdate(updatedStore) {
+      logger.info('updating store', { KEY: updatedStore });
       const originalStore = await store.get(KEY);
       const updated = merge(originalStore, updatedStore);
       await store.set(KEY, updated);
