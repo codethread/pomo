@@ -35,5 +35,6 @@ def main [--major] {
   git commit -m $"release v($newV)"
   git tag $"app-v($newV)"
   git push
+
   git push --tags
 }
