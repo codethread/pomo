@@ -62,9 +62,15 @@ export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
     async isIntegration() {
       return ok(true);
     },
-    async statsTimerComplete(duration, timestamp) {
+    async statsTimerComplete(duration, statType, timestamp) {
       stats.storeUpdate({
-        completed: [{ duration, timestamp: timestamp ?? new Date().toISOString() }],
+        completed: [
+          {
+            duration,
+            timestamp: timestamp ?? new Date().toISOString(),
+            _tag: statType ?? 'pomo.pomo',
+          },
+        ],
       });
     },
     async statsRead() {

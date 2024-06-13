@@ -1,11 +1,14 @@
-import { Stats } from '@shared/types';
+import { StatType, StatTypes, Stats } from '@shared/types';
+import { ClockIcon, ChatAlt2Icon } from '@heroicons/react/outline';
 import { format, startOfWeek, parse, add } from 'date-fns';
 import { useBridge } from '@client/hooks';
 import moment from 'moment';
 import { useAsync } from 'react-use';
 import { useState } from 'react';
-import { Button, ErrorBoundary, FormItemNumber, Box } from '@client/components';
+import { Button, ErrorBoundary, FormItemNumber, Box, InputSelect } from '@client/components';
 import { FormItemText } from '@client/components/Form/FormItem';
+
+const timestampFormat = 'EEEE yy/MM/dd hh:mm';
 
 export function Stats() {
   const b = useBridge();
@@ -43,11 +46,47 @@ export function Stats() {
           ))}
         </div>
       </div>
-      <ErrorBoundary>
-        <ManualTime />
-      </ErrorBoundary>
+      <ManualTime />
+      <Raw stats={stats} />
     </>
   );
+}
+
+function Raw({ stats }: { stats: Stats }) {
+  const [isShown, setIsShown] = useState(false);
+  if (!isShown) {
+    return (
+      <div className="flex flex-row justify-center mb-4">
+        <Button onClick={() => setIsShown((s) => !s)} variant="tertiary">
+          Show Raw
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="m-4">
+      <Button onClick={() => setIsShown((s) => !s)} variant="tertiary">
+        Hide
+      </Button>
+      {stats.completed.map((s) => (
+        <p key={s.timestamp} className="flex justify-between tabular-nums">
+          <span>{format(s.timestamp, 'MM/dd hh:mm')}</span>
+          <span>{formatTime(s.duration)}</span>
+          <RawIcon type={s._tag ?? 'pomo.pomo'} />
+        </p>
+      ))}
+    </div>
+  );
+}
+
+function RawIcon({ type }: { type: StatType }) {
+  switch (type) {
+    case 'pomo.pomo':
+      return <ClockIcon className="mr-2 inline-flex w-5 text-thmBright" />;
+    case 'other.meeting':
+      return <ChatAlt2Icon className="mr-2 inline-flex w-5 text-thmError" />;
+  }
 }
 
 function Summary({ output }: { output: OUT }) {
@@ -65,15 +104,25 @@ function Summary({ output }: { output: OUT }) {
   );
 }
 
-const timestampFormat = 'EEEE yy/MM/dd hh:mm';
-const timestampFormatNoDay = 'yy/MM/dd hh:mm';
 function ManualTime() {
   const [timestamp, setTimestamp] = useState(() => new Date().toISOString());
-  const [userTimestamp, setUserTimestamp] = useState(() => format(timestamp, timestampFormatNoDay));
+  const [userTimestamp, setUserTimestamp] = useState(() => format(timestamp, 'yy/MM/dd hh:mm'));
   const [errorExample, setErrorExample] = useState('');
+  const [statType, setStatType] = useState<StatType>('other.meeting');
+  const [isShown, setIsShown] = useState(false);
 
   const [duration, setDuration] = useState(60);
   const { statsTimerComplete } = useBridge();
+
+  if (!isShown) {
+    return (
+      <div className="flex flex-row justify-center">
+        <Button onClick={() => setIsShown((s) => !s)} variant="tertiary">
+          Add
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col border border-thmWarn rounded-lg p-2 gap-4">
@@ -100,7 +149,7 @@ function ManualTime() {
               onChange(t) {
                 setUserTimestamp(t);
                 try {
-                  const date = parse(t, timestampFormatNoDay, new Date());
+                  const date = parse(t, 'yy/MM/dd hh:mm', new Date());
                   if (isNaN(date as any)) {
                     throw new Error('aweful api');
                   }
@@ -115,15 +164,26 @@ function ManualTime() {
           <p className="text-thmFgDim text-sm">{format(timestamp, timestampFormat)}</p>
         </div>
       </div>
-      <div className="flex justify-center flex-row w-fill">
+      <InputSelect<StatType>
+        id="stat-type"
+        options={StatTypes}
+        initialValue={statType}
+        onChange={(statType) => {
+          setStatType(statType);
+        }}
+      />
+      <div className="flex justify-around gap-4 flex-row w-fill">
         <Button
           type="button"
           variant="secondary"
           onClick={() => {
-            statsTimerComplete(duration, timestamp);
+            statsTimerComplete(duration, statType, timestamp);
           }}
         >
           Add time
+        </Button>
+        <Button onClick={() => setIsShown((s) => !s)} variant="tertiary">
+          Hide
         </Button>
       </div>
     </div>
