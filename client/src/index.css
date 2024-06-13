@@ -60,3 +60,8 @@
   --color-warning: 235 203 139;
   --color-good: 163 190 140;
 }
+
+input {
+  background-color: transparent;
+  width: 100%;
+}

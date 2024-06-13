@@ -9,6 +9,11 @@ pub fn handle_setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     // hide icon from dock
     app.set_activation_policy(tauri::ActivationPolicy::Accessory);
 
+    println!(
+        "Store persisted to: {:?}",
+        app.path_resolver().app_data_dir()
+    );
+
     #[cfg(debug_assertions)]
     {
         let monitor = window.current_monitor().unwrap().unwrap();

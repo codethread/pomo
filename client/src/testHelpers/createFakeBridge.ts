@@ -44,6 +44,10 @@ export function createFakeBridge(overrides?: Partial<IBridge>): IBridge {
     async isIntegration() {
       return ok(false);
     },
+    async statsTimerComplete() {},
+    async statsRead() {
+      return Promise.resolve({ completed: [] });
+    },
     ...overrides,
   };
 }

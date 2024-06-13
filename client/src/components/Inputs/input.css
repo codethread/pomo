@@ -7,7 +7,7 @@
     @apply rounded border border-thmBackgroundSubtle bg-thmBackgroundBright p-2 text-thmFg outline-none;
   }
 
-  .input:focus {
+  .input:focus-within {
     @apply ring ring-thmBright;
   }
 
@@ -17,5 +17,9 @@
 
   .input[data-error='true']:focus {
     @apply ring;
+  }
+
+  input:focus {
+    outline: none;
   }
 }
