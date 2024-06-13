@@ -1,8 +1,10 @@
+name: 'checks'
+
 on:
   - pull_request
 
 jobs:
-  checks:
+  install-and-test:
     runs-on: ubuntu-latest
 
     steps:
