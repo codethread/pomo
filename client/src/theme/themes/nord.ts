@@ -65,3 +65,38 @@ export function nordLight({ setPalette, setColors }: Themers): void {
     { strict: true }
   );
 }
+
+export function rosePine({ setPalette, setColors }: Themers): void {
+  setColors({
+    '--col-bg': '35 33 54',
+    '--col-base0': '31 29 48',
+    '--col-base1': '42 39 63',
+    '--col-base2': '57 53 82',
+    '--col-base3': '110 106 134',
+    '--col-fg': '224 222 244',
+    '--col-fg-alt': '144 140 170',
+    '--col-red': '235 111 146',
+    '--col-orange': '234 154 151',
+    '--col-green': '156 207 216',
+    '--col-teal': '62 143 176',
+    '--col-yellow': '246 193 119',
+    '--col-magenta': '196 167 231',
+
+    '--col-grey': 'var(--col-base4)',
+  });
+
+  setPalette({
+    '--color-background': 'var(--col-bg)',
+    '--color-backgroundSubtle': 'var(--col-base0)',
+    '--color-backgroundBright': 'var(--col-base1)',
+    '--color-backgroundBrightest': 'var(--col-base2)',
+    '--color-fgDim': 'var(--col-fg-alt)',
+    '--color-fg': 'var(--col-fg)',
+    '--color-fgBrightest': 'var(--col-base3)',
+
+    '--color-primary': 'var(--col-orange)',
+    '--color-bright': 'var(--col-magenta)',
+    '--color-secondary': 'var(--col-green)',
+    '--color-tertiary': 'var(--col-teal)',
+  });
+}

@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "format:client": "prettier --write --ignore-path .gitignore client",
     "test:client": "vitest --config ./client/vite.config.ts",
-    "check": "pnpm test:client --run && pnpm lint:client && prettier --check --ignore-path .gitignore client",
+    "check": "pnpm test:client --run && pnpm ts && pnpm lint:client && prettier --check --ignore-path .gitignore client",
     "ts": "tsc --noEmit --project ./client/tsconfig.json"
   },
   "dependencies": {
@@ -35,6 +35,7 @@
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.7",
     "@types/lodash.merge": "4.6.6",
+    "@types/lodash.mergewith": "^4.6.9",
     "@types/node": "20.10",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",

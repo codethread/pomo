@@ -61,6 +61,9 @@ devDependencies:
   '@types/lodash.merge':
     specifier: 4.6.6
     version: 4.6.6
+  '@types/lodash.mergewith':
+    specifier: ^4.6.9
+    version: 4.6.9
   '@types/node':
     specifier: '20.10'
     version: 20.10.5
@@ -1006,6 +1009,12 @@ packages:
 
   /@types/lodash.merge@4.6.6:
     resolution: {integrity: sha512-IB90krzMf7YpfgP3u/EvZEdXVvm4e3gJbUvh5ieuI+o+XqiNEt6fCzqNRaiLlPVScLI59RxIGZMQ3+Ko/DJ8vQ==}
+    dependencies:
+      '@types/lodash': 4.14.202
+    dev: true
+
+  /@types/lodash.mergewith@4.6.9:
+    resolution: {integrity: sha512-fgkoCAOF47K7sxrQ7Mlud2TH023itugZs2bUg8h/KzT+BnZNrR2jAOmaokbLunHNnobXVWOezAeNn/lZqwxkcw==}
     dependencies:
       '@types/lodash': 4.14.202
     dev: true
