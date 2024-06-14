@@ -124,6 +124,7 @@ describe('mainMachine', () => {
     expect(hooks.onStartHook).toHaveBeenCalledWith<[HookContext]>({
       timer: {
         minutes: pomoDuration,
+        target: pomoDuration,
         seconds: 0,
         type: 'pomo',
         autoStart: false,

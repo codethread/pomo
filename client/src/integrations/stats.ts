@@ -11,9 +11,9 @@ export const statHooks: TimerHooks = {
       bridge.statsTimerComplete(config.timers.pomo * 60 - toSeconds(timer));
     }
   },
-  onCompleteHook: ({ bridge, config, timer }) => {
+  onCompleteHook: ({ bridge, timer }) => {
     if (timer.type === 'pomo') {
-      bridge.statsTimerComplete(config.timers.pomo * 60 - toSeconds(timer));
+      bridge.statsTimerComplete(timer.target * 60);
     }
   },
 };

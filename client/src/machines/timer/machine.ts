@@ -73,6 +73,7 @@ const timerMachine = createMachine(
 
       updateTimerConfig: assign({
         minutes: (_, { data }) => data,
+        target: (_, { data }) => data,
       }),
 
       onStartHook: sendParent((c) => pomodoroModel.events.TIMER_START(c)),

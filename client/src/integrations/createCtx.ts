@@ -43,6 +43,7 @@ export function createCtx(overrides?: DeepPartial<HookContext>): TestSetup {
       id: 'ctx id',
       autoStart: false,
       minutes: 17,
+      target: 17,
       seconds: 3,
       type: 'pomo',
     },
