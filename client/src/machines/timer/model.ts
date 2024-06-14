@@ -5,6 +5,7 @@ import { createModel } from 'xstate/lib/model';
 const timerModel = createModel(
   {
     id: '',
+    target: 0,
     minutes: 0,
     seconds: 0,
     type: 'pomo',

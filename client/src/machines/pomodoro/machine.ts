@@ -46,14 +46,17 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
           invoke: {
             id: actorIds.TIMER,
             src: timerMachine.withConfig({ services: { clock } }),
-            data: ({ timers: { pomo }, autoStart: { beforePomo } }) =>
-              ({
+            data: ({ timers: { pomo }, autoStart: { beforePomo } }) => {
+              const s: TimerContext = {
                 minutes: pomo,
                 seconds: 0,
                 type: 'pomo',
                 autoStart: beforePomo,
                 id: Math.random().toFixed(6).slice(2, -1),
-              } as TimerContext),
+                target: pomo,
+              };
+              return s;
+            },
           },
           on: {
             TIMER_STOPPED: { target: 'pomo', actions: ['onStopHook'] },
@@ -71,15 +74,17 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
           invoke: {
             id: actorIds.TIMER,
             src: timerMachine.withConfig({ services: { clock } }),
-            data: ({ timers: { short }, autoStart: { beforeShortBreak } }) =>
-              ({
+            data: ({ timers: { short }, autoStart: { beforeShortBreak } }) => {
+              const t: TimerContext = {
                 minutes: short,
                 seconds: 0,
                 type: 'short',
                 autoStart: beforeShortBreak,
                 id: Math.random().toFixed(6).slice(2, -1),
-              } as TimerContext),
-            onDone: { target: 'pomo' },
+                target: short,
+              };
+              return t;
+            },
           },
           on: {
             TIMER_COMPLETE: { target: 'pomo', actions: 'onCompleteHook' },
@@ -92,15 +97,17 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
           invoke: {
             id: actorIds.TIMER,
             src: timerMachine.withConfig({ services: { clock } }),
-            data: ({ timers: { long }, autoStart: { beforeLongBreak } }) =>
-              ({
+            data: ({ timers: { long }, autoStart: { beforeLongBreak } }) => {
+              const t: TimerContext = {
                 minutes: long,
                 seconds: 0,
                 type: 'long',
                 autoStart: beforeLongBreak,
                 id: Math.random().toFixed(6).slice(2, -1),
-              } as TimerContext),
-            onDone: { target: 'pomo' },
+                target: long,
+              };
+              return t;
+            },
           },
           on: {
             TIMER_COMPLETE: { target: 'pomo', actions: 'onCompleteHook' },

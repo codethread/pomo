@@ -138,10 +138,14 @@ export type CssSize = `${string}${CssSizeUnits}`;
 export interface HookContext {
   timer: {
     id: string;
+    /** minute count left on timer */
     minutes: number;
     seconds: number;
     type: TimerType;
     autoStart: boolean;
+    /** original minute target for timer, i.e after a timer has completed minutes will
+     * be 0, so for hooks interested in completed timers, the target shows what was done */
+    target: number;
   };
   config: UserConfig;
   bridge: IBridge;
