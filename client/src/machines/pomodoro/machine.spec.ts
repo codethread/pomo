@@ -473,7 +473,7 @@ describe('pomodoro machine', () => {
     });
 
     describe('when the timer is forced to completion', () => {
-      it.only('should fire the complete event with correct payload', () => {
+      it('should fire the complete event with correct payload', () => {
         const duration = 33;
         const { getTimerMachine, spy } = runTest({
           config: merge(config, {
