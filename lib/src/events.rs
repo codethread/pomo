@@ -15,4 +15,5 @@ pub enum Events {
     RequestTime,
     Pause,
     Play,
+    Update(u8),
 }

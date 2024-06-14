@@ -22,7 +22,7 @@ const timerMachine = createMachine(
         always: [{ cond: 'shouldAutoStart', target: 'playing' }],
         on: {
           START: { target: 'playing' },
-          UPDATE: { actions: 'updateTimerConfig' },
+          UPDATE: { actions: ['updateTimerConfig', 'updateClock'] },
         },
         exit: 'onStartHook',
       },
@@ -87,6 +87,7 @@ const timerMachine = createMachine(
       startTimer: sendTo('clock', (c) => ({ type: 'play', data: c })),
       pauseTimer: sendTo('clock', (c) => ({ type: 'pause', data: c })),
       stopTimer: sendTo('clock', (c) => ({ type: 'stop', data: c })),
+      updateClock: sendTo('clock', (c) => ({ type: 'update', data: c })),
     },
   }
 );

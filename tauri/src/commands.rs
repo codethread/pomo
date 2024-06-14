@@ -28,3 +28,8 @@ pub fn pause(state: State<models::State>, id: String) {
 pub fn play(state: State<models::State>, id: String) {
     state.0.lock().unwrap().play(id);
 }
+
+#[tauri::command]
+pub fn update(state: State<models::State>, id: String, duration: u8) {
+    state.0.lock().unwrap().update(id, duration);
+}

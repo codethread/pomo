@@ -79,6 +79,12 @@ impl App {
             timer.send(Events::Play).unwrap();
         }
     }
+
+    pub fn update(&self, id: String, duration: u8) {
+        if let Some(timer) = self.timers.get(&id) {
+            timer.send(Events::Update(duration)).unwrap();
+        }
+    }
 }
 
 fn run_timer(mut timer: timer::Timer, emitter: Emit) {
@@ -98,12 +104,16 @@ fn run_timer(mut timer: timer::Timer, emitter: Emit) {
                 Events::Play => {
                     timer.paused = false;
                 }
+                Events::Update(duration) => {
+                    timer.update(duration);
+                    continue;
+                }
             }
         }
         #[cfg(debug_assertions)]
         {
-            // sleep(Duration::from_millis(100))
-            sleep(Duration::from_millis(10))
+            sleep(Duration::from_millis(100))
+            // sleep(Duration::from_millis(10))
         }
         #[cfg(not(debug_assertions))]
         {
@@ -122,6 +132,7 @@ fn run_timer(mut timer: timer::Timer, emitter: Emit) {
                     emitter(EventsToClient::UpdateTime(timer.time.clone()));
                 }
                 Events::Play => (),
+                Events::Update(_) => (),
             }
         }
         timer.countdown();

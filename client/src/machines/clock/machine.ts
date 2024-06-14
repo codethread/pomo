@@ -19,6 +19,8 @@ export const clockMachine =
           return invoke('pause', { id });
         case 'stop':
           return invoke('stop', { id });
+        case 'update':
+          return invoke('update', { id, duration: minutes });
       }
     });
 
