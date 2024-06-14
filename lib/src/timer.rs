@@ -17,6 +17,10 @@ impl Timer {
     pub fn is_complete(&self) -> bool {
         self.time.complete
     }
+
+    pub fn update(&mut self, duration: u8) {
+        self.time.minutes = duration;
+    }
 }
 
 #[derive(serde::Serialize, Clone, Debug)]
