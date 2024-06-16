@@ -27,8 +27,7 @@ async function runTest(overrides?: TestOverrides) {
     parentEvents: Object.keys(mainModel.events),
     childId: CONFIG,
     childMachine: configMachineFactory({
-      bridge: createFakeBridge(bridge),
-      configOverride: config && merge(emptyConfig, config),
+      bridge: createFakeBridge(bridge, { configOverride: config }),
     }),
   });
 
@@ -96,25 +95,6 @@ describe('config machine', () => {
           timers: expect.objectContaining({ pomo: 612 }),
         }),
       });
-    });
-  });
-
-  describe("when config is DI'd", () => {
-    it('should return the users config', async () => {
-      const storeSpy = vi.fn();
-
-      const { configMachine } = await runTest({
-        bridge: {
-          storeRead: storeSpy,
-        },
-        config: {
-          timers: { pomo: 2222 },
-        },
-      });
-
-      expect(storeSpy).not.toHaveBeenCalled();
-      const { context } = configMachine.getSnapshot() ?? {};
-      expect(context?.timers.pomo).toBe(2222);
     });
   });
 

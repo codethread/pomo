@@ -14,14 +14,14 @@ interface IProviders {
   };
 }
 
-export function Providers({ bridge, isDev, services }: IProviders): JSX.Element {
+export function Providers({ bridge, services }: IProviders): JSX.Element {
   return (
     <BridgeProvider bridge={bridge}>
       <LoggerProvider>
         <MachinesProvider hooks={hooks} services={services}>
           <ErrorBoundary>
             <ScrollBar />
-            <App shouldInspect={isDev}>
+            <App>
               <PageManager />
             </App>
           </ErrorBoundary>

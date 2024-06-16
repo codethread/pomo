@@ -11,20 +11,10 @@ export interface IMainMachine {
   pomodoro: IPomodoroMachine;
   bridge: IBridge;
   actions: TimerHooks;
-  /**
-   * Inject a config as a testing mechanism
-   */
-  configOverride?: UserConfig;
   updateTheme: UpdateTheme;
 }
 
-const mainMachineFactory = ({
-  pomodoro,
-  bridge,
-  actions,
-  configOverride,
-  updateTheme,
-}: IMainMachine) =>
+const mainMachineFactory = ({ pomodoro, bridge, actions, updateTheme }: IMainMachine) =>
   createMachine(
     {
       id: 'main',
@@ -50,7 +40,7 @@ const mainMachineFactory = ({
         active: {
           invoke: [
             { id: actorIds.POMODORO, src: pomodoroMachineFactory(pomodoro) },
-            { id: actorIds.CONFIG, src: configMachine({ bridge, configOverride }) },
+            { id: actorIds.CONFIG, src: configMachine({ bridge }) },
             {
               id: actorIds.THEME,
               src: themeMachine.withConfig({

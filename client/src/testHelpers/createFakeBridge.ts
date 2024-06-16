@@ -2,9 +2,17 @@ import { fakeClient } from '@client/bridge/http';
 import { slackRepository } from '@client/bridge/slack';
 import { fakeStoreRepoFactory } from '@client/bridge/store';
 import { ok } from '@shared/Result';
-import { IBridge, IClientLogger, Stats, emptyConfig } from '@shared/types';
+import { merge } from '@shared/merge';
+import { DeepPartial, IBridge, IClientLogger, Stats, UserConfig, emptyConfig } from '@shared/types';
 
-export function createFakeBridge(overrides?: Partial<IBridge>): IBridge {
+interface FakeOptions {
+  /**
+   * Inject a config as a testing mechanism
+   */
+  configOverride?: DeepPartial<UserConfig>;
+}
+
+export function createFakeBridge(bridge?: Partial<IBridge>, options: FakeOptions = {}): IBridge {
   const logger: IClientLogger = {
     async debug() {},
     async warn() {},
@@ -14,7 +22,7 @@ export function createFakeBridge(overrides?: Partial<IBridge>): IBridge {
 
   const store = fakeStoreRepoFactory({
     name: 'test',
-    defaults: emptyConfig,
+    defaults: merge(emptyConfig, options.configOverride),
   });
 
   const slack = slackRepository({ logger, client: fakeClient() });
@@ -67,6 +75,6 @@ export function createFakeBridge(overrides?: Partial<IBridge>): IBridge {
 
       return Promise.resolve(d);
     },
-    ...overrides,
+    ...bridge,
   };
 }
