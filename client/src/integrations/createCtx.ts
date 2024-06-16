@@ -11,17 +11,6 @@ export interface TestSetup {
 }
 
 export function createCtx(overrides?: DeepPartial<HookContext>): TestSetup {
-  const bridge = createFakeBridge();
-  const spies = {
-    ...Object.keys(bridge).reduce(
-      (acc, cur) => ({
-        ...acc,
-        [cur]: vi.fn(),
-      }),
-      {} as Spies
-    ),
-  };
-
   const config = merge(
     emptyConfig,
     {
@@ -35,6 +24,17 @@ export function createCtx(overrides?: DeepPartial<HookContext>): TestSetup {
     },
     overrides?.config
   );
+
+  const bridge = createFakeBridge({}, { configOverride: config });
+  const spies = {
+    ...Object.keys(bridge).reduce(
+      (acc, cur) => ({
+        ...acc,
+        [cur]: vi.fn(),
+      }),
+      {} as Spies
+    ),
+  };
 
   const ctx: HookContext = {
     bridge: spies,

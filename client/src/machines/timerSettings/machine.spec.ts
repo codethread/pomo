@@ -27,8 +27,7 @@ describe('timerSettings machine', () => {
       parentEvents: Object.keys(mainModel.events),
       childId: CONFIG,
       childMachine: configMachineFactory({
-        bridge: createFakeBridge(),
-        configOverride: config,
+        bridge: createFakeBridge({}, { configOverride: config }),
       }),
     });
 

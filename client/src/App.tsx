@@ -1,21 +1,11 @@
-import { useLayoutEffect } from 'react';
-import { inspect } from '@xstate/inspect';
 import { useSelector } from '@xstate/react';
 import { useMachines } from '@client/hooks';
 
 interface IApp {
   children: React.ReactNode;
-  shouldInspect: boolean;
 }
 
-export function App({ children, shouldInspect }: IApp): JSX.Element {
-  useLayoutEffect(() => {
-    if (shouldInspect) {
-      inspect({
-        iframe: false,
-      });
-    }
-  }, [shouldInspect]);
+export function App({ children }: IApp): JSX.Element {
   const main = useMachines();
   const loaded = useSelector(main, (c) => c.context.loaded);
 

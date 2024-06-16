@@ -19,9 +19,8 @@ interface Overrides {
 function getService(overrides?: Overrides): MainService {
   const machine = mainMachineFactory({
     pomodoro: { clock: fakeClockMachine }, // TODO this needs a rename and optional overrides
-    bridge: createFakeBridge(),
+    bridge: createFakeBridge({}, { configOverride: overrides?.configOverride }),
     actions: { ...createFakeHooks(), ...overrides?.actions },
-    configOverride: overrides?.configOverride && merge(emptyConfig, overrides.configOverride),
     updateTheme: () => {},
   });
 
