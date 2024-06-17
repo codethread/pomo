@@ -2,7 +2,6 @@ import { StatType, StatTypes, Stats } from '@shared/types';
 import { ClockIcon, ChatAlt2Icon } from '@heroicons/react/outline';
 import { format, startOfWeek, parse, add } from 'date-fns';
 import { useBridge } from '@client/hooks';
-import moment from 'moment';
 import { useAsync } from 'react-use';
 import { useState } from 'react';
 import { Button, ErrorBoundary, FormItemNumber, Box, InputSelect } from '@client/components';
@@ -196,10 +195,14 @@ function transform(stats: Stats): OUT {
 
   const map = stats.completed
     .filter((s) => weekStartIso <= s.timestamp && s.timestamp < weekEndIso)
-    .map((s) => ({
-      ...s,
-      timestamp: moment(s.timestamp).seconds(0).minutes(0).hours(0).milliseconds(0),
-    }))
+    .map((s) => {
+      const d = new Date(s.timestamp);
+      d.setSeconds(0);
+      d.setMinutes(0);
+      d.setHours(0);
+      d.setMilliseconds(0);
+      return { ...s, timestamp: d };
+    })
     .reduce<Map<string, number>>((group, stat) => {
       const ts = stat.timestamp.toISOString();
       group.set(ts, (group.get(ts) ?? 0) + stat.duration);

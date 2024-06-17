@@ -1,4 +1,5 @@
-import { InputPassword } from '@client/components';
+import { IInputPassword, InputPassword } from '@client/components';
+import { ErrorMessage } from '@hookform/error-message';
 import { EyeClosed, EyeOpen } from '@client/components/Icons';
 import { IChildren, ICss } from '@shared/types';
 import classNames from 'classnames';
@@ -20,10 +21,18 @@ export function FormItemCheckbox<A extends FieldValues>({
   smallPrint,
   ...rest
 }: ICheckbox & IFormItem<A>): JSX.Element {
-  const id = `${label}form-input`;
+  const registerOptions = {
+    ...rest,
+    valueAsNumber: rest.valueAsNumber as false,
+    valueAsDate: rest.valueAsDate as false,
+  };
+  const id = `${label}-${useId()}`;
+  const {
+    formState: { errors },
+  } = useFormContext<A>();
   const { register, getFieldState } = useFormContext<FieldValues>();
-  const { error } = getFieldState(label);
-  // todo required
+  const { error } = getFieldState(registerOptions.name);
+
   return (
     <div className="flex max-w-md flex-col gap-3">
       <label
@@ -44,22 +53,15 @@ export function FormItemCheckbox<A extends FieldValues>({
           className="m-0 grid h-5 w-5 cursor-pointer appearance-none place-content-center rounded bg-thmBackgroundBrightest outline-none transition-all focus:ring focus:ring-thmBright disabled:cursor-not-allowed disabled:bg-thmBackgroundSubtle disabled:text-thmBackgroundBright"
           id={id}
           type="checkbox"
-          {...register(label, rest)}
+          {...register(registerOptions.name, registerOptions)}
         />
         <p>{label}</p>
       </label>
       {smallPrint ? <p className="text-xs">{smallPrint}</p> : null}
-      {error?.message && (
-        <ErrorMsg id={`${id}-error`} aria-live="polite">
-          {error.message}
-        </ErrorMsg>
-      )}
+      <ErrorMessage errors={errors} name={name as any} as={ErrorMsg} />
     </div>
   );
 }
-
-type IFormItem<A extends FieldValues> = ICss &
-  Omit<IFormItemContainer<A>, 'children'> & { errord?: any } & { placeholder?: string };
 
 export function FormItemNumber<A extends FieldValues>({
   label,
@@ -68,12 +70,17 @@ export function FormItemNumber<A extends FieldValues>({
   errord,
   ...rest
 }: IFormItem<A>): JSX.Element {
+  const registerOptions = {
+    ...rest,
+    valueAsNumber: true as false,
+    valueAsDate: rest.valueAsDate as false,
+  };
   const id = `${label}-${useId()}`;
   const { register, getFieldState } = useFormContext<FieldValues>();
-  const { error } = getFieldState(label);
+  const { error } = getFieldState(registerOptions.name);
   const hasError = Boolean(error);
   return (
-    <FormItem id={id} label={label} {...rest}>
+    <FormItem id={id} label={label} {...registerOptions}>
       <input
         data-error={hasError}
         placeholder={placeholder}
@@ -83,7 +90,7 @@ export function FormItemNumber<A extends FieldValues>({
         {...(hasError && {
           'aria-describedby': `${id}-error`,
         })}
-        {...register(label, { valueAsNumber: true, ...rest })}
+        {...register(registerOptions.name, registerOptions)}
       />
     </FormItem>
   );
@@ -96,12 +103,17 @@ export function FormItemText<A extends FieldValues>({
   errord,
   ...rest
 }: IFormItem<A>): JSX.Element {
+  const registerOptions = {
+    ...rest,
+    valueAsNumber: rest.valueAsNumber as false,
+    valueAsDate: rest.valueAsDate as false,
+  };
   const id = `${label}-${useId()}`;
   const { register, getFieldState } = useFormContext<FieldValues>();
-  const { error } = getFieldState(label);
+  const { error } = getFieldState(registerOptions.name);
   const hasError = Boolean(error);
   return (
-    <FormItem id={id} label={label} {...rest}>
+    <FormItem id={id} label={label} {...registerOptions}>
       <input
         data-error={hasError}
         className={classNames('input', className)}
@@ -111,7 +123,7 @@ export function FormItemText<A extends FieldValues>({
         {...(hasError && {
           'aria-describedby': `${id}-error`,
         })}
-        {...register(label, rest)}
+        {...register(registerOptions.name, registerOptions)}
       />
     </FormItem>
   );
@@ -120,24 +132,32 @@ export function FormItemText<A extends FieldValues>({
 export function FormItemPassword<A extends FieldValues>({
   label,
   placeholder,
+  className,
   errord,
   ...rest
-}: Omit<IFormItem<A>, 'children'> & { placeholder?: string }): JSX.Element {
+}: IFormItem<A> & Omit<IInputPassword, 'id'>): JSX.Element {
+  const registerOptions = {
+    ...rest,
+    valueAsNumber: rest.valueAsNumber as false,
+    valueAsDate: rest.valueAsDate as false,
+  };
+
   const [isVisible, setIsVisible] = useState(false);
   const { register, getFieldState } = useFormContext<FieldValues>();
-  const registered = register(label, rest);
-  const id = `${label}-${useId()}`;
+  const registered = register(registerOptions.name, registerOptions);
+  const id = `${registerOptions.name}-${useId()}`;
 
   const inputEl = useRef<HTMLInputElement | null>(null);
-  const { error } = getFieldState(label);
+  const { error } = getFieldState(registerOptions.name);
   const hasError = Boolean(error);
 
   return (
-    <FormItem id={id} label={label} {...rest}>
+    <FormItem id={id} label={label} {...registerOptions}>
       <div className="flex gap-1">
         <div className="grow">
           <InputPassword
             id={id}
+            className={className}
             placeholder={placeholder ?? label}
             type={isVisible ? 'text' : 'password'}
             hasError={hasError}
@@ -151,7 +171,8 @@ export function FormItemPassword<A extends FieldValues>({
         <button
           type="button"
           onClick={() => {
-            toggleVisibility();
+            setIsVisible(!isVisible);
+            inputEl.current?.focus();
           }}
           className="input bg-thmBackgroundBright"
         >
@@ -164,20 +185,19 @@ export function FormItemPassword<A extends FieldValues>({
       </div>
     </FormItem>
   );
-
-  function toggleVisibility(): void {
-    setIsVisible(!isVisible);
-    inputEl.current?.focus();
-  }
 }
+
+type IFormItem<A extends FieldValues> = ICss &
+  Omit<IFormItemContainer<A>, 'children'> & { errord?: any } & { placeholder?: string };
 
 type ReactFormItem = Parameters<UseFormRegister<FieldValues>>[1];
 
-type IFormItemContainer<A extends FieldValues> = IChildren &
-  ReactFormItem & {
-    label: Path<A>;
-    ariaLabel?: string;
-  };
+type IFormItemContainer<A extends FieldValues> = ReactFormItem & {
+  label: string;
+  name: Path<A>;
+  ariaLabel?: string;
+  children: React.ReactNode;
+};
 
 export function FormItem<A extends FieldValues>({
   label,
@@ -185,9 +205,11 @@ export function FormItem<A extends FieldValues>({
   ariaLabel,
   required,
   id,
+  name,
 }: IFormItemContainer<A> & { id: string }): JSX.Element {
-  const { getFieldState } = useFormContext<A>();
-  const { error } = getFieldState(label);
+  const {
+    formState: { errors },
+  } = useFormContext<A>();
   return (
     <div className="flex max-w-md flex-col gap-1">
       <label
@@ -204,42 +226,11 @@ export function FormItem<A extends FieldValues>({
         </span>
         {children}
       </label>
-      {error?.message && (
-        <ErrorMsg id={`${id}-error`} aria-live="polite">
-          {error.message}
-        </ErrorMsg>
-      )}
+      <ErrorMessage errors={errors} name={name as any} as={ErrorMsg} />
     </div>
   );
 }
 
-function ErrorMsg({
-  children,
-  ...props
-}: IChildren & React.HTMLAttributes<HTMLParagraphElement>): JSX.Element {
-  return (
-    <p {...props} className="text-thmError">
-      {children}
-    </p>
-  );
+function ErrorMsg({ children }: IChildren): JSX.Element {
+  return <p className="text-thmError"> {children} </p>;
 }
-
-// function Form<A extends FieldValues>({ children, onSubmit }: IChildren & {
-//   onSubmit: SubmitHandler<A>
-// }) {
-// 	const methods = useForm<A>({});
-// 	const { isSubmitted, isValid, isDirty } = methods.formState;
-// 	const hasError = not(isValid);
-// 	// prettier-ignore
-// 	const allowSubmit = or(
-//     and(not(isDirty), not(isSubmitted)),
-//     isValid
-//   );
-//   return (
-// 				<FormProvider {...methods}>
-// 					<form onSubmit={methods.handleSubmit(onSubmit)}>
-//       {children}
-// 					</form>
-// 				</FormProvider>
-//   )
-// }

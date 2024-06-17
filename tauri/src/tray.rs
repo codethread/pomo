@@ -2,6 +2,7 @@ use std::path::PathBuf;
 
 use tauri::{
     AppHandle, CustomMenuItem, Icon, Manager, PhysicalPosition, State, SystemTray, SystemTrayEvent,
+    SystemTrayMenu,
 };
 
 use crate::models;
@@ -45,7 +46,7 @@ pub fn create_system_tray() -> SystemTray {
     let hide = CustomMenuItem::new("hide".to_string(), "Hide");
     let tray_menu = SystemTrayMenu::new()
         .add_item(quit)
-        .add_native_item(SystemTrayMenuItem::Separator)
+        .add_native_item(tauri::SystemTrayMenuItem::Separator)
         .add_item(hide);
 
     SystemTray::new()

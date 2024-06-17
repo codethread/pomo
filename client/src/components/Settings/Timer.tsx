@@ -1,5 +1,7 @@
 import { FormItemCheckbox } from '@client/components/Form/FormItem';
 import { useConfig } from '@client/hooks';
+import { zodResolver } from '@hookform/resolvers/zod';
+import z from 'zod';
 import T from '@client/copy';
 import { Button, FormItemNumber } from '@client/components';
 import { TimerSettingsActorRef, timerSettingsModel } from '@client/machines';
@@ -8,19 +10,18 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 const { CANCEL, SAVE, UPDATE } = timerSettingsModel.events;
 
-interface UserForm {
-  pomo: number;
-  short: number;
-  long: number;
-  displayTimerInStatusBar: boolean;
-}
+const MAX = 255;
+
+const UserFormSchema = z.object({
+  pomo: z.number().positive().lt(MAX),
+  short: z.number().positive().lt(MAX),
+  long: z.number().positive().lt(MAX),
+  displayTimerInStatusBar: z.boolean(),
+});
+
+type UserForm = z.infer<typeof UserFormSchema>;
 
 export function Timer({ actor }: { actor: TimerSettingsActorRef }): JSX.Element {
-  // const [state, send] = useActor(actor);
-  // const {
-  //   context: { long, pomo, short },
-  // } = state;
-  // const inputRef = useRef<HTMLInputElement>(null);
   const { config, storeUpdate } = useConfig();
 
   const methods = useForm<UserForm>({
@@ -28,6 +29,7 @@ export function Timer({ actor }: { actor: TimerSettingsActorRef }): JSX.Element 
       ...config?.timers,
       displayTimerInStatusBar: config?.displayTimerInStatusBar,
     },
+    resolver: zodResolver(UserFormSchema),
   });
 
   return (
@@ -36,49 +38,24 @@ export function Timer({ actor }: { actor: TimerSettingsActorRef }): JSX.Element 
         <Setting
           variant="simple"
           heading="Timer"
-          onSubmit={() => {
-            methods.handleSubmit((d) => {
-              console.log(d);
-            });
-            // send(SAVE());
-            // inputRef.current?.focus();
-          }}
+          onSubmit={methods.handleSubmit((update) => {
+            storeUpdate(update);
+          })}
         >
-          <FormItemNumber
-            label="Pomodoro"
+          <FormItemNumber<UserForm>
+            name="pomo"
+            label="pomo"
             ariaLabel="Set the duration, in minutes, of a pomodoro timer"
-            // input={{
-            //   min: 1,
-            //   max: 100,
-            //   value: pomo.value,
-            //   onChange: (n) => {
-            //     send(UPDATE('pomo', n));
-            //   },
-            // }}
           />
-          <FormItemNumber
+          <FormItemNumber<UserForm>
+            name="short"
             label="Short Break"
             ariaLabel="Set the duration, in minutes, of each short break timer between pomodoros"
-            // input={{
-            //   min: 1,
-            //   max: 100,
-            //   value: short.value,
-            //   onChange: (n) => {
-            //     send(UPDATE('short', n));
-            //   },
-            // }}
           />
-          <FormItemNumber
+          <FormItemNumber<UserForm>
+            name="long"
             label="Long Break"
             ariaLabel="Set the duration, in minutes, of each long break timer which runs after completing several pomodoros"
-            // input={{
-            //   min: 1,
-            //   max: 100,
-            //   value: long.value,
-            //   onChange: (n) => {
-            //     send(UPDATE('long', n));
-            //   },
-            // }}
           />
           <div className="flex justify-between">
             <Button
@@ -104,13 +81,8 @@ export function Timer({ actor }: { actor: TimerSettingsActorRef }): JSX.Element 
           </div>
         </Setting>
         <Setting variant="simple" heading="Other" onSubmit={() => {}}>
-          <FormItemCheckbox
-            // checkbox={{
-            //   initiallyChecked: config?.displayTimerInStatusBar ?? false,
-            //   onChange(checked: boolean) {
-            //     storeUpdate({ displayTimerInStatusBar: checked });
-            //   },
-            // }}
+          <FormItemCheckbox<UserForm>
+            name="displayTimerInStatusBar"
             label="Show timer in status bar"
           />
         </Setting>

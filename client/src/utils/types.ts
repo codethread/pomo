@@ -1,6 +1,8 @@
 import { Result } from '@shared/Result';
+import z from 'zod';
 import { Nodenv } from '@shared/asserts';
 import { ThemeName } from '@client/theme';
+import { ThemeNameSchema } from '@client/theme/updateTheme';
 
 export type IClientLogger = {
   debug(...msg: any): Promise<void>;
@@ -24,7 +26,6 @@ export const emptyConfig: UserConfig = {
     beforeLongBreak: true,
     beforePomo: false,
   },
-  slack: { enabled: false },
   theme: 'nord',
 };
 
@@ -32,30 +33,32 @@ export const emptyStats: Stats = {
   completed: [],
 };
 
-export interface UserConfig {
-  timers: {
-    pomo: number;
-    short: number;
-    long: number;
-  };
-  displayTimerInStatusBar: boolean;
-  longBreakEvery: number;
-  autoStart: {
-    beforeShortBreak: boolean;
-    beforeLongBreak: boolean;
-    beforePomo: boolean;
-  };
-  slack:
-    | {
-        enabled: true;
-        slackDomain: string;
-        slackToken: string;
-        slackDCookie: string;
-        slackDSCookie: string;
-      }
-    | { enabled: false };
-  theme: ThemeName;
-}
+export const UserConfigSchema = z.object({
+  timers: z.object({
+    pomo: z.number(),
+    short: z.number(),
+    long: z.number(),
+  }),
+  displayTimerInStatusBar: z.boolean(),
+  longBreakEvery: z.number(),
+  autoStart: z.object({
+    beforeShortBreak: z.boolean(),
+    beforeLongBreak: z.boolean(),
+    beforePomo: z.boolean(),
+  }),
+  slack: z
+    .object({
+      enabled: z.boolean(),
+      slackDomain: z.string(),
+      slackToken: z.string(),
+      slackDCookie: z.string(),
+      slackDSCookie: z.string(),
+    })
+    .optional(),
+  theme: ThemeNameSchema,
+});
+
+export type UserConfig = z.infer<typeof UserConfigSchema>;
 
 export interface SlackAuth {
   domain: string;
@@ -169,3 +172,9 @@ export interface IChildren {
 export type ICss = {
   className?: string;
 };
+
+declare global {
+  type Prettify<T> = {
+    [K in keyof T]: T[K];
+  } & {};
+}

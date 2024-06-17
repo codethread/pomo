@@ -1,11 +1,12 @@
 import { formatTrayTime } from '@shared/formatTrayTime';
-import { DeepPartial, IBridge, UserConfig } from '@shared/types';
+import { DeepPartial, IBridge, UserConfig, UserConfigSchema } from '@shared/types';
 import { ActorRefFrom, assign, createMachine, InterpreterFrom, sendParent } from 'xstate';
 import { respond } from 'xstate/lib/actions';
 import { actorIds } from '../constants';
 import mainModel from '../main/model';
 import { createContext, timerSettingsMachine } from '../timerSettings/machine';
 import { ConfigContext, configModel, ConfitEvents } from './model';
+import { err } from '@shared/Result';
 
 export interface IConfigMachine {
   bridge: IBridge;
@@ -127,6 +128,12 @@ export default function configMachine({ bridge }: IConfigMachine) {
           });
         },
         updateConfig: async (c, e) => {
+          console.log({ e });
+          const parsed = UserConfigSchema.deepPartial().strict().parse(e.data);
+          console.log({ parsed });
+          // if (parsed.error) {
+          //   return Promise.resolve(err(parsed.error.errors.map((e) => e.message).join('\n')));
+          // }
           const res = await bridge.storeUpdate(e.data);
           return res.match({
             Ok: (config) => {

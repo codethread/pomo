@@ -2,6 +2,7 @@
 import { defineConfig } from 'vite';
 import path from 'path';
 import react from '@vitejs/plugin-react-swc';
+import circleDependency from 'vite-plugin-circular-dependency';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,7 +17,7 @@ export default defineConfig({
       '@test': path.resolve(__dirname, './src/testHelpers'),
     },
   },
-  plugins: [react()],
+  plugins: [react(), circleDependency()],
   clearScreen: false,
   server: {
     strictPort: true,

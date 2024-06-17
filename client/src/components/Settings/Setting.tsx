@@ -1,5 +1,6 @@
 import { Box, Checkbox } from '@client/components';
 import { ReactNode } from 'react';
+import { FormItemCheckbox } from '../Form/FormItem';
 
 interface ISettingCommon {
   heading: string;
@@ -24,13 +25,9 @@ export function Setting({ children, heading, onSubmit, ...props }: ISetting): JS
     <Box className="mb-8 mt-4">
       <div className="mb-4 bg-thmBackgroundSubtle py-2 px-2">
         {props.variant === 'toggle' ? (
-          <Checkbox
-            id={`${heading}-form-checkbox`}
-            initiallyChecked={props.checked}
-            onChange={props.onToggle}
-          >
+          <FormItemCheckbox name="">
             <h2 className="text-lg">{heading}</h2>
-          </Checkbox>
+          </FormItemCheckbox>
         ) : (
           <h2 className="text-lg">{heading}</h2>
         )}
