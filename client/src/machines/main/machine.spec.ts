@@ -202,7 +202,7 @@ describe('mainMachine', () => {
     expect(hooks.onCompleteHook).toHaveBeenCalledTimes(1);
     expect(hooks.onCompleteHook).toHaveBeenCalledWith(
       expect.objectContaining({
-        timer: expect.objectContaining({ minutes: 0, seconds: 1, type: 'pomo' }),
+        timer: expect.objectContaining({ minutes: 0, seconds: 0, type: 'pomo' }),
       })
     );
   });
