@@ -12,7 +12,7 @@ export interface IPageManager {
   initialPage?: Pages;
 }
 
-export function PageManager({ initialPage = 'Timer' }: IPageManager = {}): JSX.Element {
+export function PageManager({ initialPage = 'Timer Settings' }: IPageManager = {}): JSX.Element {
   const [{ page, navVisible }, dispatch] = useReducer(reducer, initialState(initialPage));
 
   return (

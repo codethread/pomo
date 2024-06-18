@@ -1,4 +1,3 @@
-import { FormItemCheckbox } from '@client/components/Form/FormItem';
 import { useConfig } from '@client/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
@@ -7,6 +6,7 @@ import { Button, FormItemNumber } from '@client/components';
 import { TimerSettingsActorRef, timerSettingsModel } from '@client/machines';
 import { Setting } from './Setting';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 
 const { CANCEL, SAVE, UPDATE } = timerSettingsModel.events;
 
@@ -44,7 +44,7 @@ export function Timer({ actor }: { actor: TimerSettingsActorRef }): JSX.Element 
         >
           <FormItemNumber<UserForm>
             name="pomo"
-            label="pomo"
+            label="Pomo"
             ariaLabel="Set the duration, in minutes, of a pomodoro timer"
           />
           <FormItemNumber<UserForm>
@@ -58,34 +58,28 @@ export function Timer({ actor }: { actor: TimerSettingsActorRef }): JSX.Element 
             ariaLabel="Set the duration, in minutes, of each long break timer which runs after completing several pomodoros"
           />
           <div className="flex justify-between">
-            <Button
-              // disabled={!state.can('SAVE')}
-              type="submit"
-              style={{ gridColumn: 'middle-r / right' }}
-            >
+            <Button type="submit" style={{ gridColumn: 'middle-r / right' }}>
               {T.settings.submit}
             </Button>
             <Button
-              // disabled={!state.can('CANCEL')}
+              disabled={!methods.formState.isDirty}
               type="button"
               variant="secondary"
               style={{ gridColumn: 'middle-r / right' }}
               onClick={() => {
                 methods.reset();
-                // send(CANCEL());
-                // inputRef.current?.focus();
               }}
             >
               {T.settings.cancel}
             </Button>
           </div>
         </Setting>
-        <Setting variant="simple" heading="Other" onSubmit={() => {}}>
-          <FormItemCheckbox<UserForm>
-            name="displayTimerInStatusBar"
-            label="Show timer in status bar"
-          />
-        </Setting>
+        {/* <Setting variant="simple" heading="Other" onSubmit={() => {}}> */}
+        {/*   <FormItemCheckbox<UserForm> */}
+        {/*     name="displayTimerInStatusBar" */}
+        {/*     label="Show timer in status bar" */}
+        {/*   /> */}
+        {/* </Setting> */}
       </FormProvider>
     </>
   );
