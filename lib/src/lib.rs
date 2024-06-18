@@ -95,7 +95,7 @@ fn run_timer(mut timer: timer::Timer, emitter: Emit) {
                     continue;
                 }
                 Events::RequestTime => {
-                    emitter(EventsToClient::UpdateTime(timer.time.clone()));
+                    emitter(EventsToClient::Tick(timer.time.clone()));
                     continue;
                 }
                 Events::Pause => {
@@ -129,7 +129,7 @@ fn run_timer(mut timer: timer::Timer, emitter: Emit) {
                     continue;
                 }
                 Events::RequestTime => {
-                    emitter(EventsToClient::UpdateTime(timer.time.clone()));
+                    emitter(EventsToClient::Tick(timer.time.clone()));
                 }
                 Events::Play => (),
                 Events::Update(_) => (),
@@ -137,13 +137,12 @@ fn run_timer(mut timer: timer::Timer, emitter: Emit) {
         }
         timer.countdown();
         println!("{} tick {:?}", timer.id, timer.time);
-        emitter(EventsToClient::Tick(timer.id.clone()));
+        emitter(EventsToClient::Tick(timer.time.clone()));
 
         if timer.is_complete() {
-            emitter(EventsToClient::Complete(timer.id.clone()));
+            // TODO
+            // do something to remove this from the parent
             break;
         }
     }
-    // TODO
-    // do something to remove this from the parent
 }

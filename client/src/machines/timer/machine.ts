@@ -6,6 +6,8 @@ const timerMachine = createMachine(
   {
     id: 'timer',
     initial: 'ready',
+    predictableActionArguments: true,
+    preserveActionOrder: true,
     tsTypes: {} as import('./machine.typegen').Typegen0,
     schema: {
       events: {} as TimerEvents,
@@ -30,11 +32,9 @@ const timerMachine = createMachine(
         entry: ['startTimer'],
         on: {
           _TICK: [
-            { cond: 'isTimerFinished', target: 'complete' },
+            { cond: 'isTimerFinished', actions: ['updateTimer'], target: 'complete' },
             { actions: ['updateTimer', 'onTickHook'] },
           ],
-          _COMPLETE: 'complete',
-          FORCE_UPDATE: { actions: 'updateNow' },
           PAUSE: 'paused',
           STOP: 'stopped',
         },
@@ -58,18 +58,12 @@ const timerMachine = createMachine(
   },
   {
     guards: {
-      isTimerFinished: ({ minutes, seconds }) => minutes === 0 && seconds <= 1,
+      isTimerFinished: (_, { minutes, seconds }) => minutes === 0 && seconds === 0,
 
       shouldAutoStart: ({ autoStart }) => autoStart,
     },
     actions: {
-      updateNow: assign((_, e) => ({
-        minutes: e.minutes,
-        seconds: e.seconds,
-      })),
-      updateTimer: assign(({ minutes, seconds }) =>
-        seconds === 0 ? { minutes: minutes - 1, seconds: 59 } : { minutes, seconds: seconds - 1 }
-      ),
+      updateTimer: assign((_, { minutes, seconds }) => ({ minutes, seconds })),
 
       updateTimerConfig: assign({
         minutes: (_, { data }) => data,

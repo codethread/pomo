@@ -25,20 +25,12 @@ export const clockMachine =
     });
 
     const listeners = Promise.all([
-      listen(`complete_${id}`, () => {
-        sendBack({ type: '_COMPLETE' });
-      }),
-
-      listen(`setTime_${id}`, (e: any) => {
+      listen(`tick_${id}`, (e: any) => {
         sendBack({
-          type: 'FORCE_UPDATE',
+          type: '_TICK',
           seconds: e.payload.seconds as number,
           minutes: e.payload.minutes as number,
         });
-      }),
-
-      listen(`tick_${id}`, () => {
-        sendBack({ type: '_TICK' });
       }),
     ]);
 

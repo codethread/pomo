@@ -12,7 +12,7 @@ import { fakeClockMachine } from '../clock/fakeClock';
 
 const { POMODORO, TIMER } = actorIds;
 const { CONFIG_LOADED } = pomodoroModel.events;
-const { PAUSE, PLAY, START, STOP, _COMPLETE } = timerModel.events;
+const { PAUSE, PLAY, START, STOP, _TICK } = timerModel.events;
 const parentEvents = Object.keys(mainModel.events);
 
 interface TestOverrides extends Omit<IPomodoroMachine, 'clock'> {
@@ -30,6 +30,7 @@ function runTest(overrides?: TestOverrides) {
   const parent = createMachine(
     {
       id: 'parent',
+      predictableActionArguments: true,
       initial: 'running',
       states: {
         running: {
@@ -472,7 +473,7 @@ describe('pomodoro machine', () => {
       });
     });
 
-    describe('when the timer is forced to completion', () => {
+    describe('when the timer is accelerated to a completion tick', () => {
       it('should fire the complete event with correct payload', () => {
         const duration = 33;
         const { getTimerMachine, spy } = runTest({
@@ -484,10 +485,25 @@ describe('pomodoro machine', () => {
         });
 
         getTimerMachine().send(START());
-        ticks(10);
-        getTimerMachine().send(_COMPLETE());
 
-        expect(spy).toHaveBeenCalledWith(
+        getTimerMachine().send(_TICK(5, 10));
+
+        expect(spy).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            event: expect.objectContaining({
+              type: 'TIMER_TICK',
+              data: expect.objectContaining<Partial<HookContext['timer']>>({
+                type: 'pomo',
+                minutes: 10,
+                seconds: 5,
+              }),
+            }),
+          })
+        );
+
+        getTimerMachine().send(_TICK(0, 0));
+
+        expect(spy).toHaveBeenLastCalledWith(
           expect.objectContaining({
             event: expect.objectContaining({
               type: 'TIMER_COMPLETE',

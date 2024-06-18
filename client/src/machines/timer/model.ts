@@ -17,10 +17,8 @@ const timerModel = createModel(
       PLAY: () => ({}),
       PAUSE: () => ({}),
       STOP: () => ({}),
-      _TICK: () => ({}),
-      _COMPLETE: () => ({}),
+      _TICK: (seconds: number, minutes: number) => ({ minutes, seconds }),
       UPDATE: (mins: number) => ({ data: mins }),
-      FORCE_UPDATE: (seconds: number, minutes: number) => ({ minutes, seconds }),
     },
   }
 );

@@ -6,6 +6,7 @@ export const slackHooks: TimerHooks = {
     const slackAuth = getSlackAuth(config);
 
     if (type === 'pomo' && seconds === 0 && minutes > 0 && slackAuth) {
+      bridge.info('slack tick hook');
       bridge.slackSetProfile(slackAuth, {
         text: status(minutes),
         emoji: ':tomato:',
