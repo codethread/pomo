@@ -15,6 +15,7 @@ import timerModel, { TimerContext } from '../timer/model';
 import mainModel from '../main/model';
 import model, { PomodoroEvents, PomodoroModel } from './model';
 import { ClockMachine } from '../clock/machine';
+import pomodoroModel from './model';
 
 function pomodoroMachine({ context, clock }: IPomodoroMachine) {
   return createMachine(
@@ -130,6 +131,7 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
           longBreakEvery,
           timers,
           autoStart,
+          completed: pomodoroModel.initialContext.completed,
         })),
 
         increasePomoCount: assign({

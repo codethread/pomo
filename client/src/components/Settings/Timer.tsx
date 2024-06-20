@@ -3,12 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import T from '@client/copy';
 import { Button, FormItemNumber } from '@client/components';
-import { TimerSettingsActorRef, timerSettingsModel } from '@client/machines';
 import { Setting } from './Setting';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useEffect } from 'react';
-
-const { CANCEL, SAVE, UPDATE } = timerSettingsModel.events;
 
 const MAX = 255;
 
@@ -16,18 +12,18 @@ const UserFormSchema = z.object({
   pomo: z.number().positive().lt(MAX),
   short: z.number().positive().lt(MAX),
   long: z.number().positive().lt(MAX),
-  displayTimerInStatusBar: z.boolean(),
+  breakFrequency: z.number().positive().lt(20),
 });
 
-type UserForm = z.infer<typeof UserFormSchema>;
+type UserForm = z.input<typeof UserFormSchema>;
 
-export function Timer({ actor }: { actor: TimerSettingsActorRef }): JSX.Element {
+export function Timer(): JSX.Element {
   const { config, storeUpdate } = useConfig();
 
   const methods = useForm<UserForm>({
     defaultValues: {
       ...config?.timers,
-      displayTimerInStatusBar: config?.displayTimerInStatusBar,
+      breakFrequency: config?.longBreakEvery,
     },
     resolver: zodResolver(UserFormSchema),
   });
@@ -39,7 +35,7 @@ export function Timer({ actor }: { actor: TimerSettingsActorRef }): JSX.Element 
           variant="simple"
           heading="Timer"
           onSubmit={methods.handleSubmit((update) => {
-            storeUpdate(update);
+            storeUpdate({ timers: update, longBreakEvery: update.breakFrequency });
           })}
         >
           <FormItemNumber<UserForm>
@@ -57,18 +53,18 @@ export function Timer({ actor }: { actor: TimerSettingsActorRef }): JSX.Element 
             label="Long Break"
             ariaLabel="Set the duration, in minutes, of each long break timer which runs after completing several pomodoros"
           />
+          <FormItemNumber<UserForm>
+            name="breakFrequency"
+            label="Break Frequency"
+            ariaLabel="Set after how many Pomodoro timers do you want a longer break"
+          />
           <div className="flex justify-between">
-            <Button type="submit" style={{ gridColumn: 'middle-r / right' }}>
-              {T.settings.submit}
-            </Button>
+            <Button type="submit">{T.settings.submit}</Button>
             <Button
               disabled={!methods.formState.isDirty}
               type="button"
               variant="secondary"
-              style={{ gridColumn: 'middle-r / right' }}
-              onClick={() => {
-                methods.reset();
-              }}
+              onClick={() => methods.reset()}
             >
               {T.settings.cancel}
             </Button>
