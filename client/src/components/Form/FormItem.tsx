@@ -6,19 +6,18 @@ import classNames from 'classnames';
 import React, { useRef, useState, useId } from 'react';
 import { FieldValues, Path, useFormContext, UseFormRegister } from 'react-hook-form';
 
-type ICheckbox = {
+type ICheckbox = IChildren & {
   disabled?: boolean;
   ariaLabel?: string;
   smallPrint?: string;
 };
 
 export function FormItemCheckbox<A extends FieldValues>({
-  label,
   className,
-  errord,
   disabled,
   ariaLabel,
   smallPrint,
+  children,
   ...rest
 }: ICheckbox & IFormItem<A>): JSX.Element {
   const registerOptions = {
@@ -26,7 +25,7 @@ export function FormItemCheckbox<A extends FieldValues>({
     valueAsNumber: rest.valueAsNumber as false,
     valueAsDate: rest.valueAsDate as false,
   };
-  const id = `${label}-${useId()}`;
+  const id = `${registerOptions.name}-${useId()}`;
   const {
     formState: { errors },
   } = useFormContext<A>();
@@ -48,6 +47,7 @@ export function FormItemCheckbox<A extends FieldValues>({
         )}
         aria-label={ariaLabel}
       >
+        {children}
         <input
           disabled={disabled}
           className="m-0 grid h-5 w-5 cursor-pointer appearance-none place-content-center rounded bg-thmBackgroundBrightest outline-none transition-all focus:ring focus:ring-thmBright disabled:cursor-not-allowed disabled:bg-thmBackgroundSubtle disabled:text-thmBackgroundBright"
@@ -55,10 +55,9 @@ export function FormItemCheckbox<A extends FieldValues>({
           type="checkbox"
           {...register(registerOptions.name, registerOptions)}
         />
-        <p>{label}</p>
       </label>
       {smallPrint ? <p className="text-xs">{smallPrint}</p> : null}
-      <ErrorMessage errors={errors} name={name as any} as={ErrorMsg} />
+      <ErrorMessage errors={errors} name={registerOptions.name} as={ErrorMsg} />
     </div>
   );
 }
@@ -67,7 +66,6 @@ export function FormItemNumber<A extends FieldValues>({
   label,
   className,
   placeholder,
-  errord,
   ...rest
 }: IFormItem<A>): JSX.Element {
   const registerOptions = {
@@ -100,15 +98,14 @@ export function FormItemText<A extends FieldValues>({
   label,
   className,
   placeholder,
-  errord,
   ...rest
 }: IFormItem<A>): JSX.Element {
   const registerOptions = {
     ...rest,
-    valueAsNumber: rest.valueAsNumber as false,
+    valueAsNumber: false as const,
     valueAsDate: rest.valueAsDate as false,
   };
-  const id = `${label}-${useId()}`;
+  const id = `${registerOptions.name}-${useId()}`;
   const { register, getFieldState } = useFormContext<FieldValues>();
   const { error } = getFieldState(registerOptions.name);
   const hasError = Boolean(error);
@@ -133,12 +130,11 @@ export function FormItemPassword<A extends FieldValues>({
   label,
   placeholder,
   className,
-  errord,
   ...rest
 }: IFormItem<A> & Omit<IInputPassword, 'id'>): JSX.Element {
   const registerOptions = {
     ...rest,
-    valueAsNumber: rest.valueAsNumber as false,
+    valueAsNumber: false as const,
     valueAsDate: rest.valueAsDate as false,
   };
 
@@ -158,7 +154,7 @@ export function FormItemPassword<A extends FieldValues>({
           <InputPassword
             id={id}
             className={className}
-            placeholder={placeholder ?? label}
+            placeholder={placeholder}
             type={isVisible ? 'text' : 'password'}
             hasError={hasError}
             {...registered}
@@ -188,7 +184,7 @@ export function FormItemPassword<A extends FieldValues>({
 }
 
 type IFormItem<A extends FieldValues> = ICss &
-  Omit<IFormItemContainer<A>, 'children'> & { errord?: any } & { placeholder?: string };
+  Omit<IFormItemContainer<A>, 'children'> & { placeholder?: string };
 
 type ReactFormItem = Parameters<UseFormRegister<FieldValues>>[1];
 

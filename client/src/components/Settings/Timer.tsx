@@ -15,7 +15,7 @@ const UserFormSchema = z.object({
   breakFrequency: z.number().positive().lt(20),
 });
 
-type UserForm = z.input<typeof UserFormSchema>;
+type UserForm = z.infer<typeof UserFormSchema>;
 
 export function Timer(): JSX.Element {
   const { config, storeUpdate } = useConfig();
@@ -59,7 +59,9 @@ export function Timer(): JSX.Element {
             ariaLabel="Set after how many Pomodoro timers do you want a longer break"
           />
           <div className="flex justify-between">
-            <Button type="submit">{T.settings.submit}</Button>
+            <Button type="submit" disabled={!methods.formState.isDirty}>
+              {T.settings.submit}
+            </Button>
             <Button
               disabled={!methods.formState.isDirty}
               type="button"

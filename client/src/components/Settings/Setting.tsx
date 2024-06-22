@@ -2,7 +2,7 @@ import { Box, Checkbox } from '@client/components';
 import { twJoin } from 'tailwind-merge';
 import { ReactNode, useEffect } from 'react';
 import { FormItemCheckbox } from '../Form/FormItem';
-import { useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 
 interface ISettingCommon {
   heading: string;
@@ -14,15 +14,19 @@ interface ISettingSimple extends ISettingCommon {
   variant: 'simple';
 }
 
-interface ISettingToggle extends ISettingCommon {
+interface ISettingToggle<A extends FieldValues> extends ISettingCommon {
   variant: 'toggle';
-  checked: boolean;
-  onToggle(checked: boolean): void;
+  name: keyof A;
 }
 
-type ISetting = ISettingSimple | ISettingToggle;
+type ISetting<A extends FieldValues> = ISettingSimple | ISettingToggle<A>;
 
-export function Setting({ children, heading, onSubmit, ...props }: ISetting): JSX.Element {
+export function Setting<A extends FieldValues>({
+  children,
+  heading,
+  onSubmit,
+  ...props
+}: ISetting<A>): JSX.Element {
   const methods = useFormContext();
   const { reset, formState, getValues } = methods;
   const { isSubmitSuccessful, isDirty, isValid, isSubmitted } = formState;
@@ -30,7 +34,7 @@ export function Setting({ children, heading, onSubmit, ...props }: ISetting): JS
 
   useEffect(() => {
     if (isSubmitSuccessful) {
-      reset(getValues());
+      reset(getValues(), { keepIsSubmitted: true });
     }
   }, [isSubmitSuccessful, reset, getValues]);
 
@@ -43,7 +47,7 @@ export function Setting({ children, heading, onSubmit, ...props }: ISetting): JS
     >
       <div className="mb-4 bg-thmBackgroundSubtle py-2 px-2">
         {props.variant === 'toggle' ? (
-          <FormItemCheckbox name="">
+          <FormItemCheckbox<A> name={props.name}>
             <h2 className="text-lg">{heading}</h2>
           </FormItemCheckbox>
         ) : (

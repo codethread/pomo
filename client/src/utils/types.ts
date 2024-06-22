@@ -3,6 +3,7 @@ import z from 'zod';
 import { Nodenv } from '@shared/asserts';
 import { ThemeName } from '@client/theme';
 import { ThemeNameSchema } from '@client/theme/updateTheme';
+import { SlackProfile } from '@client/bridge/slack';
 
 export type IClientLogger = {
   debug(...msg: any): Promise<void>;
@@ -15,12 +16,12 @@ export type TimerType = keyof UserConfig['timers'];
 
 export const emptyConfig: UserConfig = {
   timers: {
-    pomo: 10,
+    pomo: 25,
     short: 5,
     long: 15,
   },
   displayTimerInStatusBar: true,
-  longBreakEvery: 3,
+  longBreakEvery: 4,
   autoStart: {
     beforeShortBreak: true,
     beforeLongBreak: true,
@@ -102,6 +103,7 @@ export type IBridge<T = UserConfig> = IClientLogger & {
   slackSetSnooze(auth: SlackAuth, minutes: number): Promise<Result<SlackOk, SlackErr>>;
   slackEndSnooze(auth: SlackAuth): Promise<Result<SlackOk, SlackErr>>;
   slackSetPresence(auth: SlackAuth, state: 'active' | 'away'): Promise<Result<SlackOk, SlackErr>>;
+  slackValidate(auth: SlackAuth): Promise<Result<SlackProfile, SlackErr>>;
   nodenv(): Promise<Result<Nodenv>>;
   isProd(): Promise<Result<boolean>>;
   isTest(): Promise<Result<boolean>>;
@@ -172,9 +174,3 @@ export interface IChildren {
 export type ICss = {
   className?: string;
 };
-
-declare global {
-  type Prettify<T> = {
-    [K in keyof T]: T[K];
-  } & {};
-}
