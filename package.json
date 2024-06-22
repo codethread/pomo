@@ -34,7 +34,8 @@
     "tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store#v1",
     "ws": "8.5.0",
     "xstate": "^4.31.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zod-validation-error": "^3.3.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.5.7",
