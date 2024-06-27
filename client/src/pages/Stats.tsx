@@ -1,13 +1,16 @@
-import { StatType, StatTypes, Stats } from '@shared/types';
+import { StatType, StatTypeSchema, StatTypes, Stats } from '@shared/types';
 import { ClockIcon, ChatAlt2Icon } from '@heroicons/react/outline';
 import { format, startOfWeek, parse, add } from 'date-fns';
 import { useBridge } from '@client/hooks';
 import { useAsync } from 'react-use';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, ErrorBoundary, FormItemNumber, Box, InputSelect } from '@client/components';
 import { FormItemText } from '@client/components/Form/FormItem';
+import { z } from 'zod';
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-const timestampFormat = 'EEEE yy/MM/dd hh:mm';
+const timestampFormat = 'EEEE yy/MM/dd HH:mm';
 
 export function Stats() {
   const b = useBridge();
@@ -70,8 +73,8 @@ function Raw({ stats }: { stats: Stats }) {
       </Button>
       {stats.completed.map((s) => (
         <p key={s.timestamp} className="flex justify-between tabular-nums">
-          <span>{format(s.timestamp, 'MM/dd hh:mm')}</span>
-          <span>{formatTime(s.duration)}</span>
+          <span>{format(s.timestamp, 'MM/dd HH:mm')}</span>
+          <span>{formatTime(s.duration, { hideSeconds: true })}</span>
           <RawIcon type={s._tag ?? 'pomo.pomo'} />
         </p>
       ))}
@@ -103,15 +106,49 @@ function Summary({ output }: { output: OUT }) {
   );
 }
 
+const ManualTimeSchema = z.object({
+  duration: z.number().min(1, { message: '> 0' }),
+  timestamp: z
+    .string()
+    .refine((t) => Boolean(getFormatedDate(t)), { message: 'invalid timestamp' }),
+  statType: StatTypeSchema,
+});
+
+type ManualTimeForm = z.infer<typeof ManualTimeSchema>;
+
+const now = format(new Date().toISOString(), 'yy/MM/dd HH:mm');
+
 function ManualTime() {
-  const [timestamp, setTimestamp] = useState(() => new Date().toISOString());
-  const [userTimestamp, setUserTimestamp] = useState(() => format(timestamp, 'yy/MM/dd hh:mm'));
-  const [errorExample, setErrorExample] = useState('');
-  const [statType, setStatType] = useState<StatType>('other.meeting');
+  const methods = useForm<ManualTimeForm>({
+    defaultValues: {
+      timestamp: now,
+      duration: 10,
+      statType: 'other.meeting',
+    },
+    resolver: zodResolver(ManualTimeSchema),
+  });
+
   const [isShown, setIsShown] = useState(false);
 
-  const [duration, setDuration] = useState(60);
   const { statsTimerComplete } = useBridge();
+
+  const { reset, formState, getValues } = methods;
+  const { isSubmitSuccessful } = formState;
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset(getValues(), { keepIsSubmitted: true });
+    }
+  }, [isSubmitSuccessful, reset, getValues]);
+
+  const [lastValidTs, setLastValidTs] = useState(now);
+  const ts = methods.watch('timestamp');
+  useEffect(() => {
+    const d = getFormatedDate(ts);
+    if (d) {
+      setLastValidTs(d);
+    }
+  }, [ts]);
 
   if (!isShown) {
     return (
@@ -124,68 +161,40 @@ function ManualTime() {
   }
 
   return (
-    <div className="flex flex-col border border-thmWarn rounded-lg p-2 gap-4">
-      <div className="flex gap-2">
-        <div className="basis-1/3">
-          <FormItemNumber
-            label="Mins"
-            input={{
-              min: 0,
-              max: 1000,
-              value: duration / 60,
-              onChange: (n) => {
-                setDuration(n * 60);
-              },
-            }}
+    <FormProvider {...methods}>
+      <form
+        onSubmit={methods.handleSubmit((form) => {
+          const iso = parse(form.timestamp, 'yy/MM/dd HH:mm', new Date()).toISOString();
+          statsTimerComplete(form.duration * 60, form.statType, iso);
+        })}
+      >
+        <div className="flex flex-col border border-thmWarn rounded-lg p-2 gap-4">
+          <div className="flex gap-2">
+            <div className="basis-1/3">
+              <FormItemNumber<ManualTimeForm> name="duration" label="Mins" />
+            </div>
+            <div>
+              <FormItemText<ManualTimeForm> name="timestamp" label="Timestamp" />
+              <p className="text-thmFgDim text-sm">{format(lastValidTs, timestampFormat)}</p>
+            </div>
+          </div>
+          <InputSelect<StatType>
+            id="stat-type"
+            options={StatTypes}
+            initialValue={methods.getValues('statType')}
+            onChange={(statType) => methods.setValue('statType', statType)}
           />
+          <div className="flex justify-around gap-4 flex-row w-fill">
+            <Button type="submit" disabled={!methods.formState.isDirty} variant="secondary">
+              Add time
+            </Button>
+            <Button onClick={() => setIsShown((s) => !s)} variant="tertiary">
+              Hide
+            </Button>
+          </div>
         </div>
-        <div>
-          <FormItemText
-            label="Timestamp"
-            error={errorExample}
-            input={{
-              value: userTimestamp,
-              onChange(t) {
-                setUserTimestamp(t);
-                try {
-                  const date = parse(t, 'yy/MM/dd hh:mm', new Date());
-                  if (isNaN(date as any)) {
-                    throw new Error('aweful api');
-                  }
-                  setTimestamp(date.toISOString());
-                  setErrorExample('');
-                } catch (_) {
-                  setErrorExample('invalid timestamp');
-                }
-              },
-            }}
-          />
-          <p className="text-thmFgDim text-sm">{format(timestamp, timestampFormat)}</p>
-        </div>
-      </div>
-      <InputSelect<StatType>
-        id="stat-type"
-        options={StatTypes}
-        initialValue={statType}
-        onChange={(statType) => {
-          setStatType(statType);
-        }}
-      />
-      <div className="flex justify-around gap-4 flex-row w-fill">
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={() => {
-            statsTimerComplete(duration, statType, timestamp);
-          }}
-        >
-          Add time
-        </Button>
-        <Button onClick={() => setIsShown((s) => !s)} variant="tertiary">
-          Hide
-        </Button>
-      </div>
-    </div>
+      </form>
+    </FormProvider>
   );
 }
 
@@ -259,4 +268,16 @@ interface OUT {
   weekStartIso: string;
   completed: [string, number][];
   total: number;
+}
+
+function getFormatedDate(t: string): string | false {
+  try {
+    const date = parse(t, 'yy/MM/dd HH:mm', new Date());
+    if (isNaN(date as any)) {
+      throw new Error('aweful api');
+    }
+    return date.toISOString();
+  } catch (_) {
+    return false;
+  }
 }

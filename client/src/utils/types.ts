@@ -114,6 +114,7 @@ export type IBridge<T = UserConfig> = IClientLogger & {
 };
 
 export const StatTypes = ['pomo.pomo', 'other.meeting'] as const;
+export const StatTypeSchema = z.enum(StatTypes);
 export type StatType = typeof StatTypes[number];
 export interface Stats {
   completed: Array<{
