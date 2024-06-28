@@ -1,104 +1,84 @@
-import { FormItemCheckbox } from '@client/components/Form/FormItem';
 import { useConfig } from '@client/hooks';
-import { useRef } from 'react';
-import { useActor } from '@xstate/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import z from 'zod';
 import T from '@client/copy';
 import { Button, FormItemNumber } from '@client/components';
-import { TimerSettingsActorRef, timerSettingsModel } from '@client/machines';
 import { Setting } from './Setting';
+import { FormProvider, useForm } from 'react-hook-form';
 
-const { CANCEL, SAVE, UPDATE } = timerSettingsModel.events;
+const MAX = 255;
 
-export function Timer({ actor }: { actor: TimerSettingsActorRef }): JSX.Element {
-  const [state, send] = useActor(actor);
-  const {
-    context: { long, pomo, short },
-  } = state;
-  const inputRef = useRef<HTMLInputElement>(null);
+const UserFormSchema = z.object({
+  pomo: z.number().positive().lt(MAX),
+  short: z.number().positive().lt(MAX),
+  long: z.number().positive().lt(MAX),
+  breakFrequency: z.number().positive().lt(20),
+});
+
+type UserForm = z.infer<typeof UserFormSchema>;
+
+export function Timer(): JSX.Element {
   const { config, storeUpdate } = useConfig();
+
+  const methods = useForm<UserForm>({
+    defaultValues: {
+      ...config?.timers,
+      breakFrequency: config?.longBreakEvery,
+    },
+    resolver: zodResolver(UserFormSchema),
+  });
 
   return (
     <>
-      <Setting
-        variant="simple"
-        heading="Timer"
-        onSubmit={() => {
-          send(SAVE());
-          inputRef.current?.focus();
-        }}
-      >
-        <FormItemNumber
-          label="Pomodoro"
-          ariaLabel="Set the duration, in minutes, of a pomodoro timer"
-          error={pomo.error}
-          input={{
-            min: 1,
-            max: 100,
-            value: pomo.value,
-            onChange: (n) => {
-              send(UPDATE('pomo', n));
-            },
-          }}
-        />
-        <FormItemNumber
-          label="Short Break"
-          ariaLabel="Set the duration, in minutes, of each short break timer between pomodoros"
-          error={short.error}
-          input={{
-            min: 1,
-            max: 100,
-            value: short.value,
-            onChange: (n) => {
-              send(UPDATE('short', n));
-            },
-          }}
-        />
-        <FormItemNumber
-          label="Long Break"
-          ariaLabel="Set the duration, in minutes, of each long break timer which runs after completing several pomodoros"
-          error={long.error}
-          input={{
-            min: 1,
-            max: 100,
-            value: long.value,
-            onChange: (n) => {
-              send(UPDATE('long', n));
-            },
-          }}
-        />
-        <div className="flex justify-between">
-          <Button
-            disabled={!state.can('SAVE')}
-            type="submit"
-            style={{ gridColumn: 'middle-r / right' }}
-          >
-            {T.settings.submit}
-          </Button>
-          <Button
-            disabled={!state.can('CANCEL')}
-            type="button"
-            variant="secondary"
-            style={{ gridColumn: 'middle-r / right' }}
-            onClick={() => {
-              send(CANCEL());
-              inputRef.current?.focus();
-            }}
-          >
-            {T.settings.cancel}
-          </Button>
-        </div>
-      </Setting>
-      <Setting variant="simple" heading="Other" onSubmit={() => {}}>
-        <FormItemCheckbox
-          checkbox={{
-            initiallyChecked: config?.displayTimerInStatusBar ?? false,
-            onChange(checked: boolean) {
-              storeUpdate({ displayTimerInStatusBar: checked });
-            },
-          }}
-          label="Show timer in status bar"
-        />
-      </Setting>
+      <FormProvider {...methods}>
+        <Setting
+          variant="simple"
+          heading="Timer"
+          onSubmit={methods.handleSubmit((update) => {
+            storeUpdate({ timers: update, longBreakEvery: update.breakFrequency });
+          })}
+        >
+          <FormItemNumber<UserForm>
+            name="pomo"
+            label="Pomo"
+            ariaLabel="Set the duration, in minutes, of a pomodoro timer"
+          />
+          <FormItemNumber<UserForm>
+            name="short"
+            label="Short Break"
+            ariaLabel="Set the duration, in minutes, of each short break timer between pomodoros"
+          />
+          <FormItemNumber<UserForm>
+            name="long"
+            label="Long Break"
+            ariaLabel="Set the duration, in minutes, of each long break timer which runs after completing several pomodoros"
+          />
+          <FormItemNumber<UserForm>
+            name="breakFrequency"
+            label="Break Frequency"
+            ariaLabel="Set after how many Pomodoro timers do you want a longer break"
+          />
+          <div className="flex justify-between">
+            <Button type="submit" disabled={!methods.formState.isDirty}>
+              {T.settings.submit}
+            </Button>
+            <Button
+              disabled={!methods.formState.isDirty}
+              type="button"
+              variant="secondary"
+              onClick={() => methods.reset()}
+            >
+              {T.settings.cancel}
+            </Button>
+          </div>
+        </Setting>
+        {/* <Setting variant="simple" heading="Other" onSubmit={() => {}}> */}
+        {/*   <FormItemCheckbox<UserForm> */}
+        {/*     name="displayTimerInStatusBar" */}
+        {/*     label="Show timer in status bar" */}
+        {/*   /> */}
+        {/* </Setting> */}
+      </FormProvider>
     </>
   );
 }

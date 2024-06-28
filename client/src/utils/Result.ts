@@ -32,7 +32,11 @@ export const err = <E = string, O = string>(arg: E): Err<O, E> => ({
   chain: async () => Promise.resolve(err(arg)),
   match: ({ Err }) => Err(arg),
   expect: (message) => {
-    throw new Error(message);
+    if (message) {
+      throw new ExpectError({ message, original: arg });
+    } else {
+      throw new Error(JSON.stringify(arg));
+    }
   },
 });
 
@@ -45,7 +49,7 @@ export interface Err<O, E = string> {
   flatMap: <A>(cb: (arg: O) => Result<A, E>) => Result<A, E>;
   chain: <A>(cb: (arg: O) => Promise<Result<A, E>>) => Promise<Result<A, E>>;
   match: <R, T>(handlers: { Err: (e: E) => R; Ok: (o: O) => T }) => R;
-  expect: (message: string) => O;
+  expect: (message?: string) => O;
 }
 
 export interface Ok<O, E = string> {
@@ -56,7 +60,7 @@ export interface Ok<O, E = string> {
   flatMap: <A>(cb: (arg: O) => Result<A, E>) => Result<A, E>;
   chain: <A>(cb: (arg: O) => Promise<Result<A, E>>) => Promise<Result<A, E>>;
   match: <R, T>(handlers: { Err: (e: E) => R; Ok: (o: O) => T }) => T;
-  expect: (message: string) => O;
+  expect: (message?: string) => O;
 }
 
 export const isErr = <O, E>(result: Result<O, E>): result is Err<O, E> => !result.ok;
@@ -67,4 +71,13 @@ export function tupleResult<A, B, C>(
   result2: Result<C, B>
 ): Result<[A, C], B> {
   return result1.flatMap((ok1) => result2.map((ok2) => [ok1, ok2]));
+}
+
+class ExpectError extends Error {
+  original: any;
+
+  constructor({ message, original }: { message: string; original: any }) {
+    super(message);
+    this.original = original;
+  }
 }

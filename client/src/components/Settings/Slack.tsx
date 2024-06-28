@@ -1,135 +1,179 @@
 import { Button, FormItemPassword } from '@client/components';
-import { FormItemCheckbox, FormItemText } from '@client/components/Form/FormItem';
+import { FormItemText } from '@client/components/Form/FormItem';
+import z from 'zod';
 import { useBridge, useConfig } from '@client/hooks';
-import { useState } from 'react';
 import { Setting } from './Setting';
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { IBridge } from '@shared/types';
+import { useAsyncFn, useLocalStorage } from 'react-use';
+import { CheckIcon, RssIcon } from '@heroicons/react/solid';
+import { useEffect, useState } from 'react';
 
-export function Slack(): JSX.Element | null {
-  const config = useConfig();
-  const { storeUpdate } = config;
+const SlackFormSchema = z.object({
+  enabled: z.boolean(),
+  slackDomain: z.string().min(1, { message: 'domain is required' }).trim(),
+  slackToken: z.string().min(1, { message: 'token is required' }).trim(),
+  slackDCookie: z.string().min(1, { message: 'cookie is required' }).trim(),
+  slackDSCookie: z.string().trim(),
+});
+
+type SlackForm = z.infer<typeof SlackFormSchema>;
+
+export function Slack() {
+  const { config, storeUpdate } = useConfig();
+  const [updated, setUpdated] = useState(false);
+  // TODO: move this storage into some generic component/hook
+  const [wip, setWipStorage, remove] = useLocalStorage<Partial<SlackForm>>('slack-form-key');
   const bridge = useBridge();
 
-  // TODO: fix this up to handle loading
-  const slack = config.config?.slack ?? { enabled: false };
+  const [{ error, loading, value: userName }, validate] = useAsyncFn(validateDetails(bridge));
 
-  const initialToken = slack.enabled ? slack.slackToken : '';
-  const initialCookie = slack.enabled ? slack.slackDCookie : '';
-  const initialSCookie = slack.enabled ? slack.slackDSCookie : '';
-  const initialDomain = slack.enabled ? slack.slackDomain : '';
+  const methods = useForm<SlackForm>({
+    defaultValues: config?.slack,
+    resolver: zodResolver(SlackFormSchema),
+  });
 
-  const [token, setToken] = useState(initialToken);
-  const [cookie, setCookie] = useState(initialCookie);
-  const [sCookie, setSCookie] = useState(initialSCookie);
-  const [domain, setDomain] = useState(initialDomain);
+  // Update the form state from local storage if data is present
+  useEffect(() => {
+    if (wip && !updated) {
+      setUpdated(true);
+      Object.entries(wip).map(([key, value]) => {
+        if (value) {
+          methods.setValue(key, value);
+        }
+      });
+    }
+  }, [wip, methods, setUpdated, updated]);
 
-  // TODO: upgrade Typescript to get this to work as just loading
-  if (config.loading) return null;
-
-  const canNotSubmit =
-    [token, cookie, domain].includes('') ||
-    (token === initialToken &&
-      cookie === initialCookie &&
-      sCookie === initialSCookie &&
-      domain === initialDomain);
+  methods.watch((inputs) => {
+    setWipStorage(inputs);
+  });
 
   return (
-    <Setting
-      heading="Slack"
-      variant="simple"
-      onSubmit={() => {
-        storeUpdate({
-          slack: {
-            slackDomain: domain,
-            slackToken: token,
-            slackDCookie: cookie,
-            slackDSCookie: sCookie,
-          },
-        });
-      }}
-    >
-      <FormItemCheckbox
-        checkbox={{
-          initiallyChecked: slack.enabled,
-          onChange() {
-            storeUpdate({
-              slack: {
-                enabled: !slack.enabled,
-              },
-            });
-          },
-        }}
-        label="Enabled"
-      />
-      <FormItemText
-        id="slackUrl"
-        label="Url"
-        input={{
-          placeholder: 'domain',
-          value: domain,
-          onChange: (v) => setDomain(v),
-        }}
-      />
-      <FormItemPassword
-        id="slackToken"
-        label="Token"
-        input={{
-          placeholder: 'xocx-...',
-          value: token,
-          onChange: (v) => setToken(v),
-        }}
-      />
-      <FormItemPassword
-        id="slackCookie"
-        label="Cookie 'd'"
-        input={{
-          placeholder: 'xocx-...',
-          value: cookie,
-          onChange: (v) => setCookie(v),
-        }}
-      />
-      <FormItemPassword
-        id="slackCookieD"
-        label="Cookie 'ds'"
-        input={{
-          placeholder: 'xocx-...',
-          value: sCookie,
-          onChange: (v) => setSCookie(v),
-        }}
-      />
-
-      <div
-        style={{
-          gridColumn: 'left / right',
-          textAlign: 'center',
-        }}
+    <FormProvider {...methods}>
+      <Setting<SlackForm>
+        heading="Slack"
+        name="enabled"
+        variant="toggle"
+        onSubmit={methods.handleSubmit((update) => {
+          remove();
+          validate(update).then(() => {
+            storeUpdate({ slack: update });
+          });
+        })}
       >
-        <Button
-          type="button"
-          variant="tertiary"
-          onClick={() => {
-            bridge.openExternal('https://github.com/AHDesigns/pomo-electron#slack-integration');
+        <FormItemText<SlackForm> name="slackDomain" label="Url" placeholder="slack" />
+        <FormItemPassword<SlackForm> name="slackToken" label="Token" placeholder="xocx-..." />
+        <FormItemPassword<SlackForm>
+          name="slackDCookie"
+          label="Cookie 'd'"
+          placeholder="xocx-..."
+        />
+        <FormItemPassword<SlackForm>
+          name="slackDSCookie"
+          label="Cookie 'ds'"
+          placeholder="xocx-..."
+        />
+
+        {methods.formState.isSubmitted && loading && (
+          <p className="text-thmSecondary">
+            Checking details{' '}
+            <RssIcon className="inline-flex ml-1 w-2 relative bottom-2 animate-ping" />
+          </p>
+        )}
+        {methods.formState.isSubmitted && !methods.formState.isDirty && !loading && error && (
+          <p className="text-thmError">{error.message}</p>
+        )}
+        {methods.formState.isSubmitted &&
+          !methods.formState.isDirty &&
+          typeof userName === 'string' && (
+            <p className="text-thmGood flex items-center">
+              Greetings {userName} <CheckIcon className="inline-flex ml-1 w-5" />
+            </p>
+          )}
+
+        <div
+          style={{
+            gridColumn: 'left / right',
+            textAlign: 'center',
           }}
         >
-          where do I get these from?
-        </Button>
-      </div>
-      <div className="flex justify-between">
-        <Button disabled={canNotSubmit} type="submit">
-          Submit
-        </Button>
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={() => {
-            setDomain(initialDomain);
-            setToken(initialToken);
-            setCookie(initialCookie);
-            setSCookie(initialSCookie);
-          }}
-        >
-          Cancel
-        </Button>
-      </div>
-    </Setting>
+          <Button
+            type="button"
+            variant="tertiary"
+            onClick={() => {
+              bridge.openExternal('https://github.com/codethread/pomo#slack-integration');
+            }}
+          >
+            where do I get these from?
+          </Button>
+        </div>
+        <div className="flex justify-between">
+          <Button
+            type="submit"
+            disabled={!methods.formState.isDirty}
+            isSubmitting={methods.formState.isSubmitting}
+          >
+            Submit
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={!methods.formState.isDirty}
+            onClick={() => {
+              remove();
+              methods.reset();
+            }}
+          >
+            Cancel
+          </Button>
+        </div>
+      </Setting>
+    </FormProvider>
   );
+}
+
+function validateDetails(bridge: IBridge) {
+  return async (auth: SlackForm): Promise<string | true> => {
+    // no point validating if turning off slack
+    if (!auth.enabled) return true;
+
+    try {
+      const res = await bridge.slackValidate({
+        token: auth.slackToken,
+        domain: auth.slackDomain,
+        dCookie: auth.slackDCookie,
+        dSCookie: auth.slackDSCookie,
+      });
+
+      return res.match({
+        Ok: (res) => {
+          if (!res.ok) {
+            throw res;
+          }
+          return (
+            res.profile.real_name_normalized ||
+            res.profile.real_name ||
+            res.profile.first_name ||
+            res.profile.display_name_normalized
+          );
+        },
+        Err: (e) => {
+          throw e;
+        },
+      });
+    } catch (e: any) {
+      console.error(e);
+      if (e.error === 'invalid_auth') {
+        throw new Error(
+          'These details did not work, be sure to check the link below for details about these fields'
+        );
+      } else {
+        throw new Error(
+          `Something went wrong with these details: "${e.error}". This is likely an issue with the details you put in, but if it looks like a technical error, please raise an issue!`
+        );
+      }
+    }
+  };
 }

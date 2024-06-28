@@ -3,6 +3,7 @@ import { assertUnreachable } from '@shared/asserts';
 import { nord, nordLight, rosePine } from './themes/nord';
 import { oneDark } from './themes/oneDark';
 import { themeReset } from './themes/themeReset';
+import z from 'zod';
 
 export const themes = ['nord', 'nord-light', 'one-dark', 'rose-pine'] as const;
 
@@ -25,4 +26,6 @@ export function updateTheme(theme: ThemeName): void {
 
 export type UpdateTheme = typeof updateTheme;
 
-export type ThemeName = typeof themes[number];
+export const ThemeNameSchema = z.enum(themes);
+
+export type ThemeName = z.infer<typeof ThemeNameSchema>;

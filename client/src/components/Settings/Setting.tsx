@@ -1,5 +1,8 @@
-import { Box, Checkbox } from '@client/components';
-import { ReactNode } from 'react';
+import { Box } from '@client/components';
+import { twJoin } from 'tailwind-merge';
+import { ReactNode, useEffect } from 'react';
+import { FormItemCheckbox } from '../Form/FormItem';
+import { FieldValues, Path, useFormContext } from 'react-hook-form';
 
 interface ISettingCommon {
   heading: string;
@@ -11,26 +14,42 @@ interface ISettingSimple extends ISettingCommon {
   variant: 'simple';
 }
 
-interface ISettingToggle extends ISettingCommon {
+interface ISettingToggle<A extends FieldValues> extends ISettingCommon {
   variant: 'toggle';
-  checked: boolean;
-  onToggle(checked: boolean): void;
+  name: Path<A>;
 }
 
-type ISetting = ISettingSimple | ISettingToggle;
+type ISetting<A extends FieldValues> = ISettingSimple | ISettingToggle<A>;
 
-export function Setting({ children, heading, onSubmit, ...props }: ISetting): JSX.Element {
+export function Setting<A extends FieldValues>({
+  children,
+  heading,
+  onSubmit,
+  ...props
+}: ISetting<A>): JSX.Element {
+  const methods = useFormContext();
+  const { reset, formState, getValues } = methods;
+  const { isSubmitSuccessful, isDirty, isValid, isSubmitted } = formState;
+  const hasError = isSubmitted && !isValid;
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset(getValues(), { keepIsSubmitted: true });
+    }
+  }, [isSubmitSuccessful, reset, getValues]);
+
   return (
-    <Box className="mb-8 mt-4">
+    <Box
+      className={twJoin(
+        'mb-8 mt-4 border-l-2',
+        hasError ? 'border-thmError' : isDirty ? 'border-thmSecondary' : 'border-thmBackground'
+      )}
+    >
       <div className="mb-4 bg-thmBackgroundSubtle py-2 px-2">
         {props.variant === 'toggle' ? (
-          <Checkbox
-            id={`${heading}-form-checkbox`}
-            initiallyChecked={props.checked}
-            onChange={props.onToggle}
-          >
+          <FormItemCheckbox<A> name={props.name}>
             <h2 className="text-lg">{heading}</h2>
-          </Checkbox>
+          </FormItemCheckbox>
         ) : (
           <h2 className="text-lg">{heading}</h2>
         )}

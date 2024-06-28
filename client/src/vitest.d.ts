@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import type { Assertion, AsymmetricMatchersContaining } from 'vitest';
 
 interface CustomMatchers<R = unknown> {

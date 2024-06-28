@@ -1,6 +1,8 @@
 import { Result } from '@shared/Result';
+import z from 'zod';
 import { Nodenv } from '@shared/asserts';
-import { ThemeName } from '@client/theme';
+import { ThemeNameSchema } from '@client/theme/updateTheme';
+import { SlackProfile } from '@client/bridge/slack';
 
 export type IClientLogger = {
   debug(...msg: any): Promise<void>;
@@ -13,18 +15,17 @@ export type TimerType = keyof UserConfig['timers'];
 
 export const emptyConfig: UserConfig = {
   timers: {
-    pomo: 10,
+    pomo: 25,
     short: 5,
     long: 15,
   },
   displayTimerInStatusBar: true,
-  longBreakEvery: 3,
+  longBreakEvery: 4,
   autoStart: {
     beforeShortBreak: true,
     beforeLongBreak: true,
     beforePomo: false,
   },
-  slack: { enabled: false },
   theme: 'nord',
 };
 
@@ -32,30 +33,32 @@ export const emptyStats: Stats = {
   completed: [],
 };
 
-export interface UserConfig {
-  timers: {
-    pomo: number;
-    short: number;
-    long: number;
-  };
-  displayTimerInStatusBar: boolean;
-  longBreakEvery: number;
-  autoStart: {
-    beforeShortBreak: boolean;
-    beforeLongBreak: boolean;
-    beforePomo: boolean;
-  };
-  slack:
-    | {
-        enabled: true;
-        slackDomain: string;
-        slackToken: string;
-        slackDCookie: string;
-        slackDSCookie: string;
-      }
-    | { enabled: false };
-  theme: ThemeName;
-}
+export const UserConfigSchema = z.object({
+  timers: z.object({
+    pomo: z.number(),
+    short: z.number(),
+    long: z.number(),
+  }),
+  displayTimerInStatusBar: z.boolean(),
+  longBreakEvery: z.number(),
+  autoStart: z.object({
+    beforeShortBreak: z.boolean(),
+    beforeLongBreak: z.boolean(),
+    beforePomo: z.boolean(),
+  }),
+  slack: z
+    .object({
+      enabled: z.boolean(),
+      slackDomain: z.string(),
+      slackToken: z.string(),
+      slackDCookie: z.string(),
+      slackDSCookie: z.string(),
+    })
+    .optional(),
+  theme: ThemeNameSchema,
+});
+
+export type UserConfig = z.infer<typeof UserConfigSchema>;
 
 export interface SlackAuth {
   domain: string;
@@ -99,6 +102,7 @@ export type IBridge<T = UserConfig> = IClientLogger & {
   slackSetSnooze(auth: SlackAuth, minutes: number): Promise<Result<SlackOk, SlackErr>>;
   slackEndSnooze(auth: SlackAuth): Promise<Result<SlackOk, SlackErr>>;
   slackSetPresence(auth: SlackAuth, state: 'active' | 'away'): Promise<Result<SlackOk, SlackErr>>;
+  slackValidate(auth: SlackAuth): Promise<Result<SlackProfile, SlackErr>>;
   nodenv(): Promise<Result<Nodenv>>;
   isProd(): Promise<Result<boolean>>;
   isTest(): Promise<Result<boolean>>;
@@ -109,6 +113,7 @@ export type IBridge<T = UserConfig> = IClientLogger & {
 };
 
 export const StatTypes = ['pomo.pomo', 'other.meeting'] as const;
+export const StatTypeSchema = z.enum(StatTypes);
 export type StatType = typeof StatTypes[number];
 export interface Stats {
   completed: Array<{
@@ -165,3 +170,7 @@ export interface TimerHooks {
 export interface IChildren {
   children: React.ReactNode;
 }
+
+export type ICss = {
+  className?: string;
+};

@@ -10,6 +10,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
 export interface IButton extends ButtonProps {
   variant?: 'icon' | 'primary' | 'secondary' | 'tertiary';
   fullWidth?: boolean;
+  isSubmitting?: boolean;
 }
 
 // const Common = () => (
@@ -24,6 +25,7 @@ export function Button({
   variant = 'primary',
   fullWidth,
   type = 'button',
+  isSubmitting,
   className,
   ...props
 }: IButton & IChildren): JSX.Element {
@@ -38,7 +40,10 @@ export function Button({
             common,
             'bg-thmPrimary uppercase text-thmBackground focus:bg-thmBright disabled:bg-thmBackgroundBrightest disabled:text-thmBackground disabled:hover:brightness-100',
             width,
-            className
+            className,
+            {
+              'animate-pulse': isSubmitting,
+            }
           )}
           {...props}
         >

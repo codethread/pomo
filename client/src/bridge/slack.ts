@@ -19,6 +19,37 @@ interface SlackOk {
   ok: true;
 }
 
+export interface SlackProfile extends SlackOk {
+  profile: {
+    avatar_hash: string;
+    display_name: string;
+    display_name_normalized: string;
+    email: string;
+    first_name: string;
+    huddle_state: string;
+    huddle_state_expiration_ts: number;
+    image_24: string;
+    image_32: string;
+    image_48: string;
+    image_72: string;
+    image_192: string;
+    image_512: string;
+    image_1024: string;
+    image_original: string;
+    is_custom_image: boolean;
+    last_name: string;
+    phone: string;
+    real_name: string;
+    real_name_normalized: string;
+    skype: string;
+    status_emoji: string;
+    status_expiration: number;
+    status_text: string;
+    status_text_canonical: string;
+    title: string;
+  };
+}
+
 /**
  * There are more of these, but I will add them as I find them
  */
@@ -40,6 +71,8 @@ export interface SlackRepository {
   slackEndSnooze(auth: SlackAuth): Promise<Result<SlackOk, SlackErr>>;
 
   slackSetPresence(auth: SlackAuth, state: 'active' | 'away'): Promise<Result<SlackOk, SlackErr>>;
+
+  slackValidate(auth: SlackAuth): Promise<Result<SlackProfile, SlackErr>>;
 }
 
 interface SlackParams {
@@ -75,8 +108,11 @@ export const slackRepository = ({ logger, client }: SlackParams): SlackRepositor
     },
 
     async slackSetSnooze(auth, duration) {
-      slackReq<SlackOk>(`/dnd.info`, {}, auth);
       return slackReq<SlackOk>(`/dnd.setSnooze`, { num_minutes: duration }, auth);
+    },
+
+    async slackValidate(auth) {
+      return slackReq<SlackProfile>(`/users.profile.get`, {}, auth);
     },
   };
 };

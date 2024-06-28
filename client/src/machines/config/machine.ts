@@ -1,6 +1,7 @@
 import { formatTrayTime } from '@shared/formatTrayTime';
-import { DeepPartial, IBridge, UserConfig } from '@shared/types';
+import { DeepPartial, IBridge, UserConfig, UserConfigSchema } from '@shared/types';
 import { ActorRefFrom, assign, createMachine, InterpreterFrom, sendParent } from 'xstate';
+import { fromError } from 'zod-validation-error';
 import { respond } from 'xstate/lib/actions';
 import { actorIds } from '../constants';
 import mainModel from '../main/model';
@@ -127,6 +128,12 @@ export default function configMachine({ bridge }: IConfigMachine) {
           });
         },
         updateConfig: async (c, e) => {
+          const parsed = UserConfigSchema.deepPartial().strict().safeParse(e.data);
+          if (!parsed.success) {
+            const e = fromError(parsed.error).toString();
+            bridge.error(e);
+            throw new Error(e);
+          }
           const res = await bridge.storeUpdate(e.data);
           return res.match({
             Ok: (config) => {

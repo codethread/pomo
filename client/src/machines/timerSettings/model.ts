@@ -1,5 +1,5 @@
 import { UserConfig } from '@shared/types';
-import { ContextFrom, EventFrom } from 'xstate';
+import { EventFrom } from 'xstate';
 import { createModel } from 'xstate/lib/model';
 
 export interface TimerSettingsContext {

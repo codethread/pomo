@@ -4,7 +4,8 @@ use crate::models;
 
 pub fn handle_setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     let window = app.get_window("main").unwrap();
-    app.manage(models::State::new(window.clone()));
+    let tray = app.tray_handle();
+    app.manage(models::State::new(window.clone(), tray));
 
     // hide icon from dock
     app.set_activation_policy(tauri::ActivationPolicy::Accessory);

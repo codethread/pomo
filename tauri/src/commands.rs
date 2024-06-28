@@ -1,7 +1,10 @@
 use lib::TimePayload;
-use tauri::State;
+use tauri::{AppHandle, State};
 
-use crate::models;
+use crate::{
+    models,
+    tray::{get_icon, Icons},
+};
 
 #[tauri::command]
 pub fn start(state: State<models::State>, minutes: u8, seconds: u8, timerid: String) {
@@ -15,8 +18,9 @@ pub fn start(state: State<models::State>, minutes: u8, seconds: u8, timerid: Str
 }
 
 #[tauri::command]
-pub fn stop(state: State<models::State>, id: String) {
+pub fn stop(app: AppHandle, state: State<models::State>, id: String) {
     state.0.lock().unwrap().stop(id);
+    app.tray_handle().set_icon(get_icon(Icons::Ready));
 }
 
 #[tauri::command]
@@ -25,8 +29,9 @@ pub fn pause(state: State<models::State>, id: String) {
 }
 
 #[tauri::command]
-pub fn play(state: State<models::State>, id: String) {
+pub fn play(app: AppHandle, state: State<models::State>, id: String) {
     state.0.lock().unwrap().play(id);
+    app.tray_handle().set_icon(get_icon(Icons::Running));
 }
 
 #[tauri::command]

@@ -1,9 +1,44 @@
+use std::path::PathBuf;
+
 use tauri::{
-    AppHandle, CustomMenuItem, Manager, PhysicalPosition, SystemTray, SystemTrayEvent,
-    SystemTrayMenu, SystemTrayMenuItem,
+    AppHandle, CustomMenuItem, Icon, Manager, PhysicalPosition, State, SystemTray, SystemTrayEvent,
+    SystemTrayMenu,
 };
 
 use crate::models;
+
+const READY_ICON: &[u8] = {
+    #[cfg(debug_assertions)]
+    {
+        include_bytes!("../icons/IconTemplateDev@2x.png")
+    }
+    #[cfg(not(debug_assertions))]
+    {
+        include_bytes!("../icons/IconTemplate@2x.png")
+    }
+};
+
+const RUNNING_ICON: &[u8] = {
+    #[cfg(debug_assertions)]
+    {
+        include_bytes!("../icons/IconActiveTemplateDev@2x.png")
+    }
+    #[cfg(not(debug_assertions))]
+    {
+        include_bytes!("../icons/IconActiveTemplate@2x.png")
+    }
+};
+
+pub enum Icons {
+    Ready,
+    Running,
+}
+pub fn get_icon(icon: Icons) -> Icon {
+    match icon {
+        Icons::Ready => Icon::Raw(READY_ICON.to_vec()),
+        Icons::Running => Icon::Raw(RUNNING_ICON.to_vec()),
+    }
+}
 
 pub fn create_system_tray() -> SystemTray {
     // here `"quit".to_string()` defines the menu item id, and the second parameter is the menu item label.
@@ -11,10 +46,12 @@ pub fn create_system_tray() -> SystemTray {
     let hide = CustomMenuItem::new("hide".to_string(), "Hide");
     let tray_menu = SystemTrayMenu::new()
         .add_item(quit)
-        .add_native_item(SystemTrayMenuItem::Separator)
+        .add_native_item(tauri::SystemTrayMenuItem::Separator)
         .add_item(hide);
 
-    SystemTray::new().with_menu(tray_menu)
+    SystemTray::new()
+        .with_menu(tray_menu)
+        .with_icon(get_icon(Icons::Ready))
 }
 
 pub fn handle_system_tray_event(app: &AppHandle, event: SystemTrayEvent) {
