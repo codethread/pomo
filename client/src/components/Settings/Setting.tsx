@@ -1,8 +1,8 @@
-import { Box, Checkbox } from '@client/components';
+import { Box } from '@client/components';
 import { twJoin } from 'tailwind-merge';
 import { ReactNode, useEffect } from 'react';
 import { FormItemCheckbox } from '../Form/FormItem';
-import { FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, Path, useFormContext } from 'react-hook-form';
 
 interface ISettingCommon {
   heading: string;
@@ -16,7 +16,7 @@ interface ISettingSimple extends ISettingCommon {
 
 interface ISettingToggle<A extends FieldValues> extends ISettingCommon {
   variant: 'toggle';
-  name: keyof A;
+  name: Path<A>;
 }
 
 type ISetting<A extends FieldValues> = ISettingSimple | ISettingToggle<A>;

@@ -19,7 +19,7 @@ export function FormItemCheckbox<A extends FieldValues>({
   smallPrint,
   children,
   ...rest
-}: ICheckbox & IFormItem<A>): JSX.Element {
+}: ICheckbox & Omit<IFormItem<A>, 'label'>): JSX.Element {
   const registerOptions = {
     ...rest,
     valueAsNumber: rest.valueAsNumber as false,
@@ -57,7 +57,7 @@ export function FormItemCheckbox<A extends FieldValues>({
         />
       </label>
       {smallPrint ? <p className="text-xs">{smallPrint}</p> : null}
-      <ErrorMessage errors={errors} name={registerOptions.name} as={ErrorMsg} />
+      <ErrorMessage errors={errors} name={registerOptions.name as any} as={ErrorMsg} />
     </div>
   );
 }

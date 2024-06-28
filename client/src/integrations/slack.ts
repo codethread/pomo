@@ -66,7 +66,7 @@ function status(minutes: number): string {
 }
 
 function getSlackAuth(config: UserConfig): SlackAuth | null {
-  return config.slack.enabled
+  return config.slack?.enabled
     ? {
         domain: config.slack.slackDomain,
         token: config.slack.slackToken,

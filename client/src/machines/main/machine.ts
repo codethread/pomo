@@ -1,5 +1,5 @@
 import { type UpdateTheme } from '@client/theme';
-import { IBridge, TimerHooks, UserConfig } from '@shared/types';
+import { IBridge, TimerHooks } from '@shared/types';
 import { assign, createMachine, forwardTo, InterpreterFrom } from 'xstate';
 import configMachine from '../config/machine';
 import { actorIds } from '../constants';

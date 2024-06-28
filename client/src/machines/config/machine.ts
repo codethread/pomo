@@ -7,7 +7,6 @@ import { actorIds } from '../constants';
 import mainModel from '../main/model';
 import { createContext, timerSettingsMachine } from '../timerSettings/machine';
 import { ConfigContext, configModel, ConfitEvents } from './model';
-import { err } from '@shared/Result';
 
 export interface IConfigMachine {
   bridge: IBridge;

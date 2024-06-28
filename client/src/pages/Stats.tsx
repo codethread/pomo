@@ -4,7 +4,7 @@ import { format, startOfWeek, parse, add } from 'date-fns';
 import { useBridge } from '@client/hooks';
 import { useAsync } from 'react-use';
 import { useEffect, useState } from 'react';
-import { Button, ErrorBoundary, FormItemNumber, Box, InputSelect } from '@client/components';
+import { Button, FormItemNumber, InputSelect } from '@client/components';
 import { FormItemText } from '@client/components/Form/FormItem';
 import { z } from 'zod';
 import { FormProvider, useForm } from 'react-hook-form';

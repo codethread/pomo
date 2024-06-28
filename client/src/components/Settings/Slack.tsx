@@ -5,11 +5,9 @@ import { useBridge, useConfig } from '@client/hooks';
 import { Setting } from './Setting';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { update } from 'xstate/lib/actionTypes';
 import { IBridge } from '@shared/types';
-import { useAsync, useAsyncFn, useLocalStorage } from 'react-use';
+import { useAsyncFn, useLocalStorage } from 'react-use';
 import { CheckIcon, RssIcon } from '@heroicons/react/solid';
-import { CheckCircleIcon } from '@heroicons/react/outline';
 import { useEffect, useState } from 'react';
 
 const SlackFormSchema = z.object({

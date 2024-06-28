@@ -1,5 +1,4 @@
 import { Header, Slack, Theme, Timer } from '@client/components';
-import { useTimerSettings } from '@client/hooks';
 import { assertUnreachable } from '@shared/asserts';
 import { useReducer } from 'react';
 import { Navigation } from './Navigation';
@@ -42,13 +41,11 @@ export function PageManager({ initialPage = 'Timer' }: IPageManager = {}): JSX.E
 }
 
 function Page({ page }: { page: Pages }): JSX.Element {
-  const timerActor = useTimerSettings();
-
   switch (page) {
     case 'Timer':
       return <Pomodoro />;
     case 'Timer Settings':
-      return timerActor ? <Timer actor={timerActor} /> : <p>'loading'</p>;
+      return <Timer />;
     case 'Slack Settings':
       return <Slack />;
     case 'Theme Settings':

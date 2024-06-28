@@ -1,4 +1,4 @@
-import { Button, FormItem, InputSelect } from '@client/components';
+import { Button, InputSelect } from '@client/components';
 import { useBridge, useConfig } from '@client/hooks';
 import { ThemeName, themes } from '@client/theme';
 import { Setting } from './Setting';

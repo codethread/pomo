@@ -1,7 +1,6 @@
 import { Result } from '@shared/Result';
 import z from 'zod';
 import { Nodenv } from '@shared/asserts';
-import { ThemeName } from '@client/theme';
 import { ThemeNameSchema } from '@client/theme/updateTheme';
 import { SlackProfile } from '@client/bridge/slack';
 

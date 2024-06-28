@@ -1,7 +1,6 @@
 import { createFakeBridge } from '@test/createFakeBridge';
-import { DeepPartial, emptyConfig, HookContext, TimerHooks, UserConfig } from '@shared/types';
+import { DeepPartial, HookContext, TimerHooks, UserConfig } from '@shared/types';
 import { ticks } from '@test/tick';
-import { merge } from '@shared/merge';
 import { interpret } from 'xstate';
 import { waitFor } from 'xstate/lib/waitFor';
 import { actorIds } from '../constants';
