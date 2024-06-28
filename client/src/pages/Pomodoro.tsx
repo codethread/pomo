@@ -1,7 +1,7 @@
-import { usePomodoro, useTimer } from '@client/hooks';
-import { Countdown } from '@client/components';
-import { TimerType } from '@shared/types';
+import { Countdown } from '@client/components/Countdown/Countdown';
+import { usePomodoro, useTimer } from '@client/hooks/machines';
 import { assertUnreachable } from '@shared/asserts';
+import { TimerType } from '@shared/types';
 
 export function Pomodoro(): JSX.Element | null {
   const [state] = usePomodoro();

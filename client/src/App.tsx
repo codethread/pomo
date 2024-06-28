@@ -1,5 +1,5 @@
 import { useSelector } from '@xstate/react';
-import { useMachines } from '@client/hooks';
+import { useMachines } from './hooks/machines';
 
 interface IApp {
   children: React.ReactNode;

@@ -1,4 +1,3 @@
-import { updateTheme } from '@client/theme';
 import { TimerHooks } from '@shared/types';
 import { ClockMachine } from '@client/machines/clock/machine';
 import { useBridge } from './useBridge';
@@ -6,9 +5,10 @@ import { loggerContext } from './useLogger';
 import { bridgeContext } from './useBridge';
 import { IBridge } from '@shared/types';
 import { machinesConfig } from './machines';
-import { mainMachine } from '@client/machines';
 import { useInterpret } from '@xstate/react';
 import { useEffect } from 'react';
+import mainMachineFactory from '@client/machines/main/machine';
+import { updateTheme } from '@client/theme/updateTheme';
 
 interface ILoggerProvider {
   children: React.ReactNode;
@@ -55,7 +55,7 @@ export function MachinesProvider({ children, hooks, services }: IMachinesProvide
   }, [bridge]);
 
   const main = useInterpret(
-    mainMachine({
+    mainMachineFactory({
       bridge,
       actions: hooks,
       pomodoro: {

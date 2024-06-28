@@ -1,10 +1,11 @@
-import { useConfig } from '@client/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import T from '@client/copy';
-import { Button, FormItemNumber } from '@client/components';
 import { Setting } from './Setting';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useConfig } from '@client/hooks/useConfig';
+import { Button } from '../Button/Button';
+import { FormItemNumber } from '../Form';
 
 const MAX = 255;
 

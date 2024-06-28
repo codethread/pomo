@@ -1,14 +1,15 @@
 import { StatType, StatTypeSchema, StatTypes, Stats } from '@shared/types';
 import { ClockIcon, ChatAlt2Icon } from '@heroicons/react/outline';
 import { format, startOfWeek, parse, add } from 'date-fns';
-import { useBridge } from '@client/hooks';
 import { useAsync } from 'react-use';
 import { useEffect, useState } from 'react';
-import { Button, FormItemNumber, InputSelect } from '@client/components';
-import { FormItemText } from '@client/components/Form/FormItem';
+import { FormItemNumber, FormItemText } from '@client/components/Form/FormItem';
 import { z } from 'zod';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@client/components/Button/Button';
+import { InputSelect } from '@client/components/Inputs';
+import { useBridge } from '@client/hooks/useBridge';
 
 const timestampFormat = 'EEEE yy/MM/dd HH:mm';
 

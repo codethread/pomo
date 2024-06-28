@@ -1,6 +1,8 @@
-import { Button, InputSelect } from '@client/components';
-import { useBridge, useConfig } from '@client/hooks';
-import { ThemeName, themes } from '@client/theme';
+import { useBridge } from '@client/hooks/useBridge';
+import { useConfig } from '@client/hooks/useConfig';
+import { ThemeName, themes } from '@client/theme/updateTheme';
+import { Button } from '../Button/Button';
+import { InputSelect } from '../Inputs';
 import { Setting } from './Setting';
 import { FormProvider, useForm } from 'react-hook-form';
 

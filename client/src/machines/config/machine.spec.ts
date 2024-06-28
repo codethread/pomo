@@ -4,11 +4,12 @@ import { merge } from '@shared/merge';
 import { err, ok } from '@shared/Result';
 import { DeepPartial, emptyConfig, IBridge, UserConfig } from '@shared/types';
 import { parentMachine } from '@client/machines/testHelpers/machines';
-import { getActor, actorIds } from '@client/machines';
 import mainModel from '../main/model';
 import configMachineFactory from './machine';
 import { configModel } from './model';
 import { createFakeBridge } from '@client/testHelpers/createFakeBridge';
+import { actorIds } from '../constants';
+import { getActor } from '../utils';
 
 const { CONFIG } = actorIds;
 const { UPDATE, RESET } = configModel.events;
