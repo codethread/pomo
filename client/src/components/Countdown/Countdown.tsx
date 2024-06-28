@@ -1,10 +1,12 @@
-import { Box, Button, TimerProgress } from '@client/components';
 import T from '@client/copy';
-import { TimerActorRef } from '@client/machines';
 import { PauseIcon, PlayIcon, StopIcon } from '@heroicons/react/solid';
 import { displayNum } from '@shared/format';
 import { useActor } from '@xstate/react';
 import './countdown.css';
+import { TimerActorRef } from '@client/machines/timer/machine';
+import { Box } from '../Box';
+import { Button } from '../Button/Button';
+import { TimerProgress } from './TimerProgress';
 
 export interface ICountdown {
   timerRef: TimerActorRef;

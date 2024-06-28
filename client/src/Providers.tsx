@@ -1,10 +1,11 @@
-import { ErrorBoundary, ScrollBar } from '@client/components';
 import { BridgeProvider, LoggerProvider, MachinesProvider } from '@client/hooks/providers';
-import { PageManager } from '@client/pages';
 import { IBridge } from '@shared/types';
 import { App } from './App';
 import { hooks } from './integrations';
 import { ClockMachine } from './machines/clock/machine';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
+import { ScrollBar } from './components/ScrollBar/ScrollBar';
+import { PageManager } from './pages/PageManager';
 
 interface IProviders {
   isDev: boolean;

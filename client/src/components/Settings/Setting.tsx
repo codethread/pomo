@@ -1,8 +1,8 @@
-import { Box } from '@client/components';
 import { twJoin } from 'tailwind-merge';
 import { ReactNode, useEffect } from 'react';
 import { FormItemCheckbox } from '../Form/FormItem';
 import { FieldValues, Path, useFormContext } from 'react-hook-form';
+import { Box } from '../Box';
 
 interface ISettingCommon {
   heading: string;

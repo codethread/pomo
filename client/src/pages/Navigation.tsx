@@ -1,3 +1,4 @@
+import { Button } from '@client/components/Button/Button';
 import { Pages } from '@client/pages/PageManager';
 import {
   AdjustmentsIcon,
@@ -7,7 +8,6 @@ import {
   PencilIcon,
   ChartPieIcon,
 } from '@heroicons/react/solid';
-import { Button } from '@client/components';
 
 interface INavigation {
   page: Pages;

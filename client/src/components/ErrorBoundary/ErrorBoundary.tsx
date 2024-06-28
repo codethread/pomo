@@ -1,7 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import testIds from '@shared/testids';
 import { IClientLogger } from '@shared/types';
-import { useLogger } from '@client/hooks';
+import { useLogger } from '@client/hooks/useLogger';
 
 interface Props {
   children: ReactNode;

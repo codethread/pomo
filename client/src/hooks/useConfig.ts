@@ -1,7 +1,7 @@
-import { configModel } from '@client/machines';
 import { DeepPartial, UserConfig } from '@shared/types';
 import { useActor } from '@xstate/react';
 import { useConfigService } from './machines';
+import { configModel } from '@client/machines/config/model';
 
 interface ConfigUpdaters {
   storeUpdate(config: DeepPartial<UserConfig>): void;

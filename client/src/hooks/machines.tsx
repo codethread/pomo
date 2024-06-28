@@ -1,14 +1,12 @@
+import { ConfigActorRef } from '@client/machines/config/machine';
+import { actorIds } from '@client/machines/constants';
+import { MainService } from '@client/machines/main/machine';
+import { PomodoroActorRef } from '@client/machines/pomodoro/machine';
+import { TimerActorRef } from '@client/machines/timer/machine';
+import { TimerSettingsActorRef } from '@client/machines/timerSettings/machine';
+import { ActorError } from '@client/machines/utils';
 import { useActor, useSelector } from '@xstate/react';
 import { createContext, useContext } from 'react';
-import {
-  actorIds,
-  MainService,
-  PomodoroActorRef,
-  TimerSettingsActorRef,
-  TimerActorRef,
-  ConfigActorRef,
-  ActorError,
-} from '@client/machines';
 
 export const machinesConfig = createContext<MainService | null>(null);
 

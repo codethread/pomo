@@ -1,8 +1,9 @@
 import { Pages } from '@client/pages/PageManager';
-import { Box, MenuButton } from '@client/components';
 import { getVersion } from '@tauri-apps/api/app';
 import { useAsync } from 'react-use';
 import { useIsDev } from '@client/hooks/useBridge';
+import { Box } from '../Box';
+import { MenuButton } from './MenuButton';
 
 export interface IHeader {
   onClick: () => void;

@@ -1,7 +1,5 @@
-import { Button, FormItemPassword } from '@client/components';
-import { FormItemText } from '@client/components/Form/FormItem';
+import { FormItemPassword, FormItemText } from '@client/components/Form/FormItem';
 import z from 'zod';
-import { useBridge, useConfig } from '@client/hooks';
 import { Setting } from './Setting';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,6 +7,9 @@ import { IBridge } from '@shared/types';
 import { useAsyncFn, useLocalStorage } from 'react-use';
 import { CheckIcon, RssIcon } from '@heroicons/react/solid';
 import { useEffect, useState } from 'react';
+import { useBridge } from '@client/hooks/useBridge';
+import { useConfig } from '@client/hooks/useConfig';
+import { Button } from '../Button/Button';
 
 const SlackFormSchema = z.object({
   enabled: z.boolean(),

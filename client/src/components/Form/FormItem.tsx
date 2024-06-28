@@ -1,10 +1,10 @@
-import { IInputPassword, InputPassword } from '@client/components';
 import { ErrorMessage } from '@hookform/error-message';
 import { EyeClosed, EyeOpen } from '@client/components/Icons';
 import { IChildren, ICss } from '@shared/types';
 import classNames from 'classnames';
 import React, { useRef, useState, useId } from 'react';
 import { FieldValues, Path, useFormContext, UseFormRegister } from 'react-hook-form';
+import { IInputPassword, InputPassword } from '../Inputs';
 
 type ICheckbox = IChildren & {
   disabled?: boolean;
