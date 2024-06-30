@@ -35,7 +35,7 @@ const urls: URLS = {
   main: 'http://localhost:4000',
 };
 
-export { nodenv, isDev, isProd, isTest, isIntegration, urls };
+export { isDev, isProd, isTest, isIntegration };
 
 function sanitiseNodenv(env?: string): Nodenv {
   if (!env) throw new Error('NODE_ENV is not defined');
@@ -44,4 +44,4 @@ function sanitiseNodenv(env?: string): Nodenv {
   return sanitisedNodenv;
 }
 
-export const githubScopes = ['repo', 'read:org'];
+const githubScopes = ['repo', 'read:org'];

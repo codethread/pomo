@@ -1,4 +1,4 @@
-import { TimerContext } from '@client/machines/timer/model';
+import { TimerContext } from '@client/machines/timer/machine';
 import { TimerHooks } from '@shared/types';
 
 export const statHooks: TimerHooks = {

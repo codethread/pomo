@@ -1,21 +1,23 @@
 import { formatTrayTime } from '@shared/formatTrayTime';
-import { DeepPartial, IBridge, UserConfig, UserConfigSchema } from '@shared/types';
+import { DeepPartial, IBridge, UserConfig, UserConfigSchema, emptyConfig } from '@shared/types';
 import { ActorRefFrom, assign, createMachine, InterpreterFrom, sendParent } from 'xstate';
 import { fromError } from 'zod-validation-error';
-import { respond } from 'xstate/lib/actions';
-import { actorIds } from '../constants';
-import mainModel from '../main/model';
-import { createContext, timerSettingsMachine } from '../timerSettings/machine';
-import { ConfigContext, configModel, ConfitEvents } from './model';
 
 export interface IConfigMachine {
   bridge: IBridge;
 }
 
+const initialContext = emptyConfig;
+
+export type ConfigContext = typeof initialContext;
+export type ConfitEvents = { type: 'RESET' } | { type: 'UPDATE'; data: DeepPartial<UserConfig> };
+
 export default function configMachine({ bridge }: IConfigMachine) {
   return createMachine(
     {
       id: 'config',
+      predictableActionArguments: true,
+      preserveActionOrder: true,
       tsTypes: {} as import('./machine.typegen').Typegen0,
       schema: {
         context: {} as ConfigContext,
@@ -26,7 +28,7 @@ export default function configMachine({ bridge }: IConfigMachine) {
           resetConfig: { data: UserConfig };
         },
       },
-      context: configModel.initialContext,
+      context: initialContext,
       initial: 'loading',
       states: {
         loading: {
@@ -44,59 +46,41 @@ export default function configMachine({ bridge }: IConfigMachine) {
           },
         },
         loaded: {
-          type: 'parallel',
+          initial: 'idle',
           states: {
-            settings: {
-              invoke: {
-                id: actorIds.TIMER_SETTINGS,
-                src: timerSettingsMachine,
-                data: ({ timers }) =>
-                  createContext({
-                    long: { value: timers.long },
-                    short: { value: timers.short },
-                    pomo: { value: timers.pomo },
-                  }),
+            idle: {
+              tags: ['idle'],
+              entry: 'broadcastConfig',
+              on: {
+                UPDATE: 'updating',
+                RESET: 'resetting',
               },
             },
-            config: {
-              initial: 'idle',
-              states: {
-                idle: {
-                  tags: ['idle'],
-                  entry: 'broadcastConfig',
-                  on: {
-                    UPDATE: 'updating',
-                    RESET: 'resetting',
-                    REQUEST_CONFIG: { actions: 'respondWithConfig' },
-                  },
+            updating: {
+              tags: ['updating'],
+              invoke: {
+                id: 'updateConfig',
+                src: 'updateConfig',
+                onDone: {
+                  actions: 'storeConfig',
+                  target: 'idle',
                 },
-                updating: {
-                  tags: ['updating'],
-                  invoke: {
-                    id: 'updateConfig',
-                    src: 'updateConfig',
-                    onDone: {
-                      actions: 'storeConfig',
-                      target: 'idle',
-                    },
-                    onError: {
-                      target: 'idle',
-                    },
-                  },
+                onError: {
+                  target: 'idle',
                 },
-                resetting: {
-                  tags: ['updating'],
-                  invoke: {
-                    id: 'resetConfig',
-                    src: 'resetConfig',
-                    onDone: {
-                      actions: 'storeConfig',
-                      target: 'idle',
-                    },
-                    onError: {
-                      target: 'idle',
-                    },
-                  },
+              },
+            },
+            resetting: {
+              tags: ['updating'],
+              invoke: {
+                id: 'resetConfig',
+                src: 'resetConfig',
+                onDone: {
+                  actions: 'storeConfig',
+                  target: 'idle',
+                },
+                onError: {
+                  target: 'idle',
                 },
               },
             },
@@ -148,8 +132,7 @@ export default function configMachine({ bridge }: IConfigMachine) {
         },
       },
       actions: {
-        broadcastConfig: sendParent((c) => mainModel.events.CONFIG_LOADED(c)),
-        respondWithConfig: respond((c) => mainModel.events.CONFIG_LOADED(c)),
+        broadcastConfig: sendParent((c) => ({ type: 'CONFIG_LOADED', data: c })),
         storeConfig: assign((_, { data }) => data),
       },
     }

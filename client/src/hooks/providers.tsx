@@ -4,7 +4,7 @@ import { useBridge } from './useBridge';
 import { loggerContext } from './useLogger';
 import { bridgeContext } from './useBridge';
 import { IBridge } from '@shared/types';
-import { machinesConfig } from './machines';
+import { machinesContext } from './machines';
 import { useInterpret } from '@xstate/react';
 import { useEffect } from 'react';
 import mainMachineFactory from '@client/machines/main/machine';
@@ -68,5 +68,5 @@ export function MachinesProvider({ children, hooks, services }: IMachinesProvide
     }
   );
 
-  return <machinesConfig.Provider value={main}>{children}</machinesConfig.Provider>;
+  return <machinesContext.Provider value={main}>{children}</machinesContext.Provider>;
 }

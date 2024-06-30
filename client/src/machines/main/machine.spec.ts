@@ -7,7 +7,6 @@ import { actorIds } from '../constants';
 import { getActor } from '../utils';
 import { createFakeHooks } from '../createFakeHooks';
 import mainMachineFactory, { MainService } from './machine';
-import timerModel from '../timer/model';
 import { fakeClockMachine } from '../clock/fakeClock';
 
 interface Overrides {
@@ -41,7 +40,6 @@ function getTimerActor(service: MainService) {
 }
 
 const { CONFIG, POMODORO, TIMER } = actorIds;
-const { PAUSE, PLAY, START, STOP } = timerModel.events;
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -117,7 +115,7 @@ describe('mainMachine', () => {
     /* ******************************************************************* */
     // START
     /* ******************************************************************* */
-    timerActor.send(START());
+    timerActor.send({ type: 'START' });
 
     expect(hooks.onStartHook).toHaveBeenCalledWith<[HookContext]>({
       timer: {
@@ -148,7 +146,7 @@ describe('mainMachine', () => {
     /* ******************************************************************* */
     // PAUSE
     /* ******************************************************************* */
-    timerActor.send(PAUSE());
+    timerActor.send({ type: 'PAUSE' });
     ticks(11);
 
     expect(hooks.onPauseHook).toHaveBeenCalledTimes(1);
@@ -161,7 +159,7 @@ describe('mainMachine', () => {
     /* ******************************************************************* */
     // PLAY
     /* ******************************************************************* */
-    timerActor.send(PLAY());
+    timerActor.send({ type: 'PLAY' });
 
     ticks(9);
 
@@ -176,7 +174,7 @@ describe('mainMachine', () => {
     /* ******************************************************************* */
     // STOP
     /* ******************************************************************* */
-    timerActor.send(STOP());
+    timerActor.send({ type: 'STOP' });
 
     ticks(5);
 
@@ -194,7 +192,7 @@ describe('mainMachine', () => {
     expect(hooks.onCompleteHook).toHaveBeenCalledTimes(0);
 
     // new timer actor is created after the last one is stopped
-    getTimerActor(service).send(START());
+    getTimerActor(service).send({ type: 'START' });
 
     ticks(60 * pomoDuration);
 

@@ -4,15 +4,13 @@ import { merge } from '@shared/merge';
 import { err, ok } from '@shared/Result';
 import { DeepPartial, emptyConfig, IBridge, UserConfig } from '@shared/types';
 import { parentMachine } from '@client/machines/testHelpers/machines';
-import mainModel from '../main/model';
 import configMachineFactory from './machine';
-import { configModel } from './model';
 import { createFakeBridge } from '@client/testHelpers/createFakeBridge';
 import { actorIds } from '../constants';
 import { getActor } from '../utils';
+import { mainEvents } from '../main/machine';
 
 const { CONFIG } = actorIds;
-const { UPDATE, RESET } = configModel.events;
 
 interface TestOverrides {
   bridge?: Partial<IBridge>;
@@ -25,7 +23,7 @@ async function runTest(overrides?: TestOverrides) {
   const { bridge, config } = overrides ?? {};
 
   const parent = parentMachine({
-    parentEvents: Object.keys(mainModel.events),
+    parentEvents: mainEvents,
     childId: CONFIG,
     childMachine: configMachineFactory({
       bridge: createFakeBridge(bridge, { configOverride: config }),
@@ -112,7 +110,7 @@ describe('config machine', () => {
 
       const update = { slack: { enabled: true, slackToken: 'Wubba Lubba Dub Dub!' } };
 
-      configMachine.send(UPDATE(update));
+      configMachine.send({ type: 'UPDATE', data: update });
 
       const c = configMachine.getSnapshot();
       expect(c?.hasTag('updating')).toBe(true);
@@ -138,7 +136,7 @@ describe('config machine', () => {
         },
       });
 
-      configMachine.send(RESET());
+      configMachine.send({ type: 'RESET' });
 
       const c = configMachine.getSnapshot();
       expect(c?.hasTag('updating')).toBe(true);

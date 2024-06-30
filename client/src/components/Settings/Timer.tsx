@@ -5,7 +5,7 @@ import { Setting } from './Setting';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useConfig } from '@client/hooks/useConfig';
 import { Button } from '../Button/Button';
-import { FormItemNumber } from '../Form';
+import { FormItemNumber } from '../Form/FormItem';
 
 const MAX = 255;
 

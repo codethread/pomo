@@ -3,15 +3,14 @@ import { actorIds } from '@client/machines/constants';
 import { MainService } from '@client/machines/main/machine';
 import { PomodoroActorRef } from '@client/machines/pomodoro/machine';
 import { TimerActorRef } from '@client/machines/timer/machine';
-import { TimerSettingsActorRef } from '@client/machines/timerSettings/machine';
 import { ActorError } from '@client/machines/utils';
 import { useActor, useSelector } from '@xstate/react';
 import { createContext, useContext } from 'react';
 
-export const machinesConfig = createContext<MainService | null>(null);
+export const machinesContext = createContext<MainService | null>(null);
 
 export const useMachines = (): MainService => {
-  const context = useContext(machinesConfig);
+  const context = useContext(machinesContext);
   if (!context) {
     throw new Error('useMachines used without Provider');
   }
@@ -47,14 +46,4 @@ export const useTimer = (): TimerActorRef | null => {
   const timer = useSelector(pomodoro, (c) => c.children[actorIds.TIMER] as TimerActorRef | null);
 
   return timer;
-};
-
-export const useTimerSettings = () => {
-  const config = useConfigService();
-  const settings = useSelector(
-    config,
-    (c) => c.children[actorIds.TIMER_SETTINGS] as TimerSettingsActorRef | null
-  );
-
-  return settings;
 };

@@ -8,8 +8,8 @@ import { z } from 'zod';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@client/components/Button/Button';
-import { InputSelect } from '@client/components/Inputs';
 import { useBridge } from '@client/hooks/useBridge';
+import { InputSelect } from '@client/components/Inputs/InputSelect';
 
 const timestampFormat = 'EEEE yy/MM/dd HH:mm';
 
