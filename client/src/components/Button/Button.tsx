@@ -58,7 +58,7 @@ export function Button({
             colors,
             common,
             // 'bg-thmBackgroundBrightest text-thmFgDim disabled:bg-thmBackgroundSubtle disabled:text-thmBackground',
-            'border-2 uppercase text-thmPrimary disabled:border-thmBackgroundBrightest disabled:text-thmBackgroundBrightest ',
+            'border-2 uppercase text-thmPrimary disabled:border-thmBackgroundBrightest disabled:text-thmBackgroundBrightest',
             width,
             className,
           )}
@@ -73,7 +73,7 @@ export function Button({
           type={type}
           className={classNames(
             colors,
-            'rounded border-none p-0 text-thmSecondary underline underline-offset-1 shadow-none outline-none hover:underline-offset-2 focus:ring  focus:ring-thmBright disabled:border-thmBackgroundBrightest disabled:text-thmBackgroundBrightest',
+            'rounded border-none p-0 text-thmSecondary underline underline-offset-1 shadow-none outline-none hover:underline-offset-2 focus:ring focus:ring-thmBright disabled:border-thmBackgroundBrightest disabled:text-thmBackgroundBrightest',
             width,
             className,
           )}
@@ -88,7 +88,7 @@ export function Button({
           type={type}
           className={classNames(
             colors,
-            'h-[40px] w-[40px] rounded-full p-0 lowercase shadow-none  outline-none focus:ring focus:ring-thmBright disabled:text-thmBackgroundBrightest',
+            'h-[40px] w-[40px] rounded-full p-0 lowercase shadow-none outline-none focus:ring focus:ring-thmBright disabled:text-thmBackgroundBrightest',
             className,
           )}
           {...props}

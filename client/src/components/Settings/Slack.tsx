@@ -94,7 +94,7 @@ export function Slack() {
         {methods.formState.isSubmitted && loading && (
           <p className="text-thmSecondary">
             Checking details{' '}
-            <RssIcon className="inline-flex ml-1 w-2 relative bottom-2 animate-ping" />
+            <RssIcon className="relative bottom-2 ml-1 inline-flex w-2 animate-ping" />
           </p>
         )}
         {methods.formState.isSubmitted &&
@@ -104,9 +104,9 @@ export function Slack() {
         {methods.formState.isSubmitted &&
           !methods.formState.isDirty &&
           typeof userName === 'string' && (
-            <p className="text-thmGood flex items-center">
+            <p className="flex items-center text-thmGood">
               Greetings {userName}{' '}
-              <CheckIcon className="inline-flex ml-1 w-5" />
+              <CheckIcon className="ml-1 inline-flex w-5" />
             </p>
           )}
 

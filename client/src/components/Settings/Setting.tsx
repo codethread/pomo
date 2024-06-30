@@ -47,7 +47,7 @@ export function Setting<A extends FieldValues>({
         : 'border-thmBackground',
       )}
     >
-      <div className="mb-4 bg-thmBackgroundSubtle py-2 px-2">
+      <div className="mb-4 bg-thmBackgroundSubtle px-2 py-2">
         {props.variant === 'toggle' ?
           <FormItemCheckbox<A> name={props.name}>
             <h2 className="text-lg">{heading}</h2>

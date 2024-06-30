@@ -44,7 +44,7 @@ export function PageManager({
             dispatch({ type: 'Navigate', page: p });
           }}
         />
-      : <div className="flex flex-grow flex-col  justify-start justify-items-stretch">
+      : <div className="flex flex-grow flex-col justify-start justify-items-stretch">
           <Page page={page} />
         </div>
       }
