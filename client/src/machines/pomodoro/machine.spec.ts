@@ -93,7 +93,7 @@ describe('pomodoro machine', () => {
     });
 
     describe('when a pomo timer is started', () => {
-      it.only('can be paused and continued ', () => {
+      it('can be paused and continued ', () => {
         const { getTimerMachine, spy } = runTest({ config });
         const timer = getTimerMachine();
 
