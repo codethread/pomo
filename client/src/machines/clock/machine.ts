@@ -1,6 +1,6 @@
-import { TimerContext, TimerEvents } from '../timer/model';
 import { listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api';
+import { TimerContext, TimerEvents } from '../timer/machine';
 
 export type ClockMachine = typeof clockMachine;
 export const clockMachine =

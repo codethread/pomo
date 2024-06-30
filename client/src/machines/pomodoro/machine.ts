@@ -1,32 +1,45 @@
 import { merge } from '@shared/merge';
-import { DeepPartial } from '@shared/types';
-import {
-  ActorRefFrom,
-  assign,
-  ContextFrom,
-  createMachine,
-  InterpreterFrom,
-  send,
-  sendParent,
-} from 'xstate';
+import { DeepPartial, UserConfig, emptyConfig } from '@shared/types';
+import { ActorRefFrom, assign, createMachine, InterpreterFrom, send, sendParent } from 'xstate';
 import { actorIds } from '../constants';
 import timerMachine from '../timer/machine';
-import timerModel, { TimerContext } from '../timer/model';
-import mainModel from '../main/model';
-import model, { PomodoroEvents, PomodoroModel } from './model';
 import { ClockMachine } from '../clock/machine';
-import pomodoroModel from './model';
+import { TimerContext } from '../timer/machine';
+
+const initialContext = {
+  completed: {
+    pomo: 0,
+    short: 0,
+    long: 0,
+  },
+  longBreakEvery: emptyConfig.longBreakEvery,
+  timers: emptyConfig.timers,
+  autoStart: emptyConfig.autoStart,
+};
+
+export type PomodoroEvents =
+  | { type: 'CONFIG_LOADED'; data: UserConfig }
+  | { type: 'TIMER_COMPLETE'; data: TimerContext }
+  | { type: 'TIMER_STOPPED'; data: TimerContext }
+  | { type: 'TIMER_START'; data: TimerContext }
+  | { type: 'TIMER_TICK'; data: TimerContext }
+  | { type: 'TIMER_PLAY'; data: TimerContext }
+  | { type: 'TIMER_PAUSE'; data: TimerContext };
+
+export type PomodoroModel = typeof initialContext;
 
 function pomodoroMachine({ context, clock }: IPomodoroMachine) {
   return createMachine(
     {
       id: 'pomodoroMachine',
+      predictableActionArguments: true,
+      preserveActionOrder: true,
       tsTypes: {} as import('./machine.typegen').Typegen0,
       schema: {
         context: {} as PomodoroModel,
         events: {} as PomodoroEvents,
       },
-      context: merge(model.initialContext, context),
+      context: merge(initialContext, context),
       initial: 'loading',
       on: {
         TIMER_START: { actions: 'onStartHook' },
@@ -131,7 +144,7 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
           longBreakEvery,
           timers,
           autoStart,
-          completed: pomodoroModel.initialContext.completed,
+          completed: initialContext.completed,
         })),
 
         increasePomoCount: assign({
@@ -147,16 +160,16 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
         }),
 
         updatePomoTimerConfig: send(
-          (_, { data: { timers } }) => timerModel.events.UPDATE(timers.pomo),
+          (_, { data: { timers } }) => ({ type: 'UPDATE', data: timers.pomo }),
           { to: actorIds.TIMER }
         ),
 
-        onPauseHook: sendParent((_, { data }) => mainModel.events.TIMER_PAUSE(data)),
-        onStartHook: sendParent((_, { data }) => mainModel.events.TIMER_START(data)),
-        onPlayHook: sendParent((_, { data }) => mainModel.events.TIMER_PLAY(data)),
-        onStopHook: sendParent((_, { data }) => mainModel.events.TIMER_STOP(data)),
-        onTickHook: sendParent((_, { data }) => mainModel.events.TIMER_TICK(data)),
-        onCompleteHook: sendParent((_, { data }) => mainModel.events.TIMER_COMPLETE(data)),
+        onPauseHook: sendParent((_, { data }) => ({ type: 'TIMER_PAUSE', data })),
+        onStartHook: sendParent((_, { data }) => ({ type: 'TIMER_START', data })),
+        onPlayHook: sendParent((_, { data }) => ({ type: 'TIMER_PLAY', data })),
+        onStopHook: sendParent((_, { data }) => ({ type: 'TIMER_STOP', data })),
+        onTickHook: sendParent((_, { data }) => ({ type: 'TIMER_TICK', data })),
+        onCompleteHook: sendParent((_, { data }) => ({ type: 'TIMER_COMPLETE', data })),
       },
     }
   );
@@ -169,7 +182,7 @@ export type PomodoroService = InterpreterFrom<PomodoroMachine>;
 export type PomodoroActorRef = ActorRefFrom<PomodoroMachine>;
 
 export interface IPomodoroMachine {
-  context?: DeepPartial<ContextFrom<typeof model>>;
+  context?: DeepPartial<PomodoroModel>;
   clock: ClockMachine;
 }
 

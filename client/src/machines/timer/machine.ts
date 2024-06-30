@@ -1,6 +1,24 @@
 import { ActorRefFrom, assign, createMachine, sendParent, sendTo } from 'xstate';
-import pomodoroModel from '../pomodoro/model';
-import model, { TimerContext, TimerEvents } from './model';
+import { HookContext } from '@shared/types';
+
+export type TimerContext = HookContext['timer'];
+
+const initialContext: TimerContext = {
+  id: '',
+  target: 0,
+  minutes: 0,
+  seconds: 0,
+  type: 'pomo',
+  autoStart: false,
+};
+
+export type TimerEvents =
+  | { type: 'START' }
+  | { type: 'PLAY' }
+  | { type: 'PAUSE' }
+  | { type: 'STOP' }
+  | { type: '_TICK'; seconds: number; minutes: number }
+  | { type: 'UPDATE'; data: number };
 
 const timerMachine = createMachine(
   {
@@ -13,7 +31,7 @@ const timerMachine = createMachine(
       events: {} as TimerEvents,
       context: {} as TimerContext,
     },
-    context: model.initialContext,
+    context: initialContext,
     invoke: {
       id: 'clock',
       src: 'clock',
@@ -70,12 +88,12 @@ const timerMachine = createMachine(
         target: (_, { data }) => data,
       }),
 
-      onStartHook: sendParent((c) => pomodoroModel.events.TIMER_START(c)),
-      onPauseHook: sendParent((c) => pomodoroModel.events.TIMER_PAUSE(c)),
-      onPlayHook: sendParent((c) => pomodoroModel.events.TIMER_PLAY(c)),
-      onStopHook: sendParent((c) => pomodoroModel.events.TIMER_STOPPED(c)),
-      onTickHook: sendParent((c) => pomodoroModel.events.TIMER_TICK(c)),
-      onCompleteHook: sendParent((c) => pomodoroModel.events.TIMER_COMPLETE(c)),
+      onStartHook: sendParent((c) => ({ type: 'TIMER_START', data: c })),
+      onPauseHook: sendParent((c) => ({ type: 'TIMER_PAUSE', data: c })),
+      onPlayHook: sendParent((c) => ({ type: 'TIMER_PLAY', data: c })),
+      onStopHook: sendParent((c) => ({ type: 'TIMER_STOPPED', data: c })),
+      onTickHook: sendParent((c) => ({ type: 'TIMER_TICK', data: c })),
+      onCompleteHook: sendParent((c) => ({ type: 'TIMER_COMPLETE', data: c })),
 
       createTimer: sendTo('clock', (c) => ({ type: 'create', data: c })),
       startTimer: sendTo('clock', (c) => ({ type: 'play', data: c })),

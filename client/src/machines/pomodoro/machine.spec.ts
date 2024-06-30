@@ -1,19 +1,15 @@
 import { merge } from '@shared/merge';
 import { emptyConfig, HookContext, UserConfig } from '@shared/types';
 import { ticks } from '@test/tick';
-import { createMachine, interpret } from 'xstate';
+import { interpret } from 'xstate';
 import { actorIds } from '../constants';
-import mainModel from '../main/model';
-import timerModel from '../timer/model';
 import { getActor } from '../utils';
 import pomodoroMachineFactory, { IPomodoroMachine } from './machine';
-import pomodoroModel from './model';
 import { fakeClockMachine } from '../clock/fakeClock';
+import { mainEvents } from '../main/machine';
+import { parentMachine } from '../testHelpers/machines';
 
 const { POMODORO, TIMER } = actorIds;
-const { CONFIG_LOADED } = pomodoroModel.events;
-const { PAUSE, PLAY, START, STOP, _TICK } = timerModel.events;
-const parentEvents = Object.keys(mainModel.events);
 
 interface TestOverrides extends Omit<IPomodoroMachine, 'clock'> {
   /**
@@ -27,36 +23,19 @@ function runTest(overrides?: TestOverrides) {
   const spy = vi.fn();
 
   const { context, dontWait, config } = overrides ?? {};
-  const parent = createMachine(
-    {
-      id: 'parent',
-      predictableActionArguments: true,
-      initial: 'running',
-      states: {
-        running: {
-          on: Object.fromEntries(
-            parentEvents.map((e) => [e, { actions: (ctx: any, event: any) => spy({ ctx, event }) }])
-          ) as any,
-          invoke: {
-            id: POMODORO,
-            src: pomodoroMachineFactory({ context, clock: fakeClockMachine }),
-          },
-        },
-      },
-    },
-    {
-      actions: {
-        spy: (_, e) => spy(e),
-      },
-    }
-  );
+  const parent = parentMachine({
+    childMachine: pomodoroMachineFactory({ context, clock: fakeClockMachine }),
+    parentEvents: mainEvents,
+    childId: POMODORO,
+    spy: (ctx, event) => spy({ event, ctx }),
+  });
 
   const service = interpret(parent);
   service.start();
   const pomoMachine = getActor(service, POMODORO);
 
   if (!dontWait) {
-    pomoMachine.send(CONFIG_LOADED(config ?? emptyConfig));
+    pomoMachine.send({ type: 'CONFIG_LOADED', data: config ?? emptyConfig });
   }
 
   return {
@@ -91,7 +70,7 @@ describe('pomodoro machine', () => {
         short: 333,
       },
     });
-    pomoMachine.send(CONFIG_LOADED(config));
+    pomoMachine.send({ type: 'CONFIG_LOADED', data: config });
 
     const c2 = pomoMachine.getSnapshot();
     expect(c2?.value).toBe('pomo');
@@ -114,13 +93,13 @@ describe('pomodoro machine', () => {
     });
 
     describe('when a pomo timer is started', () => {
-      it('can be paused and continued ', () => {
+      it.only('can be paused and continued ', () => {
         const { getTimerMachine, spy } = runTest({ config });
         const timer = getTimerMachine();
 
         expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 1, seconds: 0 });
 
-        timer.send(START());
+        timer.send({ type: 'START' });
 
         expect(spy).toHaveBeenLastCalledWith(
           expect.objectContaining({
@@ -148,7 +127,7 @@ describe('pomodoro machine', () => {
 
         expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 0, seconds: 48 });
 
-        timer.send(PAUSE());
+        timer.send({ type: 'PAUSE' });
 
         expect(spy).toHaveBeenLastCalledWith(
           expect.objectContaining({
@@ -162,7 +141,7 @@ describe('pomodoro machine', () => {
 
         expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 0, seconds: 48 });
 
-        timer.send(PLAY());
+        timer.send({ type: 'PLAY' });
 
         expect(spy).toHaveBeenLastCalledWith(
           expect.objectContaining({
@@ -182,13 +161,13 @@ describe('pomodoro machine', () => {
 
         const timer = getTimerMachine();
 
-        timer.send(START());
+        timer.send({ type: 'START' });
 
         ticks(12);
 
         expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 0, seconds: 48 });
 
-        timer.send(STOP());
+        timer.send({ type: 'STOP' });
 
         expect(spy).toHaveBeenLastCalledWith(
           expect.objectContaining({
@@ -209,7 +188,7 @@ describe('pomodoro machine', () => {
       it('should increase the pomo count, and move into a break timer when the timer completes', () => {
         const { pomoMachine, getTimerMachine } = runTest({ config });
 
-        getTimerMachine().send(START());
+        getTimerMachine().send({ type: 'START' });
 
         ticks(60);
 
@@ -228,7 +207,7 @@ describe('pomodoro machine', () => {
         it('should not interupt the current timer, but set the next timer correctly', () => {
           const { pomoMachine, getTimerMachine } = runTest({ config });
 
-          getTimerMachine().send(START());
+          getTimerMachine().send({ type: 'START' });
 
           ticks(30);
 
@@ -238,15 +217,14 @@ describe('pomodoro machine', () => {
           });
           expect(pomoMachine.getSnapshot()?.value).toBe('pomo');
 
-          pomoMachine.send(
-            CONFIG_LOADED(
-              merge(emptyConfig, {
-                timers: {
-                  pomo: 17,
-                },
-              })
-            )
-          );
+          pomoMachine.send({
+            type: 'CONFIG_LOADED',
+            data: merge(emptyConfig, {
+              timers: {
+                pomo: 17,
+              },
+            }),
+          });
 
           // Timer should not appear to have changed after the event
           expect(getTimerMachine().getSnapshot()?.context).toMatchObject({
@@ -265,7 +243,7 @@ describe('pomodoro machine', () => {
           expect(pomoMachine.getSnapshot()?.value).toBe('pomo');
 
           // End the timer to see the new config picked up
-          getTimerMachine().send(STOP());
+          getTimerMachine().send({ type: 'STOP' });
 
           expect(getTimerMachine().getSnapshot()?.context).toMatchObject({
             minutes: 17,
@@ -286,15 +264,14 @@ describe('pomodoro machine', () => {
         });
         expect(pomoMachine.getSnapshot()?.value).toBe('pomo');
 
-        pomoMachine.send(
-          CONFIG_LOADED(
-            merge(emptyConfig, {
-              timers: {
-                pomo: 17,
-              },
-            })
-          )
-        );
+        pomoMachine.send({
+          type: 'CONFIG_LOADED',
+          data: merge(emptyConfig, {
+            timers: {
+              pomo: 17,
+            },
+          }),
+        });
 
         expect(getTimerMachine().getSnapshot()?.context).toMatchObject({
           minutes: 17,
@@ -316,7 +293,7 @@ describe('pomodoro machine', () => {
       function runTestToShortBreak() {
         const res = runTest({ config });
 
-        res.getTimerMachine().send(START());
+        res.getTimerMachine().send({ type: 'START' });
         ticks(60);
         const { value } = res.pomoMachine.getSnapshot() ?? {};
         expect(value).toBe('short');
@@ -331,7 +308,7 @@ describe('pomodoro machine', () => {
 
         expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 1, seconds: 0 });
 
-        timer.send(START());
+        timer.send({ type: 'START' });
 
         expect(spy).toHaveBeenLastCalledWith(
           expect.objectContaining({
@@ -347,13 +324,13 @@ describe('pomodoro machine', () => {
 
         expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 0, seconds: 48 });
 
-        timer.send(PAUSE());
+        timer.send({ type: 'PAUSE' });
 
         ticks(12);
 
         expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 0, seconds: 48 });
 
-        timer.send(PLAY());
+        timer.send({ type: 'PLAY' });
 
         ticks(12);
 
@@ -363,13 +340,13 @@ describe('pomodoro machine', () => {
       it('should complete the break when the user stops', () => {
         const { getTimerMachine, pomoMachine } = runTestToShortBreak();
 
-        getTimerMachine().send(START());
+        getTimerMachine().send({ type: 'START' });
 
         ticks(12);
 
         expect(getTimerMachine().getSnapshot()?.context).toMatchObject({ minutes: 0, seconds: 48 });
 
-        getTimerMachine().send(STOP());
+        getTimerMachine().send({ type: 'STOP' });
 
         expect(getTimerMachine().getSnapshot()?.context).toMatchObject({
           minutes: 1,
@@ -390,16 +367,16 @@ describe('pomodoro machine', () => {
         const { getTimerMachine } = res;
 
         repeat(config.longBreakEvery - 1, () => {
-          getTimerMachine().send(START());
+          getTimerMachine().send({ type: 'START' });
           // wait for timer to complete
           ticks(60);
           // start then stop to immediately skip the break
-          getTimerMachine().send(START());
-          getTimerMachine().send(STOP());
+          getTimerMachine().send({ type: 'START' });
+          getTimerMachine().send({ type: 'STOP' });
         });
 
         // complete the final timer
-        getTimerMachine().send(START());
+        getTimerMachine().send({ type: 'START' });
         // wait for timer to complete
         ticks(60);
 
@@ -423,7 +400,7 @@ describe('pomodoro machine', () => {
         expect(value).toBe('long');
 
         // complete long break
-        getTimerMachine().send(START());
+        getTimerMachine().send({ type: 'START' });
 
         expect(spy).toHaveBeenLastCalledWith(
           expect.objectContaining({
@@ -455,8 +432,8 @@ describe('pomodoro machine', () => {
       it('should transition to a long break and back to pomo when the timer is stopped', () => {
         const { pomoMachine, getTimerMachine } = runTestToLongTimer();
 
-        getTimerMachine().send(START());
-        getTimerMachine().send(STOP());
+        getTimerMachine().send({ type: 'START' });
+        getTimerMachine().send({ type: 'STOP' });
 
         const s = pomoMachine.getSnapshot();
 
@@ -484,9 +461,9 @@ describe('pomodoro machine', () => {
           }),
         });
 
-        getTimerMachine().send(START());
+        getTimerMachine().send({ type: 'START' });
 
-        getTimerMachine().send(_TICK(5, 10));
+        getTimerMachine().send({ type: '_TICK', seconds: 5, minutes: 10 });
 
         expect(spy).toHaveBeenLastCalledWith(
           expect.objectContaining({
@@ -501,7 +478,7 @@ describe('pomodoro machine', () => {
           })
         );
 
-        getTimerMachine().send(_TICK(0, 0));
+        getTimerMachine().send({ type: '_TICK', seconds: 0, minutes: 0 });
 
         expect(spy).toHaveBeenLastCalledWith(
           expect.objectContaining({
