@@ -17,7 +17,8 @@ fn main() {
             commands::stop,
             commands::pause,
             commands::play,
-            commands::update
+            commands::update,
+            commands::is_dev,
         ],
         "../client/src/utils/commands.ts",
     )
@@ -34,6 +35,7 @@ fn main() {
             commands::pause,
             commands::play,
             commands::update,
+            commands::is_dev,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

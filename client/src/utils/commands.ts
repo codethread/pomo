@@ -30,4 +30,8 @@ export function update(id: string, duration: number) {
     return invoke()<null>("update", { id,duration })
 }
 
+export function isDev() {
+    return invoke()<boolean>("is_dev")
+}
+
 

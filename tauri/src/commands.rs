@@ -44,3 +44,12 @@ pub fn play(app: AppHandle, state: State<models::State>, id: String) {
 pub fn update(state: State<models::State>, id: String, duration: u8) {
     state.0.lock().unwrap().update(id, duration);
 }
+
+#[tauri::command]
+#[specta]
+pub fn is_dev() -> bool {
+    #[cfg(debug_assertions)]
+    return true;
+    #[cfg(not(debug_assertions))]
+    return false;
+}
