@@ -1,4 +1,4 @@
-import { TimerHooks } from "@shared/types";
+import { TimerHooks } from '@shared/types';
 
 export function createFakeHooks(): TimerHooks {
   return {

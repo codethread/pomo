@@ -1,6 +1,6 @@
-import { DeepPartial, UserConfig } from "@shared/types";
-import { useActor } from "@xstate/react";
-import { useConfigService } from "./machines";
+import { DeepPartial, UserConfig } from '@shared/types';
+import { useActor } from '@xstate/react';
+import { useConfigService } from './machines';
 
 interface ConfigUpdaters {
   storeUpdate(config: DeepPartial<UserConfig>): void;
@@ -26,12 +26,12 @@ export const useConfig = (): ConfigMaybe => {
 
   return {
     storeUpdate: (newConfig) => {
-      send({ type: "UPDATE", data: newConfig });
+      send({ type: 'UPDATE', data: newConfig });
     },
     storeReset: () => {
-      send({ type: "RESET" });
+      send({ type: 'RESET' });
     },
-    ...(state.hasTag("loading") ?
+    ...(state.hasTag('loading') ?
       { loading: true, config: null }
     : { loading: false, config: state.context }),
   };

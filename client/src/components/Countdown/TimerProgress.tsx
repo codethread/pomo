@@ -1,10 +1,10 @@
-import { assertUnreachable } from "@shared/asserts";
+import { assertUnreachable } from '@shared/asserts';
 
 export interface ITimerProgress {
   duration: number;
   mins: number;
   seconds: number;
-  state: "break" | "inactive" | "pomo";
+  state: 'break' | 'inactive' | 'pomo';
 }
 
 const stroke = 2;
@@ -28,13 +28,13 @@ export function TimerProgress({
         strokeWidth={stroke}
       />
       <circle
-        className={state === "pomo" ? "stroke-thmPrimary" : `stroke-thmGood`}
+        className={state === 'pomo' ? 'stroke-thmPrimary' : `stroke-thmGood`}
         style={{
-          transform: "rotate(-90deg)",
-          transformOrigin: "center",
-          transitionProperty: "all",
-          transitionDuration: state === "inactive" ? "0.2s" : "1s",
-          transitionTimingFunction: "linear",
+          transform: 'rotate(-90deg)',
+          transformOrigin: 'center',
+          transitionProperty: 'all',
+          transitionDuration: state === 'inactive' ? '0.2s' : '1s',
+          transitionTimingFunction: 'linear',
         }}
         cx={50}
         cy={50}
@@ -59,11 +59,11 @@ export function TimerProgress({
     const expiredAsPercentage = timeExpired / totalDurationInSeconds;
 
     switch (state) {
-      case "inactive":
+      case 'inactive':
         return 1;
-      case "break":
+      case 'break':
         return 1 - expiredAsPercentage;
-      case "pomo":
+      case 'pomo':
         return expiredAsPercentage;
       default:
         return assertUnreachable(state);

@@ -1,8 +1,8 @@
-import { Result, ok } from "@shared/Result";
-import mergeMutate from "lodash.merge";
-import { merge } from "@shared/merge";
-import { DeepPartial, IClientLogger } from "@shared/types";
-import { Store } from "tauri-plugin-store-api";
+import { Result, ok } from '@shared/Result';
+import mergeMutate from 'lodash.merge';
+import { merge } from '@shared/merge';
+import { DeepPartial, IClientLogger } from '@shared/types';
+import { Store } from 'tauri-plugin-store-api';
 
 interface StoreConfig<T> {
   defaults: T;
@@ -21,7 +21,7 @@ export async function createStore<T>(
   storeConfig: StoreConfig<T>,
 ): Promise<StoreRepository<T>> {
   if (!store) {
-    store = new Store("pomo");
+    store = new Store('pomo');
     logger.info(`setting up Store Repo: name "pomo", path: "${store.path}"`);
   }
   const KEY = storeConfig.name;
@@ -36,20 +36,20 @@ export async function createStore<T>(
 
   return {
     async storeRead() {
-      logger.info("reading store");
+      logger.info('reading store');
       const data = await store.get(KEY);
-      logger.info("store", data);
+      logger.info('store', data);
       return ok(data as T);
     },
     async storeReset() {
-      logger.info("resetting store");
+      logger.info('resetting store');
       await store.clear();
       const data = await store.get(KEY);
-      logger.info("store", data);
+      logger.info('store', data);
       return ok(data as T);
     },
     async storeUpdate(updatedStore) {
-      logger.info("updating store", { KEY: updatedStore });
+      logger.info('updating store', { KEY: updatedStore });
       const originalStore = await store.get(KEY);
       const updated = merge(originalStore, updatedStore);
       await store.set(KEY, updated);

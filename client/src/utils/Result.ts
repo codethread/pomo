@@ -2,8 +2,8 @@
 export type Result<O, E = string> = Err<O, E> | Ok<O, E>;
 
 type SimpleResult<O, E> =
-  | Pick<Err<O, E>, "ok" | "reason">
-  | Pick<Ok<O, E>, "ok" | "val">;
+  | Pick<Err<O, E>, 'ok' | 'reason'>
+  | Pick<Ok<O, E>, 'ok' | 'val'>;
 
 export const strip = <A, B>(result: Result<A, B>): SimpleResult<A, B> =>
   result.match({

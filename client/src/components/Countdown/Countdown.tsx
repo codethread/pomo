@@ -1,12 +1,12 @@
-import T from "@client/copy";
-import { PauseIcon, PlayIcon, StopIcon } from "@heroicons/react/solid";
-import { displayNum } from "@shared/format";
-import { useActor } from "@xstate/react";
-import "./countdown.css";
-import { TimerActorRef } from "@client/machines/timer/machine";
-import { Box } from "../Box";
-import { Button } from "../Button/Button";
-import { TimerProgress } from "./TimerProgress";
+import T from '@client/copy';
+import { PauseIcon, PlayIcon, StopIcon } from '@heroicons/react/solid';
+import { displayNum } from '@shared/format';
+import { useActor } from '@xstate/react';
+import './countdown.css';
+import { TimerActorRef } from '@client/machines/timer/machine';
+import { Box } from '../Box';
+import { Button } from '../Button/Button';
+import { TimerProgress } from './TimerProgress';
 
 export interface ICountdown {
   timerRef: TimerActorRef;
@@ -23,18 +23,18 @@ export function Countdown({
   const { minutes, seconds, type } = state.context;
 
   const timerState = (() => {
-    if (state.can("START")) {
-      return "inactive";
+    if (state.can('START')) {
+      return 'inactive';
     }
-    if (type === "pomo") {
-      return "pomo";
+    if (type === 'pomo') {
+      return 'pomo';
     }
-    return "break";
+    return 'break';
   })();
 
   return (
     <div className="timer mt-5">
-      <Box style={{ gridArea: "timer" }}>
+      <Box style={{ gridArea: 'timer' }}>
         <TimerProgress
           duration={duration}
           mins={minutes}
@@ -44,14 +44,14 @@ export function Countdown({
       </Box>
       <Box
         style={{
-          gridRow: "top / center",
-          gridColumn: "middle / right",
-          justifyContent: "end",
+          gridRow: 'top / center',
+          gridColumn: 'middle / right',
+          justifyContent: 'end',
           fontSize: 14,
         }}
       >
         <p
-          className={`text-center ${type === "pomo" ? "text-thmPrimary" : "text-thmGood"}`}
+          className={`text-center ${type === 'pomo' ? 'text-thmPrimary' : 'text-thmGood'}`}
         >
           {title}
         </p>
@@ -59,34 +59,34 @@ export function Countdown({
       <Box
         className="mt-[7px]"
         style={{
-          gridRow: "center / bottom",
-          gridColumn: "middle / right",
-          justifyContent: "start",
+          gridRow: 'center / bottom',
+          gridColumn: 'middle / right',
+          justifyContent: 'start',
         }}
       >
         <p
           className="tabular-nums"
           style={{
             fontSize: 38,
-            textAlign: "center",
+            textAlign: 'center',
           }}
         >
           {displayNum(minutes)} : {displayNum(seconds)}
         </p>
       </Box>
-      <Box style={{ gridArea: "controls" }}>
+      <Box style={{ gridArea: 'controls' }}>
         <Box
           style={{
-            flexDirection: "row",
-            justifyContent: state.can("START") ? "center" : "space-between",
+            flexDirection: 'row',
+            justifyContent: state.can('START') ? 'center' : 'space-between',
           }}
         >
-          {state.can("START") && (
+          {state.can('START') && (
             <Button
               data-test-id="start-button"
               variant="icon"
               onClick={() => {
-                send({ type: "START" });
+                send({ type: 'START' });
               }}
               aria-label={T.pomoTimer.start}
               className="text-thmPrimary"
@@ -94,34 +94,34 @@ export function Countdown({
               <PlayIcon />
             </Button>
           )}
-          {state.can("STOP") && (
+          {state.can('STOP') && (
             <Button
               data-test-id="stop-button"
               className="text-thmPrimary"
               variant="icon"
               onClick={() => {
-                send({ type: "STOP" });
+                send({ type: 'STOP' });
               }}
               aria-label={T.pomoTimer.stop}
             >
               <StopIcon />
             </Button>
           )}
-          {state.can("PAUSE") && (
+          {state.can('PAUSE') && (
             <Button
               variant="icon"
-              onClick={() => send({ type: "PAUSE" })}
+              onClick={() => send({ type: 'PAUSE' })}
               aria-label={T.pomoTimer.pause}
               className="text-thmPrimary"
             >
               <PauseIcon />
             </Button>
           )}
-          {state.can("PLAY") && (
+          {state.can('PLAY') && (
             <Button
               className="animate-pulse text-thmPrimary"
               variant="icon"
-              onClick={() => send({ type: "PLAY" })}
+              onClick={() => send({ type: 'PLAY' })}
               aria-label={T.pomoTimer.play}
             >
               <PlayIcon />

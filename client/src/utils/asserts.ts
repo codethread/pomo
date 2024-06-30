@@ -4,7 +4,7 @@ export function assertIsError(err: any): asserts err is Error {
   }
 }
 
-export const validNodenvs = ["production", "development", "test"] as const;
+export const validNodenvs = ['production', 'development', 'test'] as const;
 
 export type Nodenv = (typeof validNodenvs)[number];
 

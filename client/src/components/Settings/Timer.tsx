@@ -1,11 +1,11 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
-import T from "@client/copy";
-import { Setting } from "./Setting";
-import { FormProvider, useForm } from "react-hook-form";
-import { useConfig } from "@client/hooks/useConfig";
-import { Button } from "../Button/Button";
-import { FormItemNumber } from "../Form/FormItem";
+import { zodResolver } from '@hookform/resolvers/zod';
+import z from 'zod';
+import T from '@client/copy';
+import { Setting } from './Setting';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useConfig } from '@client/hooks/useConfig';
+import { Button } from '../Button/Button';
+import { FormItemNumber } from '../Form/FormItem';
 
 const MAX = 255;
 

@@ -1,14 +1,14 @@
-import { interpret } from "xstate";
-import { waitFor } from "xstate/lib/waitFor";
-import { merge } from "@shared/merge";
-import { err, ok } from "@shared/Result";
-import { DeepPartial, emptyConfig, IBridge, UserConfig } from "@shared/types";
-import { parentMachine } from "@client/machines/testHelpers/machines";
-import configMachineFactory from "./machine";
-import { createFakeBridge } from "@client/testHelpers/createFakeBridge";
-import { actorIds } from "../constants";
-import { getActor } from "../utils";
-import { mainEvents } from "../main/machine";
+import { interpret } from 'xstate';
+import { waitFor } from 'xstate/lib/waitFor';
+import { merge } from '@shared/merge';
+import { err, ok } from '@shared/Result';
+import { DeepPartial, emptyConfig, IBridge, UserConfig } from '@shared/types';
+import { parentMachine } from '@client/machines/testHelpers/machines';
+import configMachineFactory from './machine';
+import { createFakeBridge } from '@client/testHelpers/createFakeBridge';
+import { actorIds } from '../constants';
+import { getActor } from '../utils';
+import { mainEvents } from '../main/machine';
 
 const { CONFIG } = actorIds;
 
@@ -40,7 +40,7 @@ async function runTest(overrides?: TestOverrides) {
   const configMachine = getActor(service, CONFIG);
   const initial = configMachine.getSnapshot();
 
-  await waitFor(configMachine, (m) => !m.hasTag("loading"), { timeout: 100 });
+  await waitFor(configMachine, (m) => !m.hasTag('loading'), { timeout: 100 });
 
   return {
     initial,
@@ -50,27 +50,27 @@ async function runTest(overrides?: TestOverrides) {
   };
 }
 
-describe("config machine", () => {
-  it("should start in a loading state", async () => {
+describe('config machine', () => {
+  it('should start in a loading state', async () => {
     const { initial } = await runTest();
 
-    expect(initial?.value).toBe("loading");
+    expect(initial?.value).toBe('loading');
   });
 
-  describe("when config fails to load", () => {
-    it("should return the default config, broadcast it and log a warning", async () => {
+  describe('when config fails to load', () => {
+    it('should return the default config, broadcast it and log a warning', async () => {
       const spy = vi.fn();
 
       const { configMachine, spy: storeSpy } = await runTest({
         bridge: {
           warn: spy,
-          storeRead: async () => err("oh no!"),
+          storeRead: async () => err('oh no!'),
         },
       });
 
       const { context } = configMachine.getSnapshot() ?? {};
       expect(context).toBe(emptyConfig);
-      expect(spy).toHaveBeenCalledWith("oh no!");
+      expect(spy).toHaveBeenCalledWith('oh no!');
       expect(storeSpy).toHaveBeenCalledWith({
         type: expect.anything(),
         data: emptyConfig,
@@ -78,7 +78,7 @@ describe("config machine", () => {
     });
   });
 
-  describe("when config loads", () => {
+  describe('when config loads', () => {
     it("should return the user's config and broadcast it", async () => {
       const { configMachine, spy: storeSpy } = await runTest({
         bridge: {
@@ -98,8 +98,8 @@ describe("config machine", () => {
     });
   });
 
-  describe("when config is updated", () => {
-    it("should update the config and broadcast the change", async () => {
+  describe('when config is updated', () => {
+    it('should update the config and broadcast the change', async () => {
       const updatedConfig = merge(emptyConfig, { timers: { pomo: 222 } });
       const mock = vi.fn().mockResolvedValue(ok(updatedConfig));
       const { configMachine, spy } = await runTest({
@@ -111,15 +111,15 @@ describe("config machine", () => {
       });
 
       const update = {
-        slack: { enabled: true, slackToken: "Wubba Lubba Dub Dub!" },
+        slack: { enabled: true, slackToken: 'Wubba Lubba Dub Dub!' },
       };
 
-      configMachine.send({ type: "UPDATE", data: update });
+      configMachine.send({ type: 'UPDATE', data: update });
 
       const c = configMachine.getSnapshot();
-      expect(c?.hasTag("updating")).toBe(true);
+      expect(c?.hasTag('updating')).toBe(true);
 
-      await waitFor(configMachine, (m) => m.hasTag("idle"));
+      await waitFor(configMachine, (m) => m.hasTag('idle'));
 
       const { context } = configMachine.getSnapshot() ?? {};
       expect(context?.timers.pomo).toBe(222);
@@ -131,8 +131,8 @@ describe("config machine", () => {
     });
   });
 
-  describe("when config is reset", () => {
-    it("should reset the config and broadcast the change", async () => {
+  describe('when config is reset', () => {
+    it('should reset the config and broadcast the change', async () => {
       const updatedConfig = merge(emptyConfig, { timers: { pomo: 222 } });
       const { configMachine, spy } = await runTest({
         bridge: {
@@ -140,12 +140,12 @@ describe("config machine", () => {
         },
       });
 
-      configMachine.send({ type: "RESET" });
+      configMachine.send({ type: 'RESET' });
 
       const c = configMachine.getSnapshot();
-      expect(c?.hasTag("updating")).toBe(true);
+      expect(c?.hasTag('updating')).toBe(true);
 
-      await waitFor(configMachine, (m) => m.hasTag("idle"));
+      await waitFor(configMachine, (m) => m.hasTag('idle'));
 
       const { context } = configMachine.getSnapshot() ?? {};
       expect(context?.timers.pomo).toBe(222);

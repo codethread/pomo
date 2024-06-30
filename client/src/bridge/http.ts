@@ -1,6 +1,6 @@
-import { Body, Client, getClient } from "@tauri-apps/api/http";
+import { Body, Client, getClient } from '@tauri-apps/api/http';
 
-export type HttpClient = Pick<Client, "get" | "post">;
+export type HttpClient = Pick<Client, 'get' | 'post'>;
 
 export const prodClient = (): Promise<HttpClient> => getClient();
 

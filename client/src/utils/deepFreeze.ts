@@ -11,7 +11,7 @@ export function deepFreeze<T extends Record<string, any>>(o: T): Readonly<T> {
       // eslint-disable-next-line no-prototype-builtins
       o.hasOwnProperty(prop) &&
       o[prop] !== null &&
-      (typeof o[prop] === "object" || typeof o[prop] === "function") &&
+      (typeof o[prop] === 'object' || typeof o[prop] === 'function') &&
       !Object.isFrozen(o[prop])
     ) {
       deepFreeze(o[prop]);

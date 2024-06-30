@@ -1,10 +1,10 @@
-import { createCtx } from "./createCtx";
+import { createCtx } from './createCtx';
 
-import { slackHooks as hooks } from "./slack";
+import { slackHooks as hooks } from './slack';
 
-describe("slack integrations", () => {
-  describe("when slack is disabled", () => {
-    it("should never fire", () => {
+describe('slack integrations', () => {
+  describe('when slack is disabled', () => {
+    it('should never fire', () => {
       const { ctx, spies } = createCtx({
         config: { slack: { enabled: false } },
       });
@@ -22,16 +22,16 @@ describe("slack integrations", () => {
     });
   });
 
-  describe("when slack is selected with valid creds", () => {
-    describe("when timer is a pomodoro", () => {
-      test("onStartHook sets the user as away", () => {
+  describe('when slack is selected with valid creds', () => {
+    describe('when timer is a pomodoro', () => {
+      test('onStartHook sets the user as away', () => {
         const { ctx, spies } = createCtx();
 
         hooks.onStartHook(ctx);
 
         expect(spies.slackSetPresence).toHaveBeenCalledWith(
           expect.anything(),
-          "away",
+          'away',
         );
         expect(spies.slackSetSnooze).toHaveBeenCalledWith(
           expect.anything(),
@@ -40,13 +40,13 @@ describe("slack integrations", () => {
         expect(spies.slackSetProfile).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({
-            emoji: ":tomato:",
-            text: "free in 17 minutes",
+            emoji: ':tomato:',
+            text: 'free in 17 minutes',
           }),
         );
       });
 
-      test("onTickHook updates the user status, but only when the timer has ticked down all seconds in any given minute", () => {
+      test('onTickHook updates the user status, but only when the timer has ticked down all seconds in any given minute', () => {
         const testCtx = createCtx({ timer: { minutes: 1, seconds: 1 } });
         hooks.onTickHook(testCtx.ctx);
         expect(testCtx.spies.slackSetProfile).not.toBeCalled();
@@ -58,51 +58,51 @@ describe("slack integrations", () => {
         expect(spies.slackSetProfile).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({
-            text: "free in 1 min",
+            text: 'free in 1 min',
           }),
         );
       });
 
-      test("onStopHook sets the user as active", () => {
+      test('onStopHook sets the user as active', () => {
         const { ctx, spies } = createCtx();
 
         hooks.onStopHook(ctx);
 
         expect(spies.slackSetPresence).toHaveBeenCalledWith(
           expect.anything(),
-          "active",
+          'active',
         );
         expect(spies.slackEndSnooze).toHaveBeenCalledWith(expect.anything());
         expect(spies.slackSetProfile).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({
-            emoji: "",
-            text: "",
+            emoji: '',
+            text: '',
           }),
         );
       });
 
-      test("onCompleteHook sets the user as active", () => {
+      test('onCompleteHook sets the user as active', () => {
         const { ctx, spies } = createCtx();
 
         hooks.onCompleteHook(ctx);
 
         expect(spies.slackSetPresence).toHaveBeenCalledWith(
           expect.anything(),
-          "active",
+          'active',
         );
         expect(spies.slackEndSnooze).toHaveBeenCalledWith(expect.anything());
         expect(spies.slackSetProfile).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({
-            emoji: "",
-            text: "",
+            emoji: '',
+            text: '',
           }),
         );
       });
     });
 
-    test.each(["short", "long"] as const)(
+    test.each(['short', 'long'] as const)(
       'when timer is a "%s" break, it does not call any hooks',
       (timerType) => {
         const { ctx, spies } = createCtx({ timer: { type: timerType } });

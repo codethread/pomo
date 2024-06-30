@@ -11,11 +11,11 @@
     @apply ring ring-thmBright;
   }
 
-  .input[data-error="true"] {
+  .input[data-error='true'] {
     @apply text-thmError ring-1 ring-thmError;
   }
 
-  .input[data-error="true"]:focus {
+  .input[data-error='true']:focus {
     @apply ring;
   }
 
@@ -25,8 +25,8 @@
 
   /** checkbox */
 
-  input[type="checkbox"]::before {
-    content: "";
+  input[type='checkbox']::before {
+    content: '';
     width: 0.8em;
     height: 0.8em;
     transform: scale(0);
@@ -36,12 +36,12 @@
     clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
   }
 
-  input[type="checkbox"]:disabled::before {
+  input[type='checkbox']:disabled::before {
     /*color: rgb(var(--color-backgroundBrightest));*/
     box-shadow: inset 1em 1em rgb(var(--color-backgroundBrightest));
   }
 
-  input[type="checkbox"]:checked::before {
+  input[type='checkbox']:checked::before {
     transform: scale(1);
   }
 }

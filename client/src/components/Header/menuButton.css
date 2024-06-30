@@ -7,7 +7,7 @@
     position: absolute;
     left: 0;
     height: 2px;
-    background-color: theme("colors.thmFgDim");
+    background-color: theme('colors.thmFgDim');
     opacity: 1;
     transform: rotate(0deg);
     transition: all 0.2s;
@@ -16,17 +16,17 @@
   }
 
   .menu-button:hover .bar {
-    background-color: theme("colors.thmPrimary");
+    background-color: theme('colors.thmPrimary');
   }
   .menu-button:focus .bar {
-    background-color: theme("colors.thmPrimary");
+    background-color: theme('colors.thmPrimary');
   }
 
   .menu-button:hover .bar.showClose {
-    background-color: theme("colors.thmWarn");
+    background-color: theme('colors.thmWarn');
   }
   .menu-button:focus .bar.showClose {
-    background-color: theme("colors.thmWarn");
+    background-color: theme('colors.thmWarn');
   }
 }
 

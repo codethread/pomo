@@ -1,10 +1,10 @@
-import { IBridge, TimerHooks, UserConfig } from "@shared/types";
-import { assign, createMachine, forwardTo, InterpreterFrom } from "xstate";
-import configMachine from "../config/machine";
-import { actorIds } from "../constants";
-import pomodoroMachineFactory, { IPomodoroMachine } from "../pomodoro/machine";
-import { UpdateTheme } from "@client/theme/updateTheme";
-import { TimerContext } from "../timer/machine";
+import { IBridge, TimerHooks, UserConfig } from '@shared/types';
+import { assign, createMachine, forwardTo, InterpreterFrom } from 'xstate';
+import configMachine from '../config/machine';
+import { actorIds } from '../constants';
+import pomodoroMachineFactory, { IPomodoroMachine } from '../pomodoro/machine';
+import { UpdateTheme } from '@client/theme/updateTheme';
+import { TimerContext } from '../timer/machine';
 
 const initialContext = {
   loaded: false,
@@ -14,23 +14,23 @@ const initialContext = {
 export type MainContext = typeof initialContext;
 
 export type MainEvents =
-  | { type: "CONFIG_LOADED"; data: UserConfig }
-  | { type: "TIMER_START"; data: TimerContext }
-  | { type: "TIMER_TICK"; data: TimerContext }
-  | { type: "TIMER_PLAY"; data: TimerContext }
-  | { type: "TIMER_PAUSE"; data: TimerContext }
-  | { type: "TIMER_STOP"; data: TimerContext }
-  | { type: "TIMER_COMPLETE"; data: TimerContext };
+  | { type: 'CONFIG_LOADED'; data: UserConfig }
+  | { type: 'TIMER_START'; data: TimerContext }
+  | { type: 'TIMER_TICK'; data: TimerContext }
+  | { type: 'TIMER_PLAY'; data: TimerContext }
+  | { type: 'TIMER_PAUSE'; data: TimerContext }
+  | { type: 'TIMER_STOP'; data: TimerContext }
+  | { type: 'TIMER_COMPLETE'; data: TimerContext };
 
-type MainEvent = Pick<MainEvents, "type">["type"];
+type MainEvent = Pick<MainEvents, 'type'>['type'];
 export const mainEvents: MainEvent[] = [
-  "CONFIG_LOADED",
-  "TIMER_START",
-  "TIMER_TICK",
-  "TIMER_PLAY",
-  "TIMER_PAUSE",
-  "TIMER_STOP",
-  "TIMER_COMPLETE",
+  'CONFIG_LOADED',
+  'TIMER_START',
+  'TIMER_TICK',
+  'TIMER_PLAY',
+  'TIMER_PAUSE',
+  'TIMER_STOP',
+  'TIMER_COMPLETE',
 ];
 
 export interface IMainMachine {
@@ -48,26 +48,26 @@ const mainMachineFactory = ({
 }: IMainMachine) =>
   createMachine(
     {
-      id: "main",
+      id: 'main',
       preserveActionOrder: true,
       predictableActionArguments: true,
       schema: {
         context: {} as MainContext,
         events: {} as MainEvents,
       },
-      tsTypes: {} as import("./machine.typegen").Typegen0,
+      tsTypes: {} as import('./machine.typegen').Typegen0,
       context: initialContext,
-      initial: "active",
+      initial: 'active',
       on: {
         CONFIG_LOADED: {
-          actions: [forwardTo(actorIds.POMODORO), "updateTheme", "setLoaded"],
+          actions: [forwardTo(actorIds.POMODORO), 'updateTheme', 'setLoaded'],
         },
-        TIMER_PAUSE: { actions: "onTimerPause" },
-        TIMER_PLAY: { actions: "onTimerPlay" },
-        TIMER_START: { actions: "onTimerStart" },
-        TIMER_STOP: { actions: "onTimerStop" },
-        TIMER_TICK: { actions: "onTimerTick" },
-        TIMER_COMPLETE: { actions: "onTimerComplete" },
+        TIMER_PAUSE: { actions: 'onTimerPause' },
+        TIMER_PLAY: { actions: 'onTimerPlay' },
+        TIMER_START: { actions: 'onTimerStart' },
+        TIMER_STOP: { actions: 'onTimerStop' },
+        TIMER_TICK: { actions: 'onTimerTick' },
+        TIMER_COMPLETE: { actions: 'onTimerComplete' },
       },
       states: {
         active: {

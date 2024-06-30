@@ -1,7 +1,7 @@
-import { merge } from "@shared/merge";
-import { DeepPartial, emptyConfig, HookContext, IBridge } from "@shared/types";
-import { createFakeBridge } from "@client/testHelpers/createFakeBridge";
-import { Mock } from "vitest";
+import { merge } from '@shared/merge';
+import { DeepPartial, emptyConfig, HookContext, IBridge } from '@shared/types';
+import { createFakeBridge } from '@client/testHelpers/createFakeBridge';
+import { Mock } from 'vitest';
 
 type Spies = Record<keyof IBridge, Mock>;
 
@@ -16,10 +16,10 @@ export function createCtx(overrides?: DeepPartial<HookContext>): TestSetup {
     {
       slack: {
         enabled: true,
-        slackDomain: "slackUrl",
-        slackDCookie: "slackDCookie",
-        slackDSCookie: "slackDSCookie",
-        slackToken: "slackToken",
+        slackDomain: 'slackUrl',
+        slackDCookie: 'slackDCookie',
+        slackDSCookie: 'slackDSCookie',
+        slackToken: 'slackToken',
       },
     },
     overrides?.config,
@@ -40,12 +40,12 @@ export function createCtx(overrides?: DeepPartial<HookContext>): TestSetup {
     bridge: spies,
     config,
     timer: {
-      id: "ctx id",
+      id: 'ctx id',
       autoStart: false,
       minutes: 17,
       target: 17,
       seconds: 3,
-      type: "pomo",
+      type: 'pomo',
     },
   };
 

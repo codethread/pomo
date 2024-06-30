@@ -1,24 +1,24 @@
 import {
   FormItemPassword,
   FormItemText,
-} from "@client/components/Form/FormItem";
-import z from "zod";
-import { Setting } from "./Setting";
-import { FormProvider, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { IBridge } from "@shared/types";
-import { useAsyncFn, useLocalStorage } from "react-use";
-import { CheckIcon, RssIcon } from "@heroicons/react/solid";
-import { useEffect, useState } from "react";
-import { useBridge } from "@client/hooks/useBridge";
-import { useConfig } from "@client/hooks/useConfig";
-import { Button } from "../Button/Button";
+} from '@client/components/Form/FormItem';
+import z from 'zod';
+import { Setting } from './Setting';
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { IBridge } from '@shared/types';
+import { useAsyncFn, useLocalStorage } from 'react-use';
+import { CheckIcon, RssIcon } from '@heroicons/react/solid';
+import { useEffect, useState } from 'react';
+import { useBridge } from '@client/hooks/useBridge';
+import { useConfig } from '@client/hooks/useConfig';
+import { Button } from '../Button/Button';
 
 const SlackFormSchema = z.object({
   enabled: z.boolean(),
-  slackDomain: z.string().min(1, { message: "domain is required" }).trim(),
-  slackToken: z.string().min(1, { message: "token is required" }).trim(),
-  slackDCookie: z.string().min(1, { message: "cookie is required" }).trim(),
+  slackDomain: z.string().min(1, { message: 'domain is required' }).trim(),
+  slackToken: z.string().min(1, { message: 'token is required' }).trim(),
+  slackDCookie: z.string().min(1, { message: 'cookie is required' }).trim(),
   slackDSCookie: z.string().trim(),
 });
 
@@ -29,7 +29,7 @@ export function Slack() {
   const [updated, setUpdated] = useState(false);
   // TODO: move this storage into some generic component/hook
   const [wip, setWipStorage, remove] =
-    useLocalStorage<Partial<SlackForm>>("slack-form-key");
+    useLocalStorage<Partial<SlackForm>>('slack-form-key');
   const bridge = useBridge();
 
   const [{ error, loading, value: userName }, validate] = useAsyncFn(
@@ -93,7 +93,7 @@ export function Slack() {
 
         {methods.formState.isSubmitted && loading && (
           <p className="text-thmSecondary">
-            Checking details{" "}
+            Checking details{' '}
             <RssIcon className="inline-flex ml-1 w-2 relative bottom-2 animate-ping" />
           </p>
         )}
@@ -103,17 +103,17 @@ export function Slack() {
           error && <p className="text-thmError">{error.message}</p>}
         {methods.formState.isSubmitted &&
           !methods.formState.isDirty &&
-          typeof userName === "string" && (
+          typeof userName === 'string' && (
             <p className="text-thmGood flex items-center">
-              Greetings {userName}{" "}
+              Greetings {userName}{' '}
               <CheckIcon className="inline-flex ml-1 w-5" />
             </p>
           )}
 
         <div
           style={{
-            gridColumn: "left / right",
-            textAlign: "center",
+            gridColumn: 'left / right',
+            textAlign: 'center',
           }}
         >
           <Button
@@ -121,7 +121,7 @@ export function Slack() {
             variant="tertiary"
             onClick={() => {
               bridge.openExternal(
-                "https://github.com/codethread/pomo#slack-integration",
+                'https://github.com/codethread/pomo#slack-integration',
               );
             }}
           >
@@ -184,9 +184,9 @@ function validateDetails(bridge: IBridge) {
       });
     } catch (e: any) {
       console.error(e);
-      if (e.error === "invalid_auth") {
+      if (e.error === 'invalid_auth') {
         throw new Error(
-          "These details did not work, be sure to check the link below for details about these fields",
+          'These details did not work, be sure to check the link below for details about these fields',
         );
       } else {
         throw new Error(

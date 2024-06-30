@@ -1,6 +1,6 @@
-import { err, ok, Result } from "@shared/Result";
-import { HttpClient, httpJson } from "./http";
-import { IClientLogger } from "@shared/types";
+import { err, ok, Result } from '@shared/Result';
+import { HttpClient, httpJson } from './http';
+import { IClientLogger } from '@shared/types';
 
 export interface SlackAuth {
   domain: string;
@@ -56,11 +56,11 @@ export interface SlackProfile extends SlackOk {
 type SlackErr =
   | {
       ok: false;
-      error: "connection_error";
+      error: 'connection_error';
     }
   | {
       ok: false;
-      error: "invalid_auth";
+      error: 'invalid_auth';
     };
 
 export interface SlackRepository {
@@ -78,7 +78,7 @@ export interface SlackRepository {
 
   slackSetPresence(
     auth: SlackAuth,
-    state: "active" | "away",
+    state: 'active' | 'away',
   ): Promise<Result<SlackOk, SlackErr>>;
 
   slackValidate(auth: SlackAuth): Promise<Result<SlackProfile, SlackErr>>;
@@ -99,7 +99,7 @@ export const slackRepository = ({
     async slackSetProfile(auth, { text, emoji, expiration }) {
       logger.debug({ auth });
       return slackReq<SlackOk>(
-        "/users.profile.set",
+        '/users.profile.set',
         {
           profile: {
             status_text: text,
@@ -113,7 +113,7 @@ export const slackRepository = ({
     },
 
     async slackEndSnooze(auth) {
-      return slackReq<SlackOk>("/dnd.endSnooze", {}, auth);
+      return slackReq<SlackOk>('/dnd.endSnooze', {}, auth);
     },
 
     async slackSetPresence(auth, state) {
@@ -149,21 +149,21 @@ function slackClient(logger: IClientLogger, client: HttpClient) {
           headers: {
             authorization: `Bearer ${token}`,
             cookie: `d=${dCookie}; d-s=${dSCookie};`,
-            accept: "*/*",
-            "content-type": "application/json; charset=utf-8",
-            "accept-language": "en-US,en;q=0.9",
-            "user-agent":
-              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36",
+            accept: '*/*',
+            'content-type': 'application/json; charset=utf-8',
+            'accept-language': 'en-US,en;q=0.9',
+            'user-agent':
+              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36',
           },
         },
       );
 
       logger.info(`SLACK -->`, res.url, JSON.stringify(payload));
-      logger.info("SLACK <--", res.data);
+      logger.info('SLACK <--', res.data);
       return (res.ok ? ok(res.data) : err(res.data)) as any;
     } catch (e: unknown) {
       logger.error(e);
-      return err<SlackErr, A>({ ok: false, error: "connection_error" });
+      return err<SlackErr, A>({ ok: false, error: 'connection_error' });
     }
   };
 }

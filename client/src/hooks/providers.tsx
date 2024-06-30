@@ -1,14 +1,14 @@
-import { TimerHooks } from "@shared/types";
-import { ClockMachine } from "@client/machines/clock/machine";
-import { useBridge } from "./useBridge";
-import { loggerContext } from "./useLogger";
-import { bridgeContext } from "./useBridge";
-import { IBridge } from "@shared/types";
-import { machinesContext } from "./machines";
-import { useInterpret } from "@xstate/react";
-import { useEffect } from "react";
-import mainMachineFactory from "@client/machines/main/machine";
-import { updateTheme } from "@client/theme/updateTheme";
+import { TimerHooks } from '@shared/types';
+import { ClockMachine } from '@client/machines/clock/machine';
+import { useBridge } from './useBridge';
+import { loggerContext } from './useLogger';
+import { bridgeContext } from './useBridge';
+import { IBridge } from '@shared/types';
+import { machinesContext } from './machines';
+import { useInterpret } from '@xstate/react';
+import { useEffect } from 'react';
+import mainMachineFactory from '@client/machines/main/machine';
+import { updateTheme } from '@client/theme/updateTheme';
 
 interface ILoggerProvider {
   children: React.ReactNode;
@@ -60,7 +60,7 @@ export function MachinesProvider({
   const bridge = useBridge();
 
   useEffect(() => {
-    bridge.info("client starting");
+    bridge.info('client starting');
   }, [bridge]);
 
   const main = useInterpret(

@@ -3,8 +3,8 @@
   grid-template-columns: [left] 1fr [middle] 160px [right] 1fr;
   grid-template-rows: [top] 60px [center] 100px [bottom] 10px [control] min-content;
   grid-template-areas:
-    ". timer ."
-    ". timer ."
-    ". gap ."
-    ". controls .";
+    '. timer .'
+    '. timer .'
+    '. gap .'
+    '. controls .';
 }

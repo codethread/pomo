@@ -1,4 +1,4 @@
-import { SvgSize, useIcon } from "./useIcon";
+import { SvgSize, useIcon } from './useIcon';
 
 export function EyeClosed(props: SvgSize): JSX.Element {
   const { color, height, width } = useIcon(props);

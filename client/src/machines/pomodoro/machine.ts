@@ -1,5 +1,5 @@
-import { merge } from "@shared/merge";
-import { DeepPartial, UserConfig, emptyConfig } from "@shared/types";
+import { merge } from '@shared/merge';
+import { DeepPartial, UserConfig, emptyConfig } from '@shared/types';
 import {
   ActorRefFrom,
   assign,
@@ -7,11 +7,11 @@ import {
   InterpreterFrom,
   send,
   sendParent,
-} from "xstate";
-import { actorIds } from "../constants";
-import timerMachine from "../timer/machine";
-import { ClockMachine } from "../clock/machine";
-import { TimerContext } from "../timer/machine";
+} from 'xstate';
+import { actorIds } from '../constants';
+import timerMachine from '../timer/machine';
+import { ClockMachine } from '../clock/machine';
+import { TimerContext } from '../timer/machine';
 
 const initialContext = {
   completed: {
@@ -25,41 +25,41 @@ const initialContext = {
 };
 
 export type PomodoroEvents =
-  | { type: "CONFIG_LOADED"; data: UserConfig }
-  | { type: "TIMER_COMPLETE"; data: TimerContext }
-  | { type: "TIMER_STOPPED"; data: TimerContext }
-  | { type: "TIMER_START"; data: TimerContext }
-  | { type: "TIMER_TICK"; data: TimerContext }
-  | { type: "TIMER_PLAY"; data: TimerContext }
-  | { type: "TIMER_PAUSE"; data: TimerContext };
+  | { type: 'CONFIG_LOADED'; data: UserConfig }
+  | { type: 'TIMER_COMPLETE'; data: TimerContext }
+  | { type: 'TIMER_STOPPED'; data: TimerContext }
+  | { type: 'TIMER_START'; data: TimerContext }
+  | { type: 'TIMER_TICK'; data: TimerContext }
+  | { type: 'TIMER_PLAY'; data: TimerContext }
+  | { type: 'TIMER_PAUSE'; data: TimerContext };
 
 export type PomodoroModel = typeof initialContext;
 
 function pomodoroMachine({ context, clock }: IPomodoroMachine) {
   return createMachine(
     {
-      id: "pomodoroMachine",
+      id: 'pomodoroMachine',
       predictableActionArguments: true,
       preserveActionOrder: true,
-      tsTypes: {} as import("./machine.typegen").Typegen0,
+      tsTypes: {} as import('./machine.typegen').Typegen0,
       schema: {
         context: {} as PomodoroModel,
         events: {} as PomodoroEvents,
       },
       context: merge(initialContext, context),
-      initial: "loading",
+      initial: 'loading',
       on: {
-        TIMER_START: { actions: "onStartHook" },
-        TIMER_PAUSE: { actions: "onPauseHook" },
-        TIMER_PLAY: { actions: "onPlayHook" },
-        TIMER_TICK: { actions: "onTickHook" },
+        TIMER_START: { actions: 'onStartHook' },
+        TIMER_PAUSE: { actions: 'onPauseHook' },
+        TIMER_PLAY: { actions: 'onPlayHook' },
+        TIMER_TICK: { actions: 'onTickHook' },
       },
       states: {
         loading: {
           on: {
             CONFIG_LOADED: {
-              actions: "updateTimerConfig",
-              target: "pomo",
+              actions: 'updateTimerConfig',
+              target: 'pomo',
             },
           },
         },
@@ -71,7 +71,7 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
               const s: TimerContext = {
                 minutes: pomo,
                 seconds: 0,
-                type: "pomo",
+                type: 'pomo',
                 autoStart: beforePomo,
                 id: Math.random().toFixed(6).slice(2, -1),
                 target: pomo,
@@ -80,20 +80,20 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
             },
           },
           on: {
-            TIMER_STOPPED: { target: "pomo", actions: ["onStopHook"] },
+            TIMER_STOPPED: { target: 'pomo', actions: ['onStopHook'] },
             TIMER_COMPLETE: {
-              target: "breakDecision",
-              actions: ["increasePomoCount", "onCompleteHook"],
+              target: 'breakDecision',
+              actions: ['increasePomoCount', 'onCompleteHook'],
             },
             CONFIG_LOADED: {
-              actions: ["updateTimerConfig", "updatePomoTimerConfig"],
+              actions: ['updateTimerConfig', 'updatePomoTimerConfig'],
             },
           },
         },
         breakDecision: {
           always: [
-            { cond: "isLongBreak", target: "long" },
-            { target: "short" },
+            { cond: 'isLongBreak', target: 'long' },
+            { target: 'short' },
           ],
         },
         short: {
@@ -104,7 +104,7 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
               const t: TimerContext = {
                 minutes: short,
                 seconds: 0,
-                type: "short",
+                type: 'short',
                 autoStart: beforeShortBreak,
                 id: Math.random().toFixed(6).slice(2, -1),
                 target: short,
@@ -113,11 +113,11 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
             },
           },
           on: {
-            TIMER_COMPLETE: { target: "pomo", actions: "onCompleteHook" },
-            TIMER_STOPPED: { target: "pomo", actions: "onStopHook" },
-            CONFIG_LOADED: { actions: "updateTimerConfig" },
+            TIMER_COMPLETE: { target: 'pomo', actions: 'onCompleteHook' },
+            TIMER_STOPPED: { target: 'pomo', actions: 'onStopHook' },
+            CONFIG_LOADED: { actions: 'updateTimerConfig' },
           },
-          exit: "increaseShortBreakCount",
+          exit: 'increaseShortBreakCount',
         },
         long: {
           invoke: {
@@ -127,7 +127,7 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
               const t: TimerContext = {
                 minutes: long,
                 seconds: 0,
-                type: "long",
+                type: 'long',
                 autoStart: beforeLongBreak,
                 id: Math.random().toFixed(6).slice(2, -1),
                 target: long,
@@ -136,11 +136,11 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
             },
           },
           on: {
-            TIMER_COMPLETE: { target: "pomo", actions: "onCompleteHook" },
-            TIMER_STOPPED: { target: "pomo", actions: "onStopHook" },
-            CONFIG_LOADED: { actions: "updateTimerConfig" },
+            TIMER_COMPLETE: { target: 'pomo', actions: 'onCompleteHook' },
+            TIMER_STOPPED: { target: 'pomo', actions: 'onStopHook' },
+            CONFIG_LOADED: { actions: 'updateTimerConfig' },
           },
-          exit: "increaseLongBreakCount",
+          exit: 'increaseLongBreakCount',
         },
       },
     },
@@ -183,23 +183,23 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
         }),
 
         updatePomoTimerConfig: send(
-          (_, { data: { timers } }) => ({ type: "UPDATE", data: timers.pomo }),
+          (_, { data: { timers } }) => ({ type: 'UPDATE', data: timers.pomo }),
           { to: actorIds.TIMER },
         ),
 
         onPauseHook: sendParent((_, { data }) => ({
-          type: "TIMER_PAUSE",
+          type: 'TIMER_PAUSE',
           data,
         })),
         onStartHook: sendParent((_, { data }) => ({
-          type: "TIMER_START",
+          type: 'TIMER_START',
           data,
         })),
-        onPlayHook: sendParent((_, { data }) => ({ type: "TIMER_PLAY", data })),
-        onStopHook: sendParent((_, { data }) => ({ type: "TIMER_STOP", data })),
-        onTickHook: sendParent((_, { data }) => ({ type: "TIMER_TICK", data })),
+        onPlayHook: sendParent((_, { data }) => ({ type: 'TIMER_PLAY', data })),
+        onStopHook: sendParent((_, { data }) => ({ type: 'TIMER_STOP', data })),
+        onTickHook: sendParent((_, { data }) => ({ type: 'TIMER_TICK', data })),
         onCompleteHook: sendParent((_, { data }) => ({
-          type: "TIMER_COMPLETE",
+          type: 'TIMER_COMPLETE',
           data,
         })),
       },

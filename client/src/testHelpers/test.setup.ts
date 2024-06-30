@@ -1,8 +1,8 @@
-import { expect } from "vitest";
-import { diff } from "jest-diff";
+import { expect } from 'vitest';
+import { diff } from 'jest-diff';
 
-import { isErr, isOk, Result } from "@shared/Result";
-import { pick } from "@shared/pick";
+import { isErr, isOk, Result } from '@shared/Result';
+import { pick } from '@shared/pick';
 
 expect.extend({
   toMatchResult(got: Result<any, any>, expected: Result<any, any>) {
@@ -22,8 +22,8 @@ expect.extend({
       const pass = false;
       const message = () =>
         `Result expected to be Ok but got Err\n\n` +
-        `Expected: ${this.utils.printExpected(pick(expected, ["val", "ok"]))}\n` +
-        `Received: ${this.utils.printReceived(pick(got, ["reason", "ok"]))}`;
+        `Expected: ${this.utils.printExpected(pick(expected, ['val', 'ok']))}\n` +
+        `Received: ${this.utils.printReceived(pick(got, ['reason', 'ok']))}`;
 
       return { pass, message, actual: got, expected };
     }
@@ -31,8 +31,8 @@ expect.extend({
       const pass = false;
       const message = () =>
         `Result expected to be Err but got Ok\n\n` +
-        `Expected: ${this.utils.printExpected(pick(expected, ["reason", "ok"]))}\n` +
-        `Received: ${this.utils.printReceived(pick(got, ["ok", "val"]))}`;
+        `Expected: ${this.utils.printExpected(pick(expected, ['reason', 'ok']))}\n` +
+        `Received: ${this.utils.printReceived(pick(got, ['ok', 'val']))}`;
 
       return { pass, message, actual: got, expected };
     }
@@ -55,15 +55,15 @@ function getMessage(
 ): () => string {
   return didPass ?
       () =>
-        `${viThis.utils.matcherHint("toDeepEqual")}\n\n` +
+        `${viThis.utils.matcherHint('toDeepEqual')}\n\n` +
         `Expected: not ${viThis.utils.printExpected(expectedVal)}\n` +
         `Received: ${viThis.utils.printReceived(recieved)}`
     : () => {
         const diffString = diff(expectedVal.val, recieved.val, {
           expand: viThis.expand,
         });
-        return `${viThis.utils.matcherHint("toDeepEqual")}\n\n${
-          diffString?.includes("- Expect") ?
+        return `${viThis.utils.matcherHint('toDeepEqual')}\n\n${
+          diffString?.includes('- Expect') ?
             `Difference:\n\n${diffString}`
           : `Expected: ${viThis.utils.printExpected(expectedVal)}\n` +
             `Received: ${viThis.utils.printReceived(recieved)}`

@@ -1,4 +1,4 @@
-import { colors, palette } from "@client/theme/colors";
+import { colors, palette } from '@client/theme/colors';
 
 const getRoot = (() => {
   let root: CSSStyleDeclaration | null;
@@ -6,9 +6,9 @@ const getRoot = (() => {
   return function getRootMemoised() {
     if (root) return root;
 
-    const r = document.querySelector<HTMLElement>(":root")?.style;
+    const r = document.querySelector<HTMLElement>(':root')?.style;
 
-    if (!r) throw new Error("could not get :root selector for styles");
+    if (!r) throw new Error('could not get :root selector for styles');
 
     root = r;
 
@@ -25,7 +25,7 @@ export type Palette = (typeof palette)[number];
 /**
  * Theme color set using an existing color variable from the `Colors`
  */
-export type ThemeVarValue = "var(--col-null)" | `var(${Colors})`;
+export type ThemeVarValue = 'var(--col-null)' | `var(${Colors})`;
 
 /**
  * Theme color provided in RGB format

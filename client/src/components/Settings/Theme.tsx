@@ -1,14 +1,14 @@
-import { useBridge } from "@client/hooks/useBridge";
-import { useConfig } from "@client/hooks/useConfig";
-import { ThemeName, themes } from "@client/theme/updateTheme";
-import { Button } from "../Button/Button";
-import { InputSelect } from "../Inputs/InputSelect";
-import { Setting } from "./Setting";
-import { FormProvider, useForm } from "react-hook-form";
+import { useBridge } from '@client/hooks/useBridge';
+import { useConfig } from '@client/hooks/useConfig';
+import { ThemeName, themes } from '@client/theme/updateTheme';
+import { Button } from '../Button/Button';
+import { InputSelect } from '../Inputs/InputSelect';
+import { Setting } from './Setting';
+import { FormProvider, useForm } from 'react-hook-form';
 
 export function Theme(): JSX.Element {
   const { storeUpdate, config } = useConfig();
-  const id = "theme-selector";
+  const id = 'theme-selector';
   const bridge = useBridge();
   const methods = useForm();
 
@@ -20,21 +20,21 @@ export function Theme(): JSX.Element {
           onChange={(theme) => {
             storeUpdate({ theme });
           }}
-          initialValue={config?.theme ?? "nord"}
+          initialValue={config?.theme ?? 'nord'}
           options={themes}
         />
         <p className="mt-4 text-sm">
-          Can&apos;t find the theme you want?{" "}
+          Can&apos;t find the theme you want?{' '}
           <Button
             variant="tertiary"
             onClick={() => {
               bridge.openExternal(
-                "https://github.com/codethread/pomo-electron/issues/new?assignees=codethread&labels=theme&template=theme-request.md&title=",
+                'https://github.com/codethread/pomo-electron/issues/new?assignees=codethread&labels=theme&template=theme-request.md&title=',
               );
             }}
           >
             Request it here
-          </Button>{" "}
+          </Button>{' '}
           and we'll get right on it!
         </p>
       </Setting>

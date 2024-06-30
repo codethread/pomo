@@ -1,15 +1,15 @@
-import { SlackAuth, TimerHooks, UserConfig } from "@shared/types";
-import { timeInFuture } from "./clock";
+import { SlackAuth, TimerHooks, UserConfig } from '@shared/types';
+import { timeInFuture } from './clock';
 
 export const slackHooks: TimerHooks = {
   onTickHook: ({ bridge, config, timer: { minutes, seconds, type } }) => {
     const slackAuth = getSlackAuth(config);
 
-    if (type === "pomo" && seconds === 0 && minutes > 0 && slackAuth) {
-      bridge.info("slack tick hook");
+    if (type === 'pomo' && seconds === 0 && minutes > 0 && slackAuth) {
+      bridge.info('slack tick hook');
       bridge.slackSetProfile(slackAuth, {
         text: status(minutes),
-        emoji: ":tomato:",
+        emoji: ':tomato:',
         expiration: timeInFuture({ mins: minutes }),
       });
     }
@@ -17,14 +17,14 @@ export const slackHooks: TimerHooks = {
   onStartHook: ({ bridge, config, timer }) => {
     const slackAuth = getSlackAuth(config);
 
-    if (timer.type === "pomo" && slackAuth) {
+    if (timer.type === 'pomo' && slackAuth) {
       const mins = timer.minutes;
 
-      bridge.slackSetPresence(slackAuth, "away");
+      bridge.slackSetPresence(slackAuth, 'away');
       bridge.slackSetSnooze(slackAuth, mins);
       bridge.slackSetProfile(slackAuth, {
         text: status(mins),
-        emoji: ":tomato:",
+        emoji: ':tomato:',
         expiration: timeInFuture({ mins }),
       });
     }
@@ -34,24 +34,24 @@ export const slackHooks: TimerHooks = {
   onStopHook: ({ bridge, config, timer: { type } }) => {
     const slackAuth = getSlackAuth(config);
 
-    if (type === "pomo" && slackAuth) {
-      bridge.slackSetPresence(slackAuth, "active");
+    if (type === 'pomo' && slackAuth) {
+      bridge.slackSetPresence(slackAuth, 'active');
       bridge.slackEndSnooze(slackAuth);
       bridge.slackSetProfile(slackAuth, {
-        text: "",
-        emoji: "",
+        text: '',
+        emoji: '',
       });
     }
   },
   onCompleteHook: ({ bridge, config, timer: { type } }) => {
     const slackAuth = getSlackAuth(config);
 
-    if (type === "pomo" && slackAuth) {
-      bridge.slackSetPresence(slackAuth, "active");
+    if (type === 'pomo' && slackAuth) {
+      bridge.slackSetPresence(slackAuth, 'active');
       bridge.slackEndSnooze(slackAuth);
       bridge.slackSetProfile(slackAuth, {
-        text: "",
-        emoji: "",
+        text: '',
+        emoji: '',
       });
     }
   },

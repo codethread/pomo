@@ -1,14 +1,14 @@
-import { ActorRef, EventObject } from "xstate";
-import { ConfigActorRef } from "./config/machine";
-import { MainService } from "./main/machine";
-import { PomodoroActorRef } from "./pomodoro/machine";
-import { actorIds, Actors } from "./constants";
+import { ActorRef, EventObject } from 'xstate';
+import { ConfigActorRef } from './config/machine';
+import { MainService } from './main/machine';
+import { PomodoroActorRef } from './pomodoro/machine';
+import { actorIds, Actors } from './constants';
 
 /**
  *
  * @see https://github.com/davidkpiano/xstate/discussions/1591
  */
-function assertEventType<TE extends EventObject, TType extends TE["type"]>(
+function assertEventType<TE extends EventObject, TType extends TE['type']>(
   event: TE,
   eventType: TType,
 ): asserts event is TE & { type: TType } {
@@ -23,7 +23,7 @@ function nullActor(
   overrides?: Partial<ActorRef<any, any>>,
 ): ActorRef<any, any> {
   return {
-    id: "null",
+    id: 'null',
     send: () => {},
     subscribe: () => ({ unsubscribe: () => {} }),
     getSnapshot: () => {},
@@ -62,7 +62,7 @@ export class ActorError extends Error {
     const msg = `programmer error, "${id}}" not found in machine. Actor refs found: "${Array.from(
       // little bit of massaging here as we're treating everything as a service, even though the types are actor refs (they are fundamentally the same thing, but have some api differences).
       (actor as MainService).children.keys(),
-    ).join(",")}"`;
+    ).join(',')}"`;
 
     super(msg);
   }

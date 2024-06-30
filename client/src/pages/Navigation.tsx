@@ -1,5 +1,5 @@
-import { Button } from "@client/components/Button/Button";
-import { Pages } from "@client/pages/PageManager";
+import { Button } from '@client/components/Button/Button';
+import { Pages } from '@client/pages/PageManager';
 import {
   AdjustmentsIcon,
   ChatAlt2Icon,
@@ -7,7 +7,7 @@ import {
   ClockIcon,
   PencilIcon,
   ChartPieIcon,
-} from "@heroicons/react/solid";
+} from '@heroicons/react/solid';
 
 interface INavigation {
   page: Pages;

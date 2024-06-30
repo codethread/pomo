@@ -1,11 +1,11 @@
-import { useEffect, useLayoutEffect, useState } from "react";
-import { Providers } from "./Providers";
-import { setupBridge } from "./bridge/setup";
-import { IBridge } from "@shared/types";
-import { createFakeBridge } from "./testHelpers/createFakeBridge";
-import { clockMachine } from "./machines/clock/machine";
-import { fakeClockMachine } from "./machines/clock/fakeClock";
-import { inspect } from "@xstate/inspect";
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { Providers } from './Providers';
+import { setupBridge } from './bridge/setup';
+import { IBridge } from '@shared/types';
+import { createFakeBridge } from './testHelpers/createFakeBridge';
+import { clockMachine } from './machines/clock/machine';
+import { fakeClockMachine } from './machines/clock/fakeClock';
+import { inspect } from '@xstate/inspect';
 
 export function Booter() {
   const [bridge, setBridge] = useState<IBridge>();
@@ -17,7 +17,7 @@ export function Booter() {
       tauri: () => setupBridge(),
     })
       .then(async (b) => {
-        const isDev = (await b.isDev()).expect("shoulnt fail");
+        const isDev = (await b.isDev()).expect('shoulnt fail');
         setIsDev(isDev);
         return b;
       })
@@ -25,7 +25,7 @@ export function Booter() {
   }, []);
 
   useLayoutEffect(() => {
-    const notTauri = typeof window === "object" && !window.__TAURI_METADATA__;
+    const notTauri = typeof window === 'object' && !window.__TAURI_METADATA__;
     if (notTauri) {
       inspect({
         iframe: false,

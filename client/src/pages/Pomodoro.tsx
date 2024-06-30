@@ -1,7 +1,7 @@
-import { Countdown } from "@client/components/Countdown/Countdown";
-import { usePomodoro, useTimer } from "@client/hooks/machines";
-import { assertUnreachable } from "@shared/asserts";
-import { TimerType } from "@shared/types";
+import { Countdown } from '@client/components/Countdown/Countdown';
+import { usePomodoro, useTimer } from '@client/hooks/machines';
+import { assertUnreachable } from '@shared/asserts';
+import { TimerType } from '@shared/types';
 
 export function Pomodoro(): JSX.Element | null {
   const [state] = usePomodoro();
@@ -16,7 +16,7 @@ export function Pomodoro(): JSX.Element | null {
   return timerRef ?
       <>
         <Countdown timerRef={timerRef} title={title} duration={duration} />
-        <div style={{ display: "none" }}>
+        <div style={{ display: 'none' }}>
           <p>completed pomos: {pomo}</p>
           <p>completed breaks: {long}</p>
         </div>
@@ -25,24 +25,24 @@ export function Pomodoro(): JSX.Element | null {
 
   function getValue(): TimerType {
     switch (true) {
-      case state.matches("long"):
-        return "long";
-      case state.matches("short"):
-        return "short";
+      case state.matches('long'):
+        return 'long';
+      case state.matches('short'):
+        return 'short';
       default:
-        return "pomo";
+        return 'pomo';
     }
   }
 }
 
 function getTitle(state: TimerType): string {
   switch (state) {
-    case "pomo":
-      return "Pomodoro";
-    case "short":
-      return "Short Break";
-    case "long":
-      return "Long Break";
+    case 'pomo':
+      return 'Pomodoro';
+    case 'short':
+      return 'Short Break';
+    case 'long':
+      return 'Long Break';
     default:
       return assertUnreachable(state);
   }

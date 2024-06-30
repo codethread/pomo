@@ -1,5 +1,5 @@
-import { IBridge } from "@shared/types";
-import { NonUndefined } from "react-hook-form";
+import { IBridge } from '@shared/types';
+import { NonUndefined } from 'react-hook-form';
 
 type Entries<T> = NonUndefined<
   {

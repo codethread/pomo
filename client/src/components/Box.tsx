@@ -1,5 +1,5 @@
-import { IChildren } from "@shared/types";
-import classNames from "classnames";
+import { IChildren } from '@shared/types';
+import classNames from 'classnames';
 
 interface IBox extends IChildren {
   className?: string;
@@ -11,7 +11,7 @@ export function Box({ children, className, style }: IBox): JSX.Element {
     <div
       style={style}
       className={classNames(
-        "flex flex-col justify-center justify-items-stretch",
+        'flex flex-col justify-center justify-items-stretch',
         className,
       )}
     >
