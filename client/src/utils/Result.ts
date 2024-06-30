@@ -77,9 +77,11 @@ export function tupleResult<A, B, C>(
   return result1.flatMap((ok1) => result2.map((ok2) => [ok1, ok2]));
 }
 
-export function fromPromise<A, B>(prom: Promise<A>, onErr: (e: unknown) => B): Promise<Result<A, B>> {
-  return prom.then(r => ok<A, B>(r)).catch(e => err(onErr(e)))
-
+export function fromPromise<A, B>(
+  prom: Promise<A>,
+  onErr: (e: unknown) => B,
+): Promise<Result<A, B>> {
+  return prom.then((r) => ok<A, B>(r)).catch((e) => err(onErr(e)));
 }
 
 class ExpectError extends Error {
