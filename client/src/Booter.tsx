@@ -50,6 +50,6 @@ export function Booter() {
 }
 
 function env<A>(setup: { tauri: () => A; browser: () => A }): A {
-  if (window.__TAURI__) return setup.tauri();
+  if (window.__TAURI_METADATA__) return setup.tauri();
   return setup.browser();
 }
