@@ -1,13 +1,16 @@
 import { formatTrayTime } from '@shared/formatTrayTime';
-import { DeepPartial, IBridge, UserConfig, UserConfigSchema } from '@shared/types';
+import { DeepPartial, IBridge, UserConfig, UserConfigSchema, emptyConfig } from '@shared/types';
 import { ActorRefFrom, assign, createMachine, InterpreterFrom, sendParent } from 'xstate';
 import { fromError } from 'zod-validation-error';
-import { respond } from 'xstate/lib/actions';
-import { ConfigContext, configModel, ConfitEvents } from './model';
 
 export interface IConfigMachine {
   bridge: IBridge;
 }
+
+const initialContext = emptyConfig;
+
+export type ConfigContext = typeof initialContext;
+export type ConfitEvents = { type: 'RESET' } | { type: 'UPDATE'; data: DeepPartial<UserConfig> };
 
 export default function configMachine({ bridge }: IConfigMachine) {
   return createMachine(
@@ -25,7 +28,7 @@ export default function configMachine({ bridge }: IConfigMachine) {
           resetConfig: { data: UserConfig };
         },
       },
-      context: configModel.initialContext,
+      context: initialContext,
       initial: 'loading',
       states: {
         loading: {
@@ -51,7 +54,6 @@ export default function configMachine({ bridge }: IConfigMachine) {
               on: {
                 UPDATE: 'updating',
                 RESET: 'resetting',
-                REQUEST_CONFIG: { actions: 'respondWithConfig' },
               },
             },
             updating: {
@@ -131,7 +133,6 @@ export default function configMachine({ bridge }: IConfigMachine) {
       },
       actions: {
         broadcastConfig: sendParent((c) => ({ type: 'CONFIG_LOADED', data: c })),
-        respondWithConfig: respond((c) => ({ type: 'CONFIG_LOADED', data: c })),
         storeConfig: assign((_, { data }) => data),
       },
     }

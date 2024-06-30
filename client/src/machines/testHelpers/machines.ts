@@ -1,6 +1,5 @@
 import { AnyStateMachine, createMachine } from 'xstate';
 import { actorIds } from '../constants';
-import { Mock } from 'vitest';
 
 interface Parent<A> {
   parentEvents: string[];
