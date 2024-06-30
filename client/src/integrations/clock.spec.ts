@@ -1,11 +1,11 @@
 // import MockDate from 'mockdate';
-import { timeInFuture } from './clock';
+import { timeInFuture } from "./clock";
 
-describe('clock', () => {
-  describe('timeInFuture', () => {
+describe("clock", () => {
+  describe("timeInFuture", () => {
     beforeEach(() => {
       // MockDate.set('Jan 01, 2000 10:00:00');
-      vi.setSystemTime(new Date('Jan 01, 2000 10:00:00'));
+      vi.setSystemTime(new Date("Jan 01, 2000 10:00:00"));
     });
 
     afterEach(() => {
@@ -34,7 +34,7 @@ describe('clock', () => {
 
         expect(timer.getHours()).toBe(resHours);
         expect(timer.getMinutes()).toBe(resMins);
-      }
+      },
     );
   });
 });

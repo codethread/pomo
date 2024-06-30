@@ -1,10 +1,13 @@
-import type { ClockMachine } from './machine';
+import type { ClockMachine } from "./machine";
 
 const interval = 1000;
 class Clock {
   private complete = false;
 
-  constructor(private mins: number, private seconds: number) {}
+  constructor(
+    private mins: number,
+    private seconds: number,
+  ) {}
 
   countdown() {
     if (this.complete) return;
@@ -40,23 +43,23 @@ export const fakeClockMachine: ClockMachine = () => {
       } = e;
 
       switch (e.type) {
-        case 'create':
+        case "create":
           clock = new Clock(minutes, seconds);
           break;
-        case 'play':
+        case "play":
           timer = setInterval(() => {
             if (!clock) {
-              throw new Error('dev error, should be a clock');
+              throw new Error("dev error, should be a clock");
             }
             clock.countdown();
             const { seconds, minutes } = clock.getTime();
-            sendBack({ type: '_TICK', seconds, minutes });
+            sendBack({ type: "_TICK", seconds, minutes });
           }, interval);
           break;
-        case 'pause':
+        case "pause":
           stopTimer();
           break;
-        case 'stop':
+        case "stop":
           stopTimer();
           break;
       }

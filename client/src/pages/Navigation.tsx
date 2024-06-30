@@ -1,5 +1,5 @@
-import { Button } from '@client/components/Button/Button';
-import { Pages } from '@client/pages/PageManager';
+import { Button } from "@client/components/Button/Button";
+import { Pages } from "@client/pages/PageManager";
 import {
   AdjustmentsIcon,
   ChatAlt2Icon,
@@ -7,7 +7,7 @@ import {
   ClockIcon,
   PencilIcon,
   ChartPieIcon,
-} from '@heroicons/react/solid';
+} from "@heroicons/react/solid";
 
 interface INavigation {
   page: Pages;
@@ -18,11 +18,36 @@ export function Navigation({ onNavigate, page }: INavigation): JSX.Element {
     // <div className="absolute top-0 h-full w-full backdrop-blur-md">
     <div className="h-full w-full grow backdrop-blur-md">
       <ul className="mx-auto mt-3 flex w-fit flex-col justify-center space-y-4 align-middle">
-        <NavItem onNavigate={onNavigate} page={page} name="Timer" Icon={ClockIcon} />
-        <NavItem onNavigate={onNavigate} page={page} name="Slack Settings" Icon={ChatAlt2Icon} />
-        <NavItem onNavigate={onNavigate} page={page} name="Timer Settings" Icon={AdjustmentsIcon} />
-        <NavItem onNavigate={onNavigate} page={page} name="Theme Settings" Icon={PencilIcon} />
-        <NavItem onNavigate={onNavigate} page={page} name="Stats" Icon={ChartPieIcon} />
+        <NavItem
+          onNavigate={onNavigate}
+          page={page}
+          name="Timer"
+          Icon={ClockIcon}
+        />
+        <NavItem
+          onNavigate={onNavigate}
+          page={page}
+          name="Slack Settings"
+          Icon={ChatAlt2Icon}
+        />
+        <NavItem
+          onNavigate={onNavigate}
+          page={page}
+          name="Timer Settings"
+          Icon={AdjustmentsIcon}
+        />
+        <NavItem
+          onNavigate={onNavigate}
+          page={page}
+          name="Theme Settings"
+          Icon={PencilIcon}
+        />
+        <NavItem
+          onNavigate={onNavigate}
+          page={page}
+          name="Stats"
+          Icon={ChartPieIcon}
+        />
       </ul>
     </div>
   );
@@ -33,7 +58,10 @@ function NavItem({
   page,
   name,
   Icon,
-}: INavigation & { name: Pages; Icon: React.FC<{ className: string }> }): JSX.Element | null {
+}: INavigation & {
+  name: Pages;
+  Icon: React.FC<{ className: string }>;
+}): JSX.Element | null {
   return (
     <li>
       <Button
@@ -43,11 +71,9 @@ function NavItem({
         variant="tertiary"
         disabled={page === name}
       >
-        {page === name ? (
+        {page === name ?
           <ChevronRightIcon className="mr-2 inline-flex w-5" />
-        ) : (
-          <Icon className="mr-2 inline-flex w-5" />
-        )}
+        : <Icon className="mr-2 inline-flex w-5" />}
         {name}
       </Button>
     </li>

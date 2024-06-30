@@ -1,7 +1,9 @@
 // based on rust's Result Enum, this is a really basic functor and would probably make someone who knows FP cry
 export type Result<O, E = string> = Err<O, E> | Ok<O, E>;
 
-type SimpleResult<O, E> = Pick<Err<O, E>, 'ok' | 'reason'> | Pick<Ok<O, E>, 'ok' | 'val'>;
+type SimpleResult<O, E> =
+  | Pick<Err<O, E>, "ok" | "reason">
+  | Pick<Ok<O, E>, "ok" | "val">;
 
 export const strip = <A, B>(result: Result<A, B>): SimpleResult<A, B> =>
   result.match({
@@ -63,12 +65,14 @@ export interface Ok<O, E = string> {
   expect: (message?: string) => O;
 }
 
-export const isErr = <O, E>(result: Result<O, E>): result is Err<O, E> => !result.ok;
-export const isOk = <O, E>(result: Result<O, E>): result is Ok<O, E> => result.ok;
+export const isErr = <O, E>(result: Result<O, E>): result is Err<O, E> =>
+  !result.ok;
+export const isOk = <O, E>(result: Result<O, E>): result is Ok<O, E> =>
+  result.ok;
 
 export function tupleResult<A, B, C>(
   result1: Result<A, B>,
-  result2: Result<C, B>
+  result2: Result<C, B>,
 ): Result<[A, C], B> {
   return result1.flatMap((ok1) => result2.map((ok2) => [ok1, ok2]));
 }

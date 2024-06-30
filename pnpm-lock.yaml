@@ -19,7 +19,7 @@ dependencies:
     version: 1.5.2
   '@xstate/cli':
     specifier: 0.1.5
-    version: 0.1.5(prettier@2.6.2)
+    version: 0.1.5(prettier@3.3.2)
   '@xstate/inspect':
     specifier: ^0.7.0
     version: 0.7.1(ws@8.5.0)(xstate@4.38.3)
@@ -125,11 +125,11 @@ devDependencies:
     specifier: ^8.4.14
     version: 8.4.32
   prettier:
-    specifier: 2.6.2
-    version: 2.6.2
+    specifier: 3.3.2
+    version: 3.3.2
   prettier-plugin-tailwindcss:
     specifier: ^0.1.11
-    version: 0.1.13(prettier@2.6.2)
+    version: 0.1.13(prettier@3.3.2)
   tailwindcss:
     specifier: ^3.0.24
     version: 3.3.6
@@ -1345,12 +1345,12 @@ packages:
     resolution: {integrity: sha512-N8tkAACJx2ww8vFMneJmaAgmjAG1tnVBZJRLRcx061tmsLRZHSEZSLuGWnwPtunsSLvSqXQ2wfp7Mgqg1I+2dQ==}
     dev: false
 
-  /@xstate/cli@0.1.5(prettier@2.6.2):
+  /@xstate/cli@0.1.5(prettier@3.3.2):
     resolution: {integrity: sha512-JrXLT5WaB9kLoUf5KkOo8T16NJ9MFSuGrDiVQdg7hFAZiHeuxUg6qN7EcKSRAbbr9E33HVlrfX7KaUCOeVyTpA==}
     dependencies:
       '@babel/core': 7.23.6
       '@xstate/machine-extractor': 0.6.2(@babel/core@7.23.6)(xstate@4.38.3)
-      '@xstate/tools-shared': 1.1.3(@babel/core@7.23.6)(prettier@2.6.2)(xstate@4.38.3)
+      '@xstate/tools-shared': 1.1.3(@babel/core@7.23.6)(prettier@3.3.2)(xstate@4.38.3)
       chokidar: 3.5.3
       commander: 8.3.0
       xstate: 4.38.3
@@ -1404,14 +1404,14 @@ packages:
       - '@types/react'
     dev: false
 
-  /@xstate/tools-shared@1.1.3(@babel/core@7.23.6)(prettier@2.6.2)(xstate@4.38.3):
+  /@xstate/tools-shared@1.1.3(@babel/core@7.23.6)(prettier@3.3.2)(xstate@4.38.3):
     resolution: {integrity: sha512-KsL0Qw4DAkDrkVtFe/BKBNGNKK7+48nsnOakZosrliFVyDszbr1YLwjlyzGFN/YDMUfG1jCGQdVyf3kmt6IKQw==}
     peerDependencies:
       prettier: ^2.3.1
       xstate: ^4
     dependencies:
       '@xstate/machine-extractor': 0.6.2(@babel/core@7.23.6)(xstate@4.38.3)
-      prettier: 2.6.2
+      prettier: 3.3.2
       xstate: 4.38.3
     transitivePeerDependencies:
       - '@babel/core'
@@ -3458,18 +3458,19 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier-plugin-tailwindcss@0.1.13(prettier@2.6.2):
+  /prettier-plugin-tailwindcss@0.1.13(prettier@3.3.2):
     resolution: {integrity: sha512-/EKQURUrxLu66CMUg4+1LwGdxnz8of7IDvrSLqEtDqhLH61SAlNNUSr90UTvZaemujgl3OH/VHg+fyGltrNixw==}
     engines: {node: '>=12.17.0'}
     peerDependencies:
       prettier: '>=2.2.0'
     dependencies:
-      prettier: 2.6.2
+      prettier: 3.3.2
     dev: true
 
-  /prettier@2.6.2:
-    resolution: {integrity: sha512-PkUpF+qoXTqhOeWL9fu7As8LXsIUZ1WYaJiY/a7McAQzxjk82OF0tibkFXVCDImZtWxbvojFjerkiLb0/q8mew==}
-    engines: {node: '>=10.13.0'}
+  /prettier@3.3.2:
+    resolution: {integrity: sha512-rAVeHYMcv8ATV5d508CFdn+8/pHPpXeIid1DdrPwXnaAdH7cqjVbpJaT5eq4yRAFU/lsbwYwSF/n5iNrdJHPQA==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   /pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}

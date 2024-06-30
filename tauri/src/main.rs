@@ -1,12 +1,28 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use specta::collect_types;
+use tauri_specta::ts;
+
 mod commands;
 mod models;
 mod setup;
 mod tray;
 
 fn main() {
+    #[cfg(debug_assertions)]
+    ts::export(
+        collect_types![
+            commands::start,
+            commands::stop,
+            commands::pause,
+            commands::play,
+            commands::update
+        ],
+        "../client/src/utils/commands.ts",
+    )
+    .unwrap();
+
     tauri::Builder::default()
         .setup(setup::handle_setup)
         .system_tray(tray::create_system_tray())

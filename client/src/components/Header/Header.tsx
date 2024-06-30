@@ -1,9 +1,9 @@
-import { Pages } from '@client/pages/PageManager';
-import { getVersion } from '@tauri-apps/api/app';
-import { useAsync } from 'react-use';
-import { useIsDev } from '@client/hooks/useBridge';
-import { Box } from '../Box';
-import { MenuButton } from './MenuButton';
+import { Pages } from "@client/pages/PageManager";
+import { getVersion } from "@tauri-apps/api/app";
+import { useAsync } from "react-use";
+import { useIsDev } from "@client/hooks/useBridge";
+import { Box } from "../Box";
+import { MenuButton } from "./MenuButton";
 
 export interface IHeader {
   onClick: () => void;
@@ -18,10 +18,12 @@ export function Header({ onClick, page, showClose }: IHeader): JSX.Element {
     <header className="grid h-11 flex-shrink-0 grid-cols-[20%_60%_20%]">
       <MenuButton onClick={onClick} showClose={showClose} />
       <Box>
-        <h2 className="text-center text-lg">{showClose ? 'Menu' : page}</h2>
+        <h2 className="text-center text-lg">{showClose ? "Menu" : page}</h2>
       </Box>
       <Box className="text-sm text-thmBackgroundBrightest">
-        {isDev ? <p>Dev</p> : <p>Beta</p>}
+        {isDev ?
+          <p>Dev</p>
+        : <p>Beta</p>}
         <p className="text-xs">{version}</p>
       </Box>
     </header>

@@ -1,14 +1,17 @@
-import classNames from 'classnames';
-import { useState } from 'react';
+import classNames from "classnames";
+import { useState } from "react";
 
 export interface IInputSelect<A>
   extends Omit<
-    React.DetailedHTMLProps<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>,
-    'onChange'
+    React.DetailedHTMLProps<
+      React.SelectHTMLAttributes<HTMLSelectElement>,
+      HTMLSelectElement
+    >,
+    "onChange"
   > {
   id: string;
   hasError?: boolean;
-  readonly initialValue: A | 'none';
+  readonly initialValue: A | "none";
   className?: string;
   readonly options: readonly A[];
   onChange(n: A): void;
@@ -29,13 +32,15 @@ export function InputSelect<A extends string>({
       ref={ref}
       data-error={hasError}
       className={classNames(
-        'input w-full',
-        hasError ? 'text-thmError' : selected === 'none' ? 'text-thmFgDim' : 'text-thmFg',
-        className
+        "input w-full",
+        hasError ? "text-thmError"
+        : selected === "none" ? "text-thmFgDim"
+        : "text-thmFg",
+        className,
       )}
       id={id}
       {...(hasError && {
-        'aria-describedby': `${id}-error`,
+        "aria-describedby": `${id}-error`,
       })}
       value={selected}
       onChange={({ target }) => {
@@ -44,10 +49,10 @@ export function InputSelect<A extends string>({
         onChange(v);
       }}
     >
-      {initialValue === 'none' && (
+      {initialValue === "none" && (
         <option disabled value="none" className="hidden text-thmGood">
-          {' '}
-          -- select an option --{' '}
+          {" "}
+          -- select an option --{" "}
         </option>
       )}
       {options.map((option) => (

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import './scrollbar.css';
+import { useEffect, useState } from "react";
+import "./scrollbar.css";
 
 export function ScrollBar(): JSX.Element | null {
   const [showScroll, setShowScroll] = useState(false);
@@ -9,16 +9,16 @@ export function ScrollBar(): JSX.Element | null {
      * Detect if Mac user is using 'always show' scroll bars option
      * https://stackoverflow.com/a/55009770/1317h585
      * */
-    const outer = document.createElement('div');
-    outer.style.visibility = 'hidden';
-    outer.style.width = '100px';
+    const outer = document.createElement("div");
+    outer.style.visibility = "hidden";
+    outer.style.width = "100px";
     document.body.appendChild(outer);
 
     const widthNoScroll = outer.offsetWidth;
-    outer.style.overflow = 'scroll';
+    outer.style.overflow = "scroll";
 
-    const inner = document.createElement('div');
-    inner.style.width = '100%';
+    const inner = document.createElement("div");
+    inner.style.width = "100%";
     outer.appendChild(inner);
 
     const widthWithScroll = inner.offsetWidth;

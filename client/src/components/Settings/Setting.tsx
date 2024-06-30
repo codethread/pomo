@@ -1,8 +1,8 @@
-import { twJoin } from 'tailwind-merge';
-import { ReactNode, useEffect } from 'react';
-import { FormItemCheckbox } from '../Form/FormItem';
-import { FieldValues, Path, useFormContext } from 'react-hook-form';
-import { Box } from '../Box';
+import { twJoin } from "tailwind-merge";
+import { ReactNode, useEffect } from "react";
+import { FormItemCheckbox } from "../Form/FormItem";
+import { FieldValues, Path, useFormContext } from "react-hook-form";
+import { Box } from "../Box";
 
 interface ISettingCommon {
   heading: string;
@@ -11,11 +11,11 @@ interface ISettingCommon {
 }
 
 interface ISettingSimple extends ISettingCommon {
-  variant: 'simple';
+  variant: "simple";
 }
 
 interface ISettingToggle<A extends FieldValues> extends ISettingCommon {
-  variant: 'toggle';
+  variant: "toggle";
   name: Path<A>;
 }
 
@@ -41,18 +41,18 @@ export function Setting<A extends FieldValues>({
   return (
     <Box
       className={twJoin(
-        'mb-8 mt-4 border-l-2',
-        hasError ? 'border-thmError' : isDirty ? 'border-thmSecondary' : 'border-thmBackground'
+        "mb-8 mt-4 border-l-2",
+        hasError ? "border-thmError"
+        : isDirty ? "border-thmSecondary"
+        : "border-thmBackground",
       )}
     >
       <div className="mb-4 bg-thmBackgroundSubtle py-2 px-2">
-        {props.variant === 'toggle' ? (
+        {props.variant === "toggle" ?
           <FormItemCheckbox<A> name={props.name}>
             <h2 className="text-lg">{heading}</h2>
           </FormItemCheckbox>
-        ) : (
-          <h2 className="text-lg">{heading}</h2>
-        )}
+        : <h2 className="text-lg">{heading}</h2>}
       </div>
       <form
         onSubmit={(e) => {

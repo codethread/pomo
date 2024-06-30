@@ -1,10 +1,10 @@
-import { IBridge, IClientLogger, emptyConfig, emptyStats } from '@shared/types';
-import { ok } from '@shared/Result';
-import { createStore } from './store';
-import { slackRepository } from './slack';
-import { open } from '@tauri-apps/api/shell';
-import { appWindow } from '@tauri-apps/api/window';
-import { prodClient } from './http';
+import { IBridge, IClientLogger, emptyConfig, emptyStats } from "@shared/types";
+import { ok } from "@shared/Result";
+import { createStore } from "./store";
+import { slackRepository } from "./slack";
+import { open } from "@tauri-apps/api/shell";
+import { appWindow } from "@tauri-apps/api/window";
+import { prodClient } from "./http";
 
 export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
   const logger: IClientLogger = {
@@ -23,12 +23,12 @@ export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
   };
 
   const store = await createStore(logger, {
-    name: 'store',
+    name: "store",
     defaults: emptyConfig,
   });
 
   const stats = await createStore(logger, {
-    name: 'stats',
+    name: "stats",
     defaults: emptyStats,
   });
 
@@ -48,7 +48,7 @@ export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
     async setTrayIcon() {},
     async setTrayTitle() {},
     async nodenv() {
-      return ok('development');
+      return ok("development");
     },
     async isProd() {
       return ok(true);
@@ -68,13 +68,13 @@ export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
           {
             duration,
             timestamp: timestamp ?? new Date().toISOString(),
-            _tag: statType ?? 'pomo.pomo',
+            _tag: statType ?? "pomo.pomo",
           },
         ],
       });
     },
     async statsRead() {
-      return stats.storeRead().then((r) => r.expect('could not read stats'));
+      return stats.storeRead().then((r) => r.expect("could not read stats"));
     },
     ...bridge,
   };

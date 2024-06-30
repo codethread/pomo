@@ -1,17 +1,17 @@
-import { StatType, StatTypeSchema, StatTypes, Stats } from '@shared/types';
-import { ClockIcon, ChatAlt2Icon } from '@heroicons/react/outline';
-import { format, startOfWeek, parse, add } from 'date-fns';
-import { useAsync } from 'react-use';
-import { useEffect, useState } from 'react';
-import { FormItemNumber, FormItemText } from '@client/components/Form/FormItem';
-import { z } from 'zod';
-import { FormProvider, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@client/components/Button/Button';
-import { useBridge } from '@client/hooks/useBridge';
-import { InputSelect } from '@client/components/Inputs/InputSelect';
+import { StatType, StatTypeSchema, StatTypes, Stats } from "@shared/types";
+import { ClockIcon, ChatAlt2Icon } from "@heroicons/react/outline";
+import { format, startOfWeek, parse, add } from "date-fns";
+import { useAsync } from "react-use";
+import { useEffect, useState } from "react";
+import { FormItemNumber, FormItemText } from "@client/components/Form/FormItem";
+import { z } from "zod";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@client/components/Button/Button";
+import { useBridge } from "@client/hooks/useBridge";
+import { InputSelect } from "@client/components/Inputs/InputSelect";
 
-const timestampFormat = 'EEEE yy/MM/dd HH:mm';
+const timestampFormat = "EEEE yy/MM/dd HH:mm";
 
 export function Stats() {
   const b = useBridge();
@@ -44,7 +44,8 @@ export function Stats() {
           <Summary output={output} />
           {output.completed.map(([date, duration]) => (
             <p key={date}>
-              {format(date, 'ccc')} | {formatTime(duration, { hideSeconds: true })}
+              {format(date, "ccc")} |{" "}
+              {formatTime(duration, { hideSeconds: true })}
             </p>
           ))}
         </div>
@@ -74,9 +75,9 @@ function Raw({ stats }: { stats: Stats }) {
       </Button>
       {stats.completed.map((s) => (
         <p key={s.timestamp} className="flex justify-between tabular-nums">
-          <span>{format(s.timestamp, 'MM/dd HH:mm')}</span>
+          <span>{format(s.timestamp, "MM/dd HH:mm")}</span>
           <span>{formatTime(s.duration, { hideSeconds: true })}</span>
-          <RawIcon type={s._tag ?? 'pomo.pomo'} />
+          <RawIcon type={s._tag ?? "pomo.pomo"} />
         </p>
       ))}
     </div>
@@ -85,9 +86,9 @@ function Raw({ stats }: { stats: Stats }) {
 
 function RawIcon({ type }: { type: StatType }) {
   switch (type) {
-    case 'pomo.pomo':
+    case "pomo.pomo":
       return <ClockIcon className="mr-2 inline-flex w-5 text-thmBright" />;
-    case 'other.meeting':
+    case "other.meeting":
       return <ChatAlt2Icon className="mr-2 inline-flex w-5 text-thmError" />;
   }
 }
@@ -96,10 +97,12 @@ function Summary({ output }: { output: OUT }) {
   const [target, setTarget] = useState(25 * hour);
   return (
     <div className="text-lg text-center">
-      <p>Week of {format(output.weekStartIso, 'MMM do')}</p>
+      <p>Week of {format(output.weekStartIso, "MMM do")}</p>
       <p>
-        Total {formatTime(output.total)}{' '}
-        <span className="text-thmBright">{Math.round((output.total / target) * 100)}%</span>{' '}
+        Total {formatTime(output.total)}{" "}
+        <span className="text-thmBright">
+          {Math.round((output.total / target) * 100)}%
+        </span>{" "}
         <span className="text-sm">({target / hour})</span>
       </p>
       <hr className="m-2" />
@@ -108,23 +111,25 @@ function Summary({ output }: { output: OUT }) {
 }
 
 const ManualTimeSchema = z.object({
-  duration: z.number().min(1, { message: '> 0' }),
+  duration: z.number().min(1, { message: "> 0" }),
   timestamp: z
     .string()
-    .refine((t) => Boolean(getFormatedDate(t)), { message: 'invalid timestamp' }),
+    .refine((t) => Boolean(getFormatedDate(t)), {
+      message: "invalid timestamp",
+    }),
   statType: StatTypeSchema,
 });
 
 type ManualTimeForm = z.infer<typeof ManualTimeSchema>;
 
-const now = format(new Date().toISOString(), 'yy/MM/dd HH:mm');
+const now = format(new Date().toISOString(), "yy/MM/dd HH:mm");
 
 function ManualTime() {
   const methods = useForm<ManualTimeForm>({
     defaultValues: {
       timestamp: now,
       duration: 10,
-      statType: 'other.meeting',
+      statType: "other.meeting",
     },
     resolver: zodResolver(ManualTimeSchema),
   });
@@ -143,7 +148,7 @@ function ManualTime() {
   }, [isSubmitSuccessful, reset, getValues]);
 
   const [lastValidTs, setLastValidTs] = useState(now);
-  const ts = methods.watch('timestamp');
+  const ts = methods.watch("timestamp");
   useEffect(() => {
     const d = getFormatedDate(ts);
     if (d) {
@@ -165,7 +170,11 @@ function ManualTime() {
     <FormProvider {...methods}>
       <form
         onSubmit={methods.handleSubmit((form) => {
-          const iso = parse(form.timestamp, 'yy/MM/dd HH:mm', new Date()).toISOString();
+          const iso = parse(
+            form.timestamp,
+            "yy/MM/dd HH:mm",
+            new Date(),
+          ).toISOString();
           statsTimerComplete(form.duration * 60, form.statType, iso);
         })}
       >
@@ -175,18 +184,27 @@ function ManualTime() {
               <FormItemNumber<ManualTimeForm> name="duration" label="Mins" />
             </div>
             <div>
-              <FormItemText<ManualTimeForm> name="timestamp" label="Timestamp" />
-              <p className="text-thmFgDim text-sm">{format(lastValidTs, timestampFormat)}</p>
+              <FormItemText<ManualTimeForm>
+                name="timestamp"
+                label="Timestamp"
+              />
+              <p className="text-thmFgDim text-sm">
+                {format(lastValidTs, timestampFormat)}
+              </p>
             </div>
           </div>
           <InputSelect<StatType>
             id="stat-type"
             options={StatTypes}
-            initialValue={methods.getValues('statType')}
-            onChange={(statType) => methods.setValue('statType', statType)}
+            initialValue={methods.getValues("statType")}
+            onChange={(statType) => methods.setValue("statType", statType)}
           />
           <div className="flex justify-around gap-4 flex-row w-fill">
-            <Button type="submit" disabled={!methods.formState.isDirty} variant="secondary">
+            <Button
+              type="submit"
+              disabled={!methods.formState.isDirty}
+              variant="secondary"
+            >
               Add time
             </Button>
             <Button onClick={() => setIsShown((s) => !s)} variant="tertiary">
@@ -200,7 +218,9 @@ function ManualTime() {
 }
 
 function transform(stats: Stats): OUT {
-  const weekStartIso = startOfWeek(Date.now(), { weekStartsOn: 1 }).toISOString();
+  const weekStartIso = startOfWeek(Date.now(), {
+    weekStartsOn: 1,
+  }).toISOString();
   const weekEndIso = add(weekStartIso, { weeks: 1 }).toISOString();
 
   const map = stats.completed
@@ -230,11 +250,14 @@ function transform(stats: Stats): OUT {
 const sec = 1;
 const min = 60 * sec;
 const hour = 60 * min;
-function formatTime(duration: number, { hideSeconds }: { hideSeconds?: boolean } = {}) {
+function formatTime(
+  duration: number,
+  { hideSeconds }: { hideSeconds?: boolean } = {},
+) {
   const { minutes, hours, seconds } = durationToTime(duration);
   return (
     `${formatTimerNumber(hours)}:${formatTimerNumber(minutes)}` +
-    (hideSeconds ? '' : `:${formatTimerNumber(seconds)}`)
+    (hideSeconds ? "" : `:${formatTimerNumber(seconds)}`)
   );
 }
 function formatTimerNumber(n: number) {
@@ -273,9 +296,9 @@ interface OUT {
 
 function getFormatedDate(t: string): string | false {
   try {
-    const date = parse(t, 'yy/MM/dd HH:mm', new Date());
+    const date = parse(t, "yy/MM/dd HH:mm", new Date());
     if (isNaN(date as any)) {
-      throw new Error('aweful api');
+      throw new Error("aweful api");
     }
     return date.toISOString();
   } catch (_) {

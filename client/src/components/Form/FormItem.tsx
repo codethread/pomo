@@ -1,11 +1,16 @@
-import { ErrorMessage } from '@hookform/error-message';
-import { IChildren, ICss } from '@shared/types';
-import classNames from 'classnames';
-import React, { useRef, useState, useId } from 'react';
-import { FieldValues, Path, useFormContext, UseFormRegister } from 'react-hook-form';
-import { IInputPassword, InputPassword } from '../Inputs/InputPassword';
-import { EyeClosed } from '../Icons/EyeClosed';
-import { EyeOpen } from '../Icons/EyeOpen';
+import { ErrorMessage } from "@hookform/error-message";
+import { IChildren, ICss } from "@shared/types";
+import classNames from "classnames";
+import React, { useRef, useState, useId } from "react";
+import {
+  FieldValues,
+  Path,
+  useFormContext,
+  UseFormRegister,
+} from "react-hook-form";
+import { IInputPassword, InputPassword } from "../Inputs/InputPassword";
+import { EyeClosed } from "../Icons/EyeClosed";
+import { EyeOpen } from "../Icons/EyeOpen";
 
 type ICheckbox = IChildren & {
   disabled?: boolean;
@@ -20,7 +25,7 @@ export function FormItemCheckbox<A extends FieldValues>({
   smallPrint,
   children,
   ...rest
-}: ICheckbox & Omit<IFormItem<A>, 'label'>): JSX.Element {
+}: ICheckbox & Omit<IFormItem<A>, "label">): JSX.Element {
   const registerOptions = {
     ...rest,
     valueAsNumber: rest.valueAsNumber as false,
@@ -38,13 +43,13 @@ export function FormItemCheckbox<A extends FieldValues>({
       <label
         htmlFor={id}
         className={classNames(
-          'flex cursor-pointer items-center space-x-2',
+          "flex cursor-pointer items-center space-x-2",
           {
-            'text-thmBackgroundBrightest': disabled,
-            'cursor-not-allowed': disabled,
-            'text-thmError': Boolean(error?.message),
+            "text-thmBackgroundBrightest": disabled,
+            "cursor-not-allowed": disabled,
+            "text-thmError": Boolean(error?.message),
           },
-          className
+          className,
         )}
         aria-label={ariaLabel}
       >
@@ -57,8 +62,14 @@ export function FormItemCheckbox<A extends FieldValues>({
           {...register(registerOptions.name, registerOptions)}
         />
       </label>
-      {smallPrint ? <p className="text-xs">{smallPrint}</p> : null}
-      <ErrorMessage errors={errors} name={registerOptions.name as any} as={ErrorMsg} />
+      {smallPrint ?
+        <p className="text-xs">{smallPrint}</p>
+      : null}
+      <ErrorMessage
+        errors={errors}
+        name={registerOptions.name as any}
+        as={ErrorMsg}
+      />
     </div>
   );
 }
@@ -83,11 +94,11 @@ export function FormItemNumber<A extends FieldValues>({
       <input
         data-error={hasError}
         placeholder={placeholder}
-        className={classNames('input', className)}
+        className={classNames("input", className)}
         id={id}
         type="number"
         {...(hasError && {
-          'aria-describedby': `${id}-error`,
+          "aria-describedby": `${id}-error`,
         })}
         {...register(registerOptions.name, registerOptions)}
       />
@@ -114,12 +125,12 @@ export function FormItemText<A extends FieldValues>({
     <FormItem id={id} label={label} {...registerOptions}>
       <input
         data-error={hasError}
-        className={classNames('input', className)}
+        className={classNames("input", className)}
         placeholder={placeholder}
         id={id}
         type="text"
         {...(hasError && {
-          'aria-describedby': `${id}-error`,
+          "aria-describedby": `${id}-error`,
         })}
         {...register(registerOptions.name, registerOptions)}
       />
@@ -132,7 +143,7 @@ export function FormItemPassword<A extends FieldValues>({
   placeholder,
   className,
   ...rest
-}: IFormItem<A> & Omit<IInputPassword, 'id'>): JSX.Element {
+}: IFormItem<A> & Omit<IInputPassword, "id">): JSX.Element {
   const registerOptions = {
     ...rest,
     valueAsNumber: false as const,
@@ -156,7 +167,7 @@ export function FormItemPassword<A extends FieldValues>({
             id={id}
             className={className}
             placeholder={placeholder}
-            type={isVisible ? 'text' : 'password'}
+            type={isVisible ? "text" : "password"}
             hasError={hasError}
             {...registered}
             ref={(e) => {
@@ -173,11 +184,9 @@ export function FormItemPassword<A extends FieldValues>({
           }}
           className="input bg-thmBackgroundBright"
         >
-          {isVisible ? (
+          {isVisible ?
             <EyeOpen color="bright" size="20px" />
-          ) : (
-            <EyeClosed color="bright" size="20px" />
-          )}
+          : <EyeClosed color="bright" size="20px" />}
         </button>
       </div>
     </FormItem>
@@ -185,7 +194,7 @@ export function FormItemPassword<A extends FieldValues>({
 }
 
 type IFormItem<A extends FieldValues> = ICss &
-  Omit<IFormItemContainer<A>, 'children'> & { placeholder?: string };
+  Omit<IFormItemContainer<A>, "children"> & { placeholder?: string };
 
 type ReactFormItem = Parameters<UseFormRegister<FieldValues>>[1];
 

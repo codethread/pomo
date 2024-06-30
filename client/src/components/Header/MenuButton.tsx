@@ -1,5 +1,5 @@
-import { MouseEventHandler } from 'react';
-import './menuButton.css';
+import { MouseEventHandler } from "react";
+import "./menuButton.css";
 
 interface IBar {
   wide?: boolean;
@@ -7,7 +7,9 @@ interface IBar {
 }
 
 function Bar({ wide = false, classNames }: IBar): JSX.Element {
-  return <div className={`${wide ? 'w-[35px]' : 'w-[26px]'} bar ${classNames}`} />;
+  return (
+    <div className={`${wide ? "w-[35px]" : "w-[26px]"} bar ${classNames}`} />
+  );
 }
 
 interface IHamburgerC {
@@ -19,14 +21,14 @@ function Hamburger({ showClose }: IHamburgerC): JSX.Element {
     <div
       aria-hidden
       style={{
-        width: '35px',
-        height: '16px',
-        position: 'relative',
+        width: "35px",
+        height: "16px",
+        position: "relative",
       }}
     >
-      <Bar classNames={cls('top', showClose)} />
-      <Bar wide classNames={cls('middle', showClose)} />
-      <Bar classNames={cls('bottom', showClose)} />
+      <Bar classNames={cls("top", showClose)} />
+      <Bar wide classNames={cls("middle", showClose)} />
+      <Bar classNames={cls("bottom", showClose)} />
     </div>
   );
 }
@@ -43,7 +45,7 @@ export function MenuButton({ onClick, showClose }: IMenuButton): JSX.Element {
       onClick={onClick}
       className="menu-button p-[10px] outline-1 outline-offset-[-5px] outline-thmPrimary"
     >
-      <span className="sr-only">{showClose ? 'timer' : 'settings'}</span>
+      <span className="sr-only">{showClose ? "timer" : "settings"}</span>
       <Hamburger showClose={showClose} />
     </button>
   );

@@ -1,25 +1,29 @@
-import { ActorRef, EventObject } from 'xstate';
-import { ConfigActorRef } from './config/machine';
-import { MainService } from './main/machine';
-import { PomodoroActorRef } from './pomodoro/machine';
-import { actorIds, Actors } from './constants';
+import { ActorRef, EventObject } from "xstate";
+import { ConfigActorRef } from "./config/machine";
+import { MainService } from "./main/machine";
+import { PomodoroActorRef } from "./pomodoro/machine";
+import { actorIds, Actors } from "./constants";
 
 /**
  *
  * @see https://github.com/davidkpiano/xstate/discussions/1591
  */
-function assertEventType<TE extends EventObject, TType extends TE['type']>(
+function assertEventType<TE extends EventObject, TType extends TE["type"]>(
   event: TE,
-  eventType: TType
+  eventType: TType,
 ): asserts event is TE & { type: TType } {
   if (event.type !== eventType) {
-    throw new Error(`Invalid event: expected "${eventType}", got "${event.type}"`);
+    throw new Error(
+      `Invalid event: expected "${eventType}", got "${event.type}"`,
+    );
   }
 }
 
-function nullActor(overrides?: Partial<ActorRef<any, any>>): ActorRef<any, any> {
+function nullActor(
+  overrides?: Partial<ActorRef<any, any>>,
+): ActorRef<any, any> {
   return {
-    id: 'null',
+    id: "null",
     send: () => {},
     subscribe: () => ({ unsubscribe: () => {} }),
     getSnapshot: () => {},
@@ -33,7 +37,10 @@ function nullActor(overrides?: Partial<ActorRef<any, any>>): ActorRef<any, any> 
 /**
  * Get an actor from another actor, not to be used with React's hooks.
  */
-export function getActor<K extends keyof typeof actorIds>(service: any, id: K): Actors[K] {
+export function getActor<K extends keyof typeof actorIds>(
+  service: any,
+  id: K,
+): Actors[K] {
   const actor = service.children.get(id) as Actors[K] | undefined;
   if (!actor) {
     throw new ActorError(service, id);
@@ -54,8 +61,8 @@ export class ActorError extends Error {
   constructor(actor: ActorsWithChildren, id: keyof typeof actorIds) {
     const msg = `programmer error, "${id}}" not found in machine. Actor refs found: "${Array.from(
       // little bit of massaging here as we're treating everything as a service, even though the types are actor refs (they are fundamentally the same thing, but have some api differences).
-      (actor as MainService).children.keys()
-    ).join(',')}"`;
+      (actor as MainService).children.keys(),
+    ).join(",")}"`;
 
     super(msg);
   }

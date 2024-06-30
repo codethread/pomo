@@ -1,5 +1,5 @@
-import { TimerContext } from '@client/machines/timer/machine';
-import { TimerHooks } from '@shared/types';
+import { TimerContext } from "@client/machines/timer/machine";
+import { TimerHooks } from "@shared/types";
 
 export const statHooks: TimerHooks = {
   onTickHook() {},
@@ -7,12 +7,12 @@ export const statHooks: TimerHooks = {
   onPauseHook: () => {},
   onPlayHook: () => {},
   onStopHook: ({ bridge, config, timer }) => {
-    if (timer.type === 'pomo') {
+    if (timer.type === "pomo") {
       bridge.statsTimerComplete(config.timers.pomo * 60 - toSeconds(timer));
     }
   },
   onCompleteHook: ({ bridge, timer }) => {
-    if (timer.type === 'pomo') {
+    if (timer.type === "pomo") {
       bridge.statsTimerComplete(timer.target * 60);
     }
   },

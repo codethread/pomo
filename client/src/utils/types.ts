@@ -1,8 +1,8 @@
-import { Result } from '@shared/Result';
-import z from 'zod';
-import { Nodenv } from '@shared/asserts';
-import { ThemeNameSchema } from '@client/theme/updateTheme';
-import { SlackProfile } from '@client/bridge/slack';
+import { Result } from "@shared/Result";
+import z from "zod";
+import { Nodenv } from "@shared/asserts";
+import { ThemeNameSchema } from "@client/theme/updateTheme";
+import { SlackProfile } from "@client/bridge/slack";
 
 export type IClientLogger = {
   debug(...msg: any): Promise<void>;
@@ -11,7 +11,7 @@ export type IClientLogger = {
   error(...msg: any): Promise<void>;
 };
 
-export type TimerType = keyof UserConfig['timers'];
+export type TimerType = keyof UserConfig["timers"];
 
 export const emptyConfig: UserConfig = {
   timers: {
@@ -26,7 +26,7 @@ export const emptyConfig: UserConfig = {
     beforeLongBreak: true,
     beforePomo: false,
   },
-  theme: 'nord',
+  theme: "nord",
 };
 
 export const emptyStats: Stats = {
@@ -83,11 +83,11 @@ interface SlackOk {
 type SlackErr =
   | {
       ok: false;
-      error: 'connection_error';
+      error: "connection_error";
     }
   | {
       ok: false;
-      error: 'invalid_auth';
+      error: "invalid_auth";
     };
 
 export type IBridge<T = UserConfig> = IClientLogger & {
@@ -98,23 +98,36 @@ export type IBridge<T = UserConfig> = IClientLogger & {
   storeRead(): Promise<Result<T>>;
   storeUpdate(value: DeepPartial<T>): Promise<Result<T>>;
   storeReset(): Promise<Result<T>>;
-  slackSetProfile(auth: SlackAuth, status: SlackStatus): Promise<Result<SlackOk, SlackErr>>;
-  slackSetSnooze(auth: SlackAuth, minutes: number): Promise<Result<SlackOk, SlackErr>>;
+  slackSetProfile(
+    auth: SlackAuth,
+    status: SlackStatus,
+  ): Promise<Result<SlackOk, SlackErr>>;
+  slackSetSnooze(
+    auth: SlackAuth,
+    minutes: number,
+  ): Promise<Result<SlackOk, SlackErr>>;
   slackEndSnooze(auth: SlackAuth): Promise<Result<SlackOk, SlackErr>>;
-  slackSetPresence(auth: SlackAuth, state: 'active' | 'away'): Promise<Result<SlackOk, SlackErr>>;
+  slackSetPresence(
+    auth: SlackAuth,
+    state: "active" | "away",
+  ): Promise<Result<SlackOk, SlackErr>>;
   slackValidate(auth: SlackAuth): Promise<Result<SlackProfile, SlackErr>>;
   nodenv(): Promise<Result<Nodenv>>;
   isProd(): Promise<Result<boolean>>;
   isTest(): Promise<Result<boolean>>;
   isDev(): Promise<Result<boolean>>;
   isIntegration(): Promise<Result<boolean>>;
-  statsTimerComplete(duration: number, stat?: StatType, timestamp?: string): Promise<void>;
+  statsTimerComplete(
+    duration: number,
+    stat?: StatType,
+    timestamp?: string,
+  ): Promise<void>;
   statsRead(): Promise<Stats>;
 };
 
-export const StatTypes = ['pomo.pomo', 'other.meeting'] as const;
+export const StatTypes = ["pomo.pomo", "other.meeting"] as const;
 export const StatTypeSchema = z.enum(StatTypes);
-export type StatType = typeof StatTypes[number];
+export type StatType = (typeof StatTypes)[number];
 export interface Stats {
   completed: Array<{
     timestamp: string;
@@ -137,7 +150,7 @@ export interface AnyObject {
   [key: string]: any;
 }
 
-type CssSizeUnits = '%' | 'em' | 'px';
+type CssSizeUnits = "%" | "em" | "px";
 export type CssSize = `${string}${CssSizeUnits}`;
 
 export interface HookContext {

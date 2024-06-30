@@ -1,17 +1,17 @@
-import { assertIsError, assertValidNodenv, validNodenvs } from './asserts';
+import { assertIsError, assertValidNodenv, validNodenvs } from "./asserts";
 
-describe('asserts', () => {
-  test('assertIsError', () => {
-    expect(() => assertIsError('')).toThrowError();
+describe("asserts", () => {
+  test("assertIsError", () => {
+    expect(() => assertIsError("")).toThrowError();
     expect(() => assertIsError(new Error())).not.toThrowError();
   });
 
-  test('assertValidNodenv', () => {
+  test("assertValidNodenv", () => {
     validNodenvs.forEach((valid) => {
       expect(() => assertValidNodenv(valid)).not.toThrowError();
     });
 
-    const invalids = ['', 'squantch', ' '];
+    const invalids = ["", "squantch", " "];
     invalids.forEach((invalid) => {
       expect(() => assertValidNodenv(invalid)).toThrowError();
     });

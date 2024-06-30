@@ -1,7 +1,7 @@
-import { HookContext, TimerHooks } from '@shared/types';
-import { osHooks } from './os';
-import { slackHooks } from './slack';
-import { statHooks } from './stats';
+import { HookContext, TimerHooks } from "@shared/types";
+import { osHooks } from "./os";
+import { slackHooks } from "./slack";
+import { statHooks } from "./stats";
 
 export const hooks = createHooks();
 
@@ -21,7 +21,7 @@ function createHooks(): TimerHooks {
     (all, hook) => ({
       ...all,
       [hook]: (ctx: HookContext) => {
-        if (hook !== 'onTickHook') {
+        if (hook !== "onTickHook") {
           // too annoying logging this every time
           ctx.bridge.info(`${hook} called`);
         }
@@ -37,6 +37,6 @@ function createHooks(): TimerHooks {
         //-----------------------------------------------------------------------------
       },
     }),
-    {} as TimerHooks
+    {} as TimerHooks,
   );
 }

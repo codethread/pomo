@@ -1,7 +1,7 @@
-import { deepFreeze } from './deepFreeze';
+import { deepFreeze } from "./deepFreeze";
 
-describe('deepFreeze', () => {
-  it('should freeze all properties', () => {
+describe("deepFreeze", () => {
+  it("should freeze all properties", () => {
     const obj = {
       foo: {
         bar: () => {},

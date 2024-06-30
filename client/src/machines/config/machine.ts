@@ -1,7 +1,19 @@
-import { formatTrayTime } from '@shared/formatTrayTime';
-import { DeepPartial, IBridge, UserConfig, UserConfigSchema, emptyConfig } from '@shared/types';
-import { ActorRefFrom, assign, createMachine, InterpreterFrom, sendParent } from 'xstate';
-import { fromError } from 'zod-validation-error';
+import { formatTrayTime } from "@shared/formatTrayTime";
+import {
+  DeepPartial,
+  IBridge,
+  UserConfig,
+  UserConfigSchema,
+  emptyConfig,
+} from "@shared/types";
+import {
+  ActorRefFrom,
+  assign,
+  createMachine,
+  InterpreterFrom,
+  sendParent,
+} from "xstate";
+import { fromError } from "zod-validation-error";
 
 export interface IConfigMachine {
   bridge: IBridge;
@@ -10,15 +22,17 @@ export interface IConfigMachine {
 const initialContext = emptyConfig;
 
 export type ConfigContext = typeof initialContext;
-export type ConfitEvents = { type: 'RESET' } | { type: 'UPDATE'; data: DeepPartial<UserConfig> };
+export type ConfitEvents =
+  | { type: "RESET" }
+  | { type: "UPDATE"; data: DeepPartial<UserConfig> };
 
 export default function configMachine({ bridge }: IConfigMachine) {
   return createMachine(
     {
-      id: 'config',
+      id: "config",
       predictableActionArguments: true,
       preserveActionOrder: true,
-      tsTypes: {} as import('./machine.typegen').Typegen0,
+      tsTypes: {} as import("./machine.typegen").Typegen0,
       schema: {
         context: {} as ConfigContext,
         events: {} as ConfitEvents,
@@ -29,58 +43,58 @@ export default function configMachine({ bridge }: IConfigMachine) {
         },
       },
       context: initialContext,
-      initial: 'loading',
+      initial: "loading",
       states: {
         loading: {
-          tags: ['loading'],
+          tags: ["loading"],
           invoke: {
-            id: 'loadConfig',
-            src: 'loadConfig',
+            id: "loadConfig",
+            src: "loadConfig",
             onDone: {
-              actions: 'storeConfig',
-              target: 'loaded',
+              actions: "storeConfig",
+              target: "loaded",
             },
             onError: {
-              target: 'loaded',
+              target: "loaded",
             },
           },
         },
         loaded: {
-          initial: 'idle',
+          initial: "idle",
           states: {
             idle: {
-              tags: ['idle'],
-              entry: 'broadcastConfig',
+              tags: ["idle"],
+              entry: "broadcastConfig",
               on: {
-                UPDATE: 'updating',
-                RESET: 'resetting',
+                UPDATE: "updating",
+                RESET: "resetting",
               },
             },
             updating: {
-              tags: ['updating'],
+              tags: ["updating"],
               invoke: {
-                id: 'updateConfig',
-                src: 'updateConfig',
+                id: "updateConfig",
+                src: "updateConfig",
                 onDone: {
-                  actions: 'storeConfig',
-                  target: 'idle',
+                  actions: "storeConfig",
+                  target: "idle",
                 },
                 onError: {
-                  target: 'idle',
+                  target: "idle",
                 },
               },
             },
             resetting: {
-              tags: ['updating'],
+              tags: ["updating"],
               invoke: {
-                id: 'resetConfig',
-                src: 'resetConfig',
+                id: "resetConfig",
+                src: "resetConfig",
                 onDone: {
-                  actions: 'storeConfig',
-                  target: 'idle',
+                  actions: "storeConfig",
+                  target: "idle",
                 },
                 onError: {
-                  target: 'idle',
+                  target: "idle",
                 },
               },
             },
@@ -112,7 +126,9 @@ export default function configMachine({ bridge }: IConfigMachine) {
           });
         },
         updateConfig: async (c, e) => {
-          const parsed = UserConfigSchema.deepPartial().strict().safeParse(e.data);
+          const parsed = UserConfigSchema.deepPartial()
+            .strict()
+            .safeParse(e.data);
           if (!parsed.success) {
             const e = fromError(parsed.error).toString();
             bridge.error(e);
@@ -132,10 +148,13 @@ export default function configMachine({ bridge }: IConfigMachine) {
         },
       },
       actions: {
-        broadcastConfig: sendParent((c) => ({ type: 'CONFIG_LOADED', data: c })),
+        broadcastConfig: sendParent((c) => ({
+          type: "CONFIG_LOADED",
+          data: c,
+        })),
         storeConfig: assign((_, { data }) => data),
       },
-    }
+    },
   );
 }
 
@@ -148,7 +167,7 @@ export type ConfigActorRef = ActorRefFrom<ConfigMachine>;
 function updateIntegrations(
   data: DeepPartial<UserConfig>,
   bridge: IBridge,
-  { timers }: ConfigContext
+  { timers }: ConfigContext,
 ) {
   const { displayTimerInStatusBar } = data;
   if (displayTimerInStatusBar !== undefined) {
@@ -157,10 +176,10 @@ function updateIntegrations(
         formatTrayTime({
           minutes: timers.pomo,
           seconds: 0,
-        })
+        }),
       );
     } else {
-      bridge.setTrayTitle('');
+      bridge.setTrayTitle("");
     }
   }
 }

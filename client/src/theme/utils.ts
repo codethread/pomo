@@ -1,4 +1,4 @@
-import { colors, palette } from '@client/theme/colors';
+import { colors, palette } from "@client/theme/colors";
 
 const getRoot = (() => {
   let root: CSSStyleDeclaration | null;
@@ -6,9 +6,9 @@ const getRoot = (() => {
   return function getRootMemoised() {
     if (root) return root;
 
-    const r = document.querySelector<HTMLElement>(':root')?.style;
+    const r = document.querySelector<HTMLElement>(":root")?.style;
 
-    if (!r) throw new Error('could not get :root selector for styles');
+    if (!r) throw new Error("could not get :root selector for styles");
 
     root = r;
 
@@ -18,14 +18,14 @@ const getRoot = (() => {
 
 export const themers: Themers = { setPalette, setColors };
 
-export type Colors = typeof colors[number];
+export type Colors = (typeof colors)[number];
 
-export type Palette = typeof palette[number];
+export type Palette = (typeof palette)[number];
 
 /**
  * Theme color set using an existing color variable from the `Colors`
  */
-export type ThemeVarValue = 'var(--col-null)' | `var(${Colors})`;
+export type ThemeVarValue = "var(--col-null)" | `var(${Colors})`;
 
 /**
  * Theme color provided in RGB format
@@ -48,9 +48,15 @@ export interface Themers {
  *
  * Provide an optional `{ strict: true }` value to force you to set all required color values
  */
-function setColors(values: Record<Colors, ThemeValue>, options: { strict: true }): void;
+function setColors(
+  values: Record<Colors, ThemeValue>,
+  options: { strict: true },
+): void;
 function setColors(values: Partial<Record<Colors, ThemeValue>>): void;
-function setColors(values: Record<string, ThemeValue>, _?: { strict: true }): void {
+function setColors(
+  values: Record<string, ThemeValue>,
+  _?: { strict: true },
+): void {
   const r = getRoot();
   Object.entries(values).forEach(([col, val]) => {
     r.setProperty(col, val);
@@ -64,9 +70,15 @@ function setColors(values: Record<string, ThemeValue>, _?: { strict: true }): vo
  *
  * Provide an optional `{ strict: true }` value to force you to set all palette items
  */
-function setPalette(values: Record<Palette, ThemeVarValue>, options: { strict: true }): void;
+function setPalette(
+  values: Record<Palette, ThemeVarValue>,
+  options: { strict: true },
+): void;
 function setPalette(values: Partial<Record<Palette, ThemeVarValue>>): void;
-function setPalette(values: Record<string, ThemeVarValue>, _?: { strict: true }): void {
+function setPalette(
+  values: Record<string, ThemeVarValue>,
+  _?: { strict: true },
+): void {
   const r = getRoot();
   Object.entries(values).forEach(([col, val]) => {
     r.setProperty(col, val);

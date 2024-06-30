@@ -1,5 +1,5 @@
-import { AnyStateMachine, createMachine } from 'xstate';
-import { actorIds } from '../constants';
+import { AnyStateMachine, createMachine } from "xstate";
+import { actorIds } from "../constants";
 
 interface Parent<A> {
   parentEvents: string[];
@@ -16,13 +16,15 @@ export function parentMachine<A extends AnyStateMachine>({
 }: Parent<A>) {
   return createMachine(
     {
-      id: 'parent',
-      initial: 'running',
+      id: "parent",
+      initial: "running",
       preserveActionOrder: true,
       predictableActionArguments: true,
       states: {
         running: {
-          on: Object.fromEntries(parentEvents.map((e) => [e, { actions: 'spy' }])),
+          on: Object.fromEntries(
+            parentEvents.map((e) => [e, { actions: "spy" }]),
+          ),
           invoke: {
             id: childId,
             src: childMachine,
@@ -34,6 +36,6 @@ export function parentMachine<A extends AnyStateMachine>({
       actions: {
         spy,
       },
-    }
+    },
   );
 }

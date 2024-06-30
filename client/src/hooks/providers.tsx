@@ -1,14 +1,14 @@
-import { TimerHooks } from '@shared/types';
-import { ClockMachine } from '@client/machines/clock/machine';
-import { useBridge } from './useBridge';
-import { loggerContext } from './useLogger';
-import { bridgeContext } from './useBridge';
-import { IBridge } from '@shared/types';
-import { machinesContext } from './machines';
-import { useInterpret } from '@xstate/react';
-import { useEffect } from 'react';
-import mainMachineFactory from '@client/machines/main/machine';
-import { updateTheme } from '@client/theme/updateTheme';
+import { TimerHooks } from "@shared/types";
+import { ClockMachine } from "@client/machines/clock/machine";
+import { useBridge } from "./useBridge";
+import { loggerContext } from "./useLogger";
+import { bridgeContext } from "./useBridge";
+import { IBridge } from "@shared/types";
+import { machinesContext } from "./machines";
+import { useInterpret } from "@xstate/react";
+import { useEffect } from "react";
+import mainMachineFactory from "@client/machines/main/machine";
+import { updateTheme } from "@client/theme/updateTheme";
 
 interface ILoggerProvider {
   children: React.ReactNode;
@@ -35,8 +35,13 @@ interface IBridgeProvider {
   children: React.ReactNode;
 }
 
-export function BridgeProvider({ bridge, children }: IBridgeProvider): JSX.Element {
-  return <bridgeContext.Provider value={bridge}>{children}</bridgeContext.Provider>;
+export function BridgeProvider({
+  bridge,
+  children,
+}: IBridgeProvider): JSX.Element {
+  return (
+    <bridgeContext.Provider value={bridge}>{children}</bridgeContext.Provider>
+  );
 }
 
 export interface IMachinesProvider {
@@ -47,11 +52,15 @@ export interface IMachinesProvider {
   };
 }
 
-export function MachinesProvider({ children, hooks, services }: IMachinesProvider): JSX.Element {
+export function MachinesProvider({
+  children,
+  hooks,
+  services,
+}: IMachinesProvider): JSX.Element {
   const bridge = useBridge();
 
   useEffect(() => {
-    bridge.info('client starting');
+    bridge.info("client starting");
   }, [bridge]);
 
   const main = useInterpret(
@@ -65,8 +74,10 @@ export function MachinesProvider({ children, hooks, services }: IMachinesProvide
     }),
     {
       devTools: true,
-    }
+    },
   );
 
-  return <machinesContext.Provider value={main}>{children}</machinesContext.Provider>;
+  return (
+    <machinesContext.Provider value={main}>{children}</machinesContext.Provider>
+  );
 }
