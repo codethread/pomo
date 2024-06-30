@@ -8,7 +8,7 @@ import { actorIds, Actors } from './constants';
  *
  * @see https://github.com/davidkpiano/xstate/discussions/1591
  */
-export function assertEventType<TE extends EventObject, TType extends TE['type']>(
+function assertEventType<TE extends EventObject, TType extends TE['type']>(
   event: TE,
   eventType: TType
 ): asserts event is TE & { type: TType } {
@@ -17,7 +17,7 @@ export function assertEventType<TE extends EventObject, TType extends TE['type']
   }
 }
 
-export function nullActor(overrides?: Partial<ActorRef<any, any>>): ActorRef<any, any> {
+function nullActor(overrides?: Partial<ActorRef<any, any>>): ActorRef<any, any> {
   return {
     id: 'null',
     send: () => {},

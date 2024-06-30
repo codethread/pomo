@@ -13,7 +13,8 @@
     "test:client": "vitest --config ./client/vite.config.ts",
     "check": "pnpm test:client --run && pnpm ts && pnpm lint:client && prettier --check --ignore-path .gitignore client",
     "ts": "tsc --noEmit --project ./client/tsconfig.json",
-    "knip": "knip --tsConfig ./client/tsconfig.json --include files,dependencies,exports"
+    "knip": "knip --tsConfig ./client/tsconfig.json --include files,dependencies,exports",
+    "knip:fix": "pnpm knip --fix-type exports,files --allow-remove-files"
   },
   "dependencies": {
     "@heroicons/react": "^1.0.6",

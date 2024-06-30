@@ -1,6 +1,6 @@
 import { colors, palette } from '@client/theme/colors';
 
-export const getRoot = (() => {
+const getRoot = (() => {
   let root: CSSStyleDeclaration | null;
 
   return function getRootMemoised() {

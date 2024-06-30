@@ -2,7 +2,7 @@ import { useBridge } from '@client/hooks/useBridge';
 import { useConfig } from '@client/hooks/useConfig';
 import { ThemeName, themes } from '@client/theme/updateTheme';
 import { Button } from '../Button/Button';
-import { InputSelect } from '../Inputs';
+import { InputSelect } from '../Inputs/InputSelect';
 import { Setting } from './Setting';
 import { FormProvider, useForm } from 'react-hook-form';
 

@@ -1,10 +1,11 @@
 import { ErrorMessage } from '@hookform/error-message';
-import { EyeClosed, EyeOpen } from '@client/components/Icons';
 import { IChildren, ICss } from '@shared/types';
 import classNames from 'classnames';
 import React, { useRef, useState, useId } from 'react';
 import { FieldValues, Path, useFormContext, UseFormRegister } from 'react-hook-form';
-import { IInputPassword, InputPassword } from '../Inputs';
+import { IInputPassword, InputPassword } from '../Inputs/InputPassword';
+import { EyeClosed } from '../Icons/EyeClosed';
+import { EyeOpen } from '../Icons/EyeOpen';
 
 type ICheckbox = IChildren & {
   disabled?: boolean;
@@ -195,7 +196,7 @@ type IFormItemContainer<A extends FieldValues> = ReactFormItem & {
   children: React.ReactNode;
 };
 
-export function FormItem<A extends FieldValues>({
+function FormItem<A extends FieldValues>({
   label,
   children,
   ariaLabel,
