@@ -22,7 +22,9 @@ export function parentMachine<A extends AnyStateMachine>({
       predictableActionArguments: true,
       states: {
         running: {
-          on: Object.fromEntries(parentEvents.map((e) => [e, { actions: 'spy' }])),
+          on: Object.fromEntries(
+            parentEvents.map((e) => [e, { actions: 'spy' }]),
+          ),
           invoke: {
             id: childId,
             src: childMachine,
@@ -34,6 +36,6 @@ export function parentMachine<A extends AnyStateMachine>({
       actions: {
         spy,
       },
-    }
+    },
   );
 }

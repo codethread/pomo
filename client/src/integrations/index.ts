@@ -37,6 +37,6 @@ function createHooks(): TimerHooks {
         //-----------------------------------------------------------------------------
       },
     }),
-    {} as TimerHooks
+    {} as TimerHooks,
   );
 }

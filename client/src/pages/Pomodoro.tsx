@@ -13,15 +13,15 @@ export function Pomodoro(): JSX.Element | null {
 
   const title = getTitle(value);
 
-  return timerRef ? (
-    <>
-      <Countdown timerRef={timerRef} title={title} duration={duration} />
-      <div style={{ display: 'none' }}>
-        <p>completed pomos: {pomo}</p>
-        <p>completed breaks: {long}</p>
-      </div>
-    </>
-  ) : null;
+  return timerRef ?
+      <>
+        <Countdown timerRef={timerRef} title={title} duration={duration} />
+        <div style={{ display: 'none' }}>
+          <p>completed pomos: {pomo}</p>
+          <p>completed breaks: {long}</p>
+        </div>
+      </>
+    : null;
 
   function getValue(): TimerType {
     switch (true) {

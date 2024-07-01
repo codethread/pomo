@@ -1,6 +1,13 @@
 import { merge } from '@shared/merge';
 import { DeepPartial, UserConfig, emptyConfig } from '@shared/types';
-import { ActorRefFrom, assign, createMachine, InterpreterFrom, send, sendParent } from 'xstate';
+import {
+  ActorRefFrom,
+  assign,
+  createMachine,
+  InterpreterFrom,
+  send,
+  sendParent,
+} from 'xstate';
 import { actorIds } from '../constants';
 import timerMachine from '../timer/machine';
 import { ClockMachine } from '../clock/machine';
@@ -78,11 +85,16 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
               target: 'breakDecision',
               actions: ['increasePomoCount', 'onCompleteHook'],
             },
-            CONFIG_LOADED: { actions: ['updateTimerConfig', 'updatePomoTimerConfig'] },
+            CONFIG_LOADED: {
+              actions: ['updateTimerConfig', 'updatePomoTimerConfig'],
+            },
           },
         },
         breakDecision: {
-          always: [{ cond: 'isLongBreak', target: 'long' }, { target: 'short' }],
+          always: [
+            { cond: 'isLongBreak', target: 'long' },
+            { target: 'short' },
+          ],
         },
         short: {
           invoke: {
@@ -139,39 +151,59 @@ function pomodoroMachine({ context, clock }: IPomodoroMachine) {
       },
 
       actions: {
-        updateTimerConfig: assign((ctx, { data: { timers, autoStart, longBreakEvery } }) => ({
-          ...ctx,
-          longBreakEvery,
-          timers,
-          autoStart,
-          completed: initialContext.completed,
-        })),
+        updateTimerConfig: assign(
+          (ctx, { data: { timers, autoStart, longBreakEvery } }) => ({
+            ...ctx,
+            longBreakEvery,
+            timers,
+            autoStart,
+            completed: initialContext.completed,
+          }),
+        ),
 
         increasePomoCount: assign({
-          completed: ({ completed }) => ({ ...completed, pomo: completed.pomo + 1 }),
+          completed: ({ completed }) => ({
+            ...completed,
+            pomo: completed.pomo + 1,
+          }),
         }),
 
         increaseShortBreakCount: assign({
-          completed: ({ completed }) => ({ ...completed, short: completed.short + 1 }),
+          completed: ({ completed }) => ({
+            ...completed,
+            short: completed.short + 1,
+          }),
         }),
 
         increaseLongBreakCount: assign({
-          completed: ({ completed }) => ({ ...completed, long: completed.long + 1 }),
+          completed: ({ completed }) => ({
+            ...completed,
+            long: completed.long + 1,
+          }),
         }),
 
         updatePomoTimerConfig: send(
           (_, { data: { timers } }) => ({ type: 'UPDATE', data: timers.pomo }),
-          { to: actorIds.TIMER }
+          { to: actorIds.TIMER },
         ),
 
-        onPauseHook: sendParent((_, { data }) => ({ type: 'TIMER_PAUSE', data })),
-        onStartHook: sendParent((_, { data }) => ({ type: 'TIMER_START', data })),
+        onPauseHook: sendParent((_, { data }) => ({
+          type: 'TIMER_PAUSE',
+          data,
+        })),
+        onStartHook: sendParent((_, { data }) => ({
+          type: 'TIMER_START',
+          data,
+        })),
         onPlayHook: sendParent((_, { data }) => ({ type: 'TIMER_PLAY', data })),
         onStopHook: sendParent((_, { data }) => ({ type: 'TIMER_STOP', data })),
         onTickHook: sendParent((_, { data }) => ({ type: 'TIMER_TICK', data })),
-        onCompleteHook: sendParent((_, { data }) => ({ type: 'TIMER_COMPLETE', data })),
+        onCompleteHook: sendParent((_, { data }) => ({
+          type: 'TIMER_COMPLETE',
+          data,
+        })),
       },
-    }
+    },
   );
 }
 

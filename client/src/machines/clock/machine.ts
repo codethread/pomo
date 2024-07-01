@@ -1,6 +1,6 @@
 import { listen } from '@tauri-apps/api/event';
-import { invoke } from '@tauri-apps/api';
 import { TimerContext, TimerEvents } from '../timer/machine';
+import { pause, play, start, stop, update } from '@shared/commands';
 
 export type ClockMachine = typeof clockMachine;
 export const clockMachine =
@@ -12,15 +12,15 @@ export const clockMachine =
       } = e;
       switch (e.type) {
         case 'play':
-          return invoke('play', { id });
+          return play(id);
         case 'create':
-          return invoke('start', { seconds, minutes, timerid: id });
+          return start(minutes, seconds, id);
         case 'pause':
-          return invoke('pause', { id });
+          return pause(id);
         case 'stop':
-          return invoke('stop', { id });
+          return stop(id);
         case 'update':
-          return invoke('update', { id, duration: minutes });
+          return update(id, minutes);
       }
     });
 

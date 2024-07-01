@@ -1,4 +1,10 @@
-import { ActorRefFrom, assign, createMachine, sendParent, sendTo } from 'xstate';
+import {
+  ActorRefFrom,
+  assign,
+  createMachine,
+  sendParent,
+  sendTo,
+} from 'xstate';
 import { HookContext } from '@shared/types';
 
 export type TimerContext = HookContext['timer'];
@@ -50,7 +56,11 @@ const timerMachine = createMachine(
         entry: ['startTimer'],
         on: {
           _TICK: [
-            { cond: 'isTimerFinished', actions: ['updateTimer'], target: 'complete' },
+            {
+              cond: 'isTimerFinished',
+              actions: ['updateTimer'],
+              target: 'complete',
+            },
             { actions: ['updateTimer', 'onTickHook'] },
           ],
           PAUSE: 'paused',
@@ -76,7 +86,8 @@ const timerMachine = createMachine(
   },
   {
     guards: {
-      isTimerFinished: (_, { minutes, seconds }) => minutes === 0 && seconds === 0,
+      isTimerFinished: (_, { minutes, seconds }) =>
+        minutes === 0 && seconds === 0,
 
       shouldAutoStart: ({ autoStart }) => autoStart,
     },
@@ -101,7 +112,7 @@ const timerMachine = createMachine(
       stopTimer: sendTo('clock', (c) => ({ type: 'stop', data: c })),
       updateClock: sendTo('clock', (c) => ({ type: 'update', data: c })),
     },
-  }
+  },
 );
 
 export type TimerActorRef = ActorRefFrom<typeof timerMachine>;

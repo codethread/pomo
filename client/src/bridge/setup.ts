@@ -1,10 +1,11 @@
 import { IBridge, IClientLogger, emptyConfig, emptyStats } from '@shared/types';
-import { ok } from '@shared/Result';
+import { fromPromise, ok } from '@shared/Result';
 import { createStore } from './store';
 import { slackRepository } from './slack';
 import { open } from '@tauri-apps/api/shell';
 import { appWindow } from '@tauri-apps/api/window';
 import { prodClient } from './http';
+import { isDev } from '@shared/commands';
 
 export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
   const logger: IClientLogger = {
@@ -57,7 +58,7 @@ export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
       return ok(true);
     },
     async isDev() {
-      return ok(true);
+      return fromPromise(isDev(), (_) => 'oh dear');
     },
     async isIntegration() {
       return ok(true);

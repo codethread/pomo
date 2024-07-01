@@ -47,9 +47,14 @@ expect.extend({
   },
 });
 
-function getMessage(didPass: boolean, expectedVal: any, recieved: any, viThis: any): () => string {
-  return didPass
-    ? () =>
+function getMessage(
+  didPass: boolean,
+  expectedVal: any,
+  recieved: any,
+  viThis: any,
+): () => string {
+  return didPass ?
+      () =>
         `${viThis.utils.matcherHint('toDeepEqual')}\n\n` +
         `Expected: not ${viThis.utils.printExpected(expectedVal)}\n` +
         `Received: ${viThis.utils.printReceived(recieved)}`
@@ -58,10 +63,10 @@ function getMessage(didPass: boolean, expectedVal: any, recieved: any, viThis: a
           expand: viThis.expand,
         });
         return `${viThis.utils.matcherHint('toDeepEqual')}\n\n${
-          diffString?.includes('- Expect')
-            ? `Difference:\n\n${diffString}`
-            : `Expected: ${viThis.utils.printExpected(expectedVal)}\n` +
-              `Received: ${viThis.utils.printReceived(recieved)}`
+          diffString?.includes('- Expect') ?
+            `Difference:\n\n${diffString}`
+          : `Expected: ${viThis.utils.printExpected(expectedVal)}\n` +
+            `Received: ${viThis.utils.printReceived(recieved)}`
         }`;
       };
 }

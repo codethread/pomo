@@ -1,8 +1,13 @@
 import classNames from 'classnames';
 import { forwardRef } from 'react';
 
-export type IInputPassword = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> &
-  Required<Pick<React.InputHTMLAttributes<HTMLInputElement>, 'id' | 'placeholder'>> & {
+export type IInputPassword = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'type'
+> &
+  Required<
+    Pick<React.InputHTMLAttributes<HTMLInputElement>, 'id' | 'placeholder'>
+  > & {
     hasError?: boolean;
     type?: 'password' | 'text';
   };
@@ -20,5 +25,5 @@ export const InputPassword = forwardRef<HTMLInputElement, IInputPassword>(
       })}
       {...props}
     />
-  )
+  ),
 );

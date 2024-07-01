@@ -13,7 +13,7 @@ describe('pick', () => {
       expect.objectContaining<typeof picked>({
         a: 2,
         c: true,
-      })
+      }),
     );
 
     expect(picked.a.toFixed(1)).toBe((2).toFixed(1));

@@ -11,7 +11,8 @@ interface IconProps {
 }
 
 export function useIcon(props: SvgSize): IconProps {
-  const { width, height } = 'width' in props ? props : { width: props.size, height: props.size };
+  const { width, height } =
+    'width' in props ? props : { width: props.size, height: props.size };
   return {
     width,
     height,

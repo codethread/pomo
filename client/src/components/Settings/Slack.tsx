@@ -1,4 +1,7 @@
-import { FormItemPassword, FormItemText } from '@client/components/Form/FormItem';
+import {
+  FormItemPassword,
+  FormItemText,
+} from '@client/components/Form/FormItem';
 import z from 'zod';
 import { Setting } from './Setting';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -25,10 +28,13 @@ export function Slack() {
   const { config, storeUpdate } = useConfig();
   const [updated, setUpdated] = useState(false);
   // TODO: move this storage into some generic component/hook
-  const [wip, setWipStorage, remove] = useLocalStorage<Partial<SlackForm>>('slack-form-key');
+  const [wip, setWipStorage, remove] =
+    useLocalStorage<Partial<SlackForm>>('slack-form-key');
   const bridge = useBridge();
 
-  const [{ error, loading, value: userName }, validate] = useAsyncFn(validateDetails(bridge));
+  const [{ error, loading, value: userName }, validate] = useAsyncFn(
+    validateDetails(bridge),
+  );
 
   const methods = useForm<SlackForm>({
     defaultValues: config?.slack,
@@ -64,8 +70,16 @@ export function Slack() {
           });
         })}
       >
-        <FormItemText<SlackForm> name="slackDomain" label="Url" placeholder="slack" />
-        <FormItemPassword<SlackForm> name="slackToken" label="Token" placeholder="xocx-..." />
+        <FormItemText<SlackForm>
+          name="slackDomain"
+          label="Url"
+          placeholder="slack"
+        />
+        <FormItemPassword<SlackForm>
+          name="slackToken"
+          label="Token"
+          placeholder="xocx-..."
+        />
         <FormItemPassword<SlackForm>
           name="slackDCookie"
           label="Cookie 'd'"
@@ -80,17 +94,19 @@ export function Slack() {
         {methods.formState.isSubmitted && loading && (
           <p className="text-thmSecondary">
             Checking details{' '}
-            <RssIcon className="inline-flex ml-1 w-2 relative bottom-2 animate-ping" />
+            <RssIcon className="relative bottom-2 ml-1 inline-flex w-2 animate-ping" />
           </p>
-        )}
-        {methods.formState.isSubmitted && !methods.formState.isDirty && !loading && error && (
-          <p className="text-thmError">{error.message}</p>
         )}
         {methods.formState.isSubmitted &&
           !methods.formState.isDirty &&
+          !loading &&
+          error && <p className="text-thmError">{error.message}</p>}
+        {methods.formState.isSubmitted &&
+          !methods.formState.isDirty &&
           typeof userName === 'string' && (
-            <p className="text-thmGood flex items-center">
-              Greetings {userName} <CheckIcon className="inline-flex ml-1 w-5" />
+            <p className="flex items-center text-thmGood">
+              Greetings {userName}{' '}
+              <CheckIcon className="ml-1 inline-flex w-5" />
             </p>
           )}
 
@@ -104,7 +120,9 @@ export function Slack() {
             type="button"
             variant="tertiary"
             onClick={() => {
-              bridge.openExternal('https://github.com/codethread/pomo#slack-integration');
+              bridge.openExternal(
+                'https://github.com/codethread/pomo#slack-integration',
+              );
             }}
           >
             where do I get these from?
@@ -168,11 +186,11 @@ function validateDetails(bridge: IBridge) {
       console.error(e);
       if (e.error === 'invalid_auth') {
         throw new Error(
-          'These details did not work, be sure to check the link below for details about these fields'
+          'These details did not work, be sure to check the link below for details about these fields',
         );
       } else {
         throw new Error(
-          `Something went wrong with these details: "${e.error}". This is likely an issue with the details you put in, but if it looks like a technical error, please raise an issue!`
+          `Something went wrong with these details: "${e.error}". This is likely an issue with the details you put in, but if it looks like a technical error, please raise an issue!`,
         );
       }
     }

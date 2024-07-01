@@ -1,4 +1,8 @@
-import { BridgeProvider, LoggerProvider, MachinesProvider } from '@client/hooks/providers';
+import {
+  BridgeProvider,
+  LoggerProvider,
+  MachinesProvider,
+} from '@client/hooks/providers';
 import { IBridge } from '@shared/types';
 import { App } from './App';
 import { hooks } from './integrations';

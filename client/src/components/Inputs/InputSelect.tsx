@@ -3,7 +3,10 @@ import { useState } from 'react';
 
 export interface IInputSelect<A>
   extends Omit<
-    React.DetailedHTMLProps<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>,
+    React.DetailedHTMLProps<
+      React.SelectHTMLAttributes<HTMLSelectElement>,
+      HTMLSelectElement
+    >,
     'onChange'
   > {
   id: string;
@@ -30,8 +33,10 @@ export function InputSelect<A extends string>({
       data-error={hasError}
       className={classNames(
         'input w-full',
-        hasError ? 'text-thmError' : selected === 'none' ? 'text-thmFgDim' : 'text-thmFg',
-        className
+        hasError ? 'text-thmError'
+        : selected === 'none' ? 'text-thmFgDim'
+        : 'text-thmFg',
+        className,
       )}
       id={id}
       {...(hasError && {

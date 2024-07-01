@@ -10,7 +10,10 @@ export function Box({ children, className, style }: IBox): JSX.Element {
   return (
     <div
       style={style}
-      className={classNames('flex flex-col justify-center justify-items-stretch', className)}
+      className={classNames(
+        'flex flex-col justify-center justify-items-stretch',
+        className,
+      )}
     >
       {children}
     </div>

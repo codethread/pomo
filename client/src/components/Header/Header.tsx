@@ -21,7 +21,9 @@ export function Header({ onClick, page, showClose }: IHeader): JSX.Element {
         <h2 className="text-center text-lg">{showClose ? 'Menu' : page}</h2>
       </Box>
       <Box className="text-sm text-thmBackgroundBrightest">
-        {isDev ? <p>Dev</p> : <p>Beta</p>}
+        {isDev ?
+          <p>Dev</p>
+        : <p>Beta</p>}
         <p className="text-xs">{version}</p>
       </Box>
     </header>

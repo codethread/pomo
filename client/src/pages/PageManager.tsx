@@ -8,14 +8,24 @@ import { Slack } from '@client/components/Settings/Slack';
 import { Timer } from '@client/components/Settings/Timer';
 import { Theme } from '@client/components/Settings/Theme';
 
-export type Pages = 'Slack Settings' | 'Theme Settings' | 'Timer Settings' | 'Timer' | 'Stats';
+export type Pages =
+  | 'Slack Settings'
+  | 'Theme Settings'
+  | 'Timer Settings'
+  | 'Timer'
+  | 'Stats';
 
 export interface IPageManager {
   initialPage?: Pages;
 }
 
-export function PageManager({ initialPage = 'Timer' }: IPageManager = {}): JSX.Element {
-  const [{ page, navVisible }, dispatch] = useReducer(reducer, initialState(initialPage));
+export function PageManager({
+  initialPage = 'Timer',
+}: IPageManager = {}): JSX.Element {
+  const [{ page, navVisible }, dispatch] = useReducer(
+    reducer,
+    initialState(initialPage),
+  );
 
   return (
     <div className="flex h-full w-full flex-col overflow-y-scroll bg-thmBackground text-base text-thmFg">
@@ -27,18 +37,17 @@ export function PageManager({ initialPage = 'Timer' }: IPageManager = {}): JSX.E
         showClose={navVisible}
         page={page}
       />
-      {navVisible ? (
+      {navVisible ?
         <Navigation
           page={page}
           onNavigate={(p) => {
             dispatch({ type: 'Navigate', page: p });
           }}
         />
-      ) : (
-        <div className="flex flex-grow flex-col  justify-start justify-items-stretch">
+      : <div className="flex flex-grow flex-col justify-start justify-items-stretch">
           <Page page={page} />
         </div>
-      )}
+      }
     </div>
   );
 }

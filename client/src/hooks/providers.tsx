@@ -35,8 +35,13 @@ interface IBridgeProvider {
   children: React.ReactNode;
 }
 
-export function BridgeProvider({ bridge, children }: IBridgeProvider): JSX.Element {
-  return <bridgeContext.Provider value={bridge}>{children}</bridgeContext.Provider>;
+export function BridgeProvider({
+  bridge,
+  children,
+}: IBridgeProvider): JSX.Element {
+  return (
+    <bridgeContext.Provider value={bridge}>{children}</bridgeContext.Provider>
+  );
 }
 
 export interface IMachinesProvider {
@@ -47,7 +52,11 @@ export interface IMachinesProvider {
   };
 }
 
-export function MachinesProvider({ children, hooks, services }: IMachinesProvider): JSX.Element {
+export function MachinesProvider({
+  children,
+  hooks,
+  services,
+}: IMachinesProvider): JSX.Element {
   const bridge = useBridge();
 
   useEffect(() => {
@@ -65,8 +74,10 @@ export function MachinesProvider({ children, hooks, services }: IMachinesProvide
     }),
     {
       devTools: true,
-    }
+    },
   );
 
-  return <machinesContext.Provider value={main}>{children}</machinesContext.Provider>;
+  return (
+    <machinesContext.Provider value={main}>{children}</machinesContext.Provider>
+  );
 }

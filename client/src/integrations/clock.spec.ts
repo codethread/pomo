@@ -34,7 +34,7 @@ describe('clock', () => {
 
         expect(timer.getHours()).toBe(resHours);
         expect(timer.getMinutes()).toBe(resMins);
-      }
+      },
     );
   });
 });

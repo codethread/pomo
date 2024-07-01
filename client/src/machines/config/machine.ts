@@ -1,6 +1,18 @@
 import { formatTrayTime } from '@shared/formatTrayTime';
-import { DeepPartial, IBridge, UserConfig, UserConfigSchema, emptyConfig } from '@shared/types';
-import { ActorRefFrom, assign, createMachine, InterpreterFrom, sendParent } from 'xstate';
+import {
+  DeepPartial,
+  IBridge,
+  UserConfig,
+  UserConfigSchema,
+  emptyConfig,
+} from '@shared/types';
+import {
+  ActorRefFrom,
+  assign,
+  createMachine,
+  InterpreterFrom,
+  sendParent,
+} from 'xstate';
 import { fromError } from 'zod-validation-error';
 
 export interface IConfigMachine {
@@ -10,7 +22,9 @@ export interface IConfigMachine {
 const initialContext = emptyConfig;
 
 export type ConfigContext = typeof initialContext;
-export type ConfitEvents = { type: 'RESET' } | { type: 'UPDATE'; data: DeepPartial<UserConfig> };
+export type ConfitEvents =
+  | { type: 'RESET' }
+  | { type: 'UPDATE'; data: DeepPartial<UserConfig> };
 
 export default function configMachine({ bridge }: IConfigMachine) {
   return createMachine(
@@ -112,7 +126,9 @@ export default function configMachine({ bridge }: IConfigMachine) {
           });
         },
         updateConfig: async (c, e) => {
-          const parsed = UserConfigSchema.deepPartial().strict().safeParse(e.data);
+          const parsed = UserConfigSchema.deepPartial()
+            .strict()
+            .safeParse(e.data);
           if (!parsed.success) {
             const e = fromError(parsed.error).toString();
             bridge.error(e);
@@ -132,10 +148,13 @@ export default function configMachine({ bridge }: IConfigMachine) {
         },
       },
       actions: {
-        broadcastConfig: sendParent((c) => ({ type: 'CONFIG_LOADED', data: c })),
+        broadcastConfig: sendParent((c) => ({
+          type: 'CONFIG_LOADED',
+          data: c,
+        })),
         storeConfig: assign((_, { data }) => data),
       },
-    }
+    },
   );
 }
 
@@ -148,7 +167,7 @@ export type ConfigActorRef = ActorRefFrom<ConfigMachine>;
 function updateIntegrations(
   data: DeepPartial<UserConfig>,
   bridge: IBridge,
-  { timers }: ConfigContext
+  { timers }: ConfigContext,
 ) {
   const { displayTimerInStatusBar } = data;
   if (displayTimerInStatusBar !== undefined) {
@@ -157,7 +176,7 @@ function updateIntegrations(
         formatTrayTime({
           minutes: timers.pomo,
           seconds: 0,
-        })
+        }),
       );
     } else {
       bridge.setTrayTitle('');

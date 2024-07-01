@@ -33,7 +33,7 @@ async function runTest(overrides?: TestOverrides) {
   const service = interpret(
     parent.withConfig({
       actions: { spy: (_, e) => spy(e) },
-    })
+    }),
   );
 
   service.start();
@@ -82,7 +82,8 @@ describe('config machine', () => {
     it("should return the user's config and broadcast it", async () => {
       const { configMachine, spy: storeSpy } = await runTest({
         bridge: {
-          storeRead: async () => ok(merge(emptyConfig, { timers: { pomo: 612 } })),
+          storeRead: async () =>
+            ok(merge(emptyConfig, { timers: { pomo: 612 } })),
         },
       });
 
@@ -103,12 +104,15 @@ describe('config machine', () => {
       const mock = vi.fn().mockResolvedValue(ok(updatedConfig));
       const { configMachine, spy } = await runTest({
         bridge: {
-          storeRead: async () => ok(merge(emptyConfig, { timers: { pomo: 612 } })),
+          storeRead: async () =>
+            ok(merge(emptyConfig, { timers: { pomo: 612 } })),
           storeUpdate: mock,
         },
       });
 
-      const update = { slack: { enabled: true, slackToken: 'Wubba Lubba Dub Dub!' } };
+      const update = {
+        slack: { enabled: true, slackToken: 'Wubba Lubba Dub Dub!' },
+      };
 
       configMachine.send({ type: 'UPDATE', data: update });
 

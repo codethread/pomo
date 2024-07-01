@@ -1,5 +1,10 @@
 import { createFakeBridge } from '@test/createFakeBridge';
-import { DeepPartial, HookContext, TimerHooks, UserConfig } from '@shared/types';
+import {
+  DeepPartial,
+  HookContext,
+  TimerHooks,
+  UserConfig,
+} from '@shared/types';
 import { ticks } from '@test/tick';
 import { interpret } from 'xstate';
 import { waitFor } from 'xstate/lib/waitFor';
@@ -81,7 +86,9 @@ describe('mainMachine', () => {
     const pomoActor = getPomoActor(service);
 
     expect(
-      await waitFor(pomoActor, ({ value }) => value === 'pomo', { timeout: 100 })
+      await waitFor(pomoActor, ({ value }) => value === 'pomo', {
+        timeout: 100,
+      }),
     ).toBeTruthy();
 
     expect(pomoActor.getSnapshot()?.context.timers.pomo).toBe(23);
@@ -139,8 +146,12 @@ describe('mainMachine', () => {
     expect(hooks.onTickHook).toHaveBeenNthCalledWith(
       11,
       expect.objectContaining({
-        timer: expect.objectContaining({ minutes: pomoDuration - 1, seconds: 49, type: 'pomo' }),
-      })
+        timer: expect.objectContaining({
+          minutes: pomoDuration - 1,
+          seconds: 49,
+          type: 'pomo',
+        }),
+      }),
     );
 
     /* ******************************************************************* */
@@ -152,8 +163,12 @@ describe('mainMachine', () => {
     expect(hooks.onPauseHook).toHaveBeenCalledTimes(1);
     expect(hooks.onPauseHook).toHaveBeenCalledWith(
       expect.objectContaining({
-        timer: expect.objectContaining({ minutes: pomoDuration - 1, seconds: 49, type: 'pomo' }),
-      })
+        timer: expect.objectContaining({
+          minutes: pomoDuration - 1,
+          seconds: 49,
+          type: 'pomo',
+        }),
+      }),
     );
 
     /* ******************************************************************* */
@@ -166,8 +181,12 @@ describe('mainMachine', () => {
     expect(hooks.onPlayHook).toHaveBeenCalledTimes(1);
     expect(hooks.onPlayHook).toHaveBeenCalledWith(
       expect.objectContaining({
-        timer: expect.objectContaining({ minutes: pomoDuration - 1, seconds: 49, type: 'pomo' }),
-      })
+        timer: expect.objectContaining({
+          minutes: pomoDuration - 1,
+          seconds: 49,
+          type: 'pomo',
+        }),
+      }),
     );
     expect(hooks.onTickHook).toHaveBeenCalledTimes(20);
 
@@ -181,8 +200,12 @@ describe('mainMachine', () => {
     expect(hooks.onStopHook).toHaveBeenCalledTimes(1);
     expect(hooks.onStopHook).toHaveBeenCalledWith(
       expect.objectContaining({
-        timer: expect.objectContaining({ minutes: pomoDuration - 1, seconds: 40, type: 'pomo' }),
-      })
+        timer: expect.objectContaining({
+          minutes: pomoDuration - 1,
+          seconds: 40,
+          type: 'pomo',
+        }),
+      }),
     );
 
     /* ******************************************************************* */
@@ -199,8 +222,12 @@ describe('mainMachine', () => {
     expect(hooks.onCompleteHook).toHaveBeenCalledTimes(1);
     expect(hooks.onCompleteHook).toHaveBeenCalledWith(
       expect.objectContaining({
-        timer: expect.objectContaining({ minutes: 0, seconds: 0, type: 'pomo' }),
-      })
+        timer: expect.objectContaining({
+          minutes: 0,
+          seconds: 0,
+          type: 'pomo',
+        }),
+      }),
     );
   });
 });

@@ -29,7 +29,7 @@ export function Theme(): JSX.Element {
             variant="tertiary"
             onClick={() => {
               bridge.openExternal(
-                'https://github.com/codethread/pomo-electron/issues/new?assignees=codethread&labels=theme&template=theme-request.md&title='
+                'https://github.com/codethread/pomo-electron/issues/new?assignees=codethread&labels=theme&template=theme-request.md&title=',
               );
             }}
           >

@@ -18,7 +18,7 @@ let store = null as unknown as Store;
 
 export async function createStore<T>(
   logger: IClientLogger,
-  storeConfig: StoreConfig<T>
+  storeConfig: StoreConfig<T>,
 ): Promise<StoreRepository<T>> {
   if (!store) {
     store = new Store('pomo');
@@ -59,7 +59,9 @@ export async function createStore<T>(
   };
 }
 
-export const fakeStoreRepoFactory = <T>(storeConfig: StoreConfig<T>): StoreRepository<T> => {
+export const fakeStoreRepoFactory = <T>(
+  storeConfig: StoreConfig<T>,
+): StoreRepository<T> => {
   let store = storeConfig.defaults;
   return {
     async storeRead() {

@@ -22,7 +22,7 @@ export function createCtx(overrides?: DeepPartial<HookContext>): TestSetup {
         slackToken: 'slackToken',
       },
     },
-    overrides?.config
+    overrides?.config,
   );
 
   const bridge = createFakeBridge({}, { configOverride: config });
@@ -32,7 +32,7 @@ export function createCtx(overrides?: DeepPartial<HookContext>): TestSetup {
         ...acc,
         [cur]: vi.fn(),
       }),
-      {} as Spies
+      {} as Spies,
     ),
   };
 

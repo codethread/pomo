@@ -64,13 +64,22 @@ type SlackErr =
     };
 
 export interface SlackRepository {
-  slackSetProfile(auth: SlackAuth, status: SlackStatus): Promise<Result<SlackOk, SlackErr>>;
+  slackSetProfile(
+    auth: SlackAuth,
+    status: SlackStatus,
+  ): Promise<Result<SlackOk, SlackErr>>;
 
-  slackSetSnooze(auth: SlackAuth, minutes: number): Promise<Result<SlackOk, SlackErr>>;
+  slackSetSnooze(
+    auth: SlackAuth,
+    minutes: number,
+  ): Promise<Result<SlackOk, SlackErr>>;
 
   slackEndSnooze(auth: SlackAuth): Promise<Result<SlackOk, SlackErr>>;
 
-  slackSetPresence(auth: SlackAuth, state: 'active' | 'away'): Promise<Result<SlackOk, SlackErr>>;
+  slackSetPresence(
+    auth: SlackAuth,
+    state: 'active' | 'away',
+  ): Promise<Result<SlackOk, SlackErr>>;
 
   slackValidate(auth: SlackAuth): Promise<Result<SlackProfile, SlackErr>>;
 }
@@ -80,7 +89,10 @@ interface SlackParams {
   client: HttpClient;
 }
 
-export const slackRepository = ({ logger, client }: SlackParams): SlackRepository => {
+export const slackRepository = ({
+  logger,
+  client,
+}: SlackParams): SlackRepository => {
   const slackReq = slackClient(logger, client);
 
   return {
@@ -92,10 +104,11 @@ export const slackRepository = ({ logger, client }: SlackParams): SlackRepositor
           profile: {
             status_text: text,
             status_emoji: emoji,
-            status_expiration: expiration ? (expiration.getTime() / 1000).toFixed(0) : null,
+            status_expiration:
+              expiration ? (expiration.getTime() / 1000).toFixed(0) : null,
           },
         },
-        auth
+        auth,
       );
     },
 
@@ -108,7 +121,11 @@ export const slackRepository = ({ logger, client }: SlackParams): SlackRepositor
     },
 
     async slackSetSnooze(auth, duration) {
-      return slackReq<SlackOk>(`/dnd.setSnooze`, { num_minutes: duration }, auth);
+      return slackReq<SlackOk>(
+        `/dnd.setSnooze`,
+        { num_minutes: duration },
+        auth,
+      );
     },
 
     async slackValidate(auth) {
@@ -121,7 +138,7 @@ function slackClient(logger: IClientLogger, client: HttpClient) {
   return async function slackReq<A extends SlackOk>(
     path: string,
     payload: any,
-    auth: SlackAuth
+    auth: SlackAuth,
   ): Promise<Result<A, SlackErr>> {
     try {
       const { dCookie, dSCookie, token, domain } = auth;
@@ -138,7 +155,7 @@ function slackClient(logger: IClientLogger, client: HttpClient) {
             'user-agent':
               'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36',
           },
-        }
+        },
       );
 
       logger.info(`SLACK -->`, res.url, JSON.stringify(payload));

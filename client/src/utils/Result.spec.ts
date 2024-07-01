@@ -1,4 +1,13 @@
-import { err, isErr, isOk, ok, reBuild, Result, strip, tupleResult } from './Result';
+import {
+  err,
+  isErr,
+  isOk,
+  ok,
+  reBuild,
+  Result,
+  strip,
+  tupleResult,
+} from './Result';
 
 describe('Result', () => {
   describe('ok', () => {
@@ -9,7 +18,7 @@ describe('Result', () => {
         expect.objectContaining({
           ok: true,
           val: 'foo',
-        })
+        }),
       );
 
       expect(isOk(result)).toBe(true);
@@ -17,7 +26,9 @@ describe('Result', () => {
 
       // test our custom matcher
       expect(result).toMatchResult(ok('foo'));
-      expect(ok({ data: { nested: 4 } })).toMatchResult(ok({ data: { nested: 4 } }));
+      expect(ok({ data: { nested: 4 } })).toMatchResult(
+        ok({ data: { nested: 4 } }),
+      );
     });
   });
 
@@ -29,7 +40,7 @@ describe('Result', () => {
         expect.objectContaining({
           ok: false,
           reason: 'failed',
-        })
+        }),
       );
 
       expect(isOk(result)).toBe(false);
@@ -37,7 +48,9 @@ describe('Result', () => {
 
       // test our custom matcher
       expect(result).toMatchResult(err('failed'));
-      expect(err({ data: { nested: 4 } })).toMatchResult(err({ data: { nested: 4 } }));
+      expect(err({ data: { nested: 4 } })).toMatchResult(
+        err({ data: { nested: 4 } }),
+      );
     });
   });
 
@@ -61,7 +74,9 @@ describe('Result', () => {
       if (isOk(okResult)) {
         expect(okResult.val.trim()).toBe('data');
       } else {
-        throw new Error('Test failure, this branch of logic should never be true');
+        throw new Error(
+          'Test failure, this branch of logic should never be true',
+        );
       }
 
       const errResult = err('fail') as Result<string>;
@@ -73,7 +88,9 @@ describe('Result', () => {
       if (isErr(errResult)) {
         expect(errResult.reason.trim()).toBe('fail');
       } else {
-        throw new Error('Test failure, this branch of logic should never be true');
+        throw new Error(
+          'Test failure, this branch of logic should never be true',
+        );
       }
     });
   });
@@ -82,7 +99,9 @@ describe('Result', () => {
     const toSpongeBob = (s: string) =>
       s
         .split('')
-        .map((value, index) => (index % 2 === 0 ? value.toUpperCase() : value.toLowerCase()))
+        .map((value, index) =>
+          index % 2 === 0 ? value.toUpperCase() : value.toLowerCase(),
+        )
         .join('');
 
     const toUpper = (s: string) => s.toUpperCase();
@@ -92,7 +111,9 @@ describe('Result', () => {
         const okResult = ok('here be data') as Result<string, string>;
 
         expect(okResult.map(toUpper)).toMatchResult(ok('HERE BE DATA'));
-        expect(okResult.map(toUpper).map(toSpongeBob)).toMatchResult(ok('HeRe bE DaTa'));
+        expect(okResult.map(toUpper).map(toSpongeBob)).toMatchResult(
+          ok('HeRe bE DaTa'),
+        );
 
         const errResult = err(42) as Result<string, number>;
 
@@ -109,8 +130,12 @@ describe('Result', () => {
         expect(okResult.errMap(toUpper)).toMatchResult(ok(12345));
         expect(errResult.errMap(toUpper)).toMatchResult(err('FAILED'));
 
-        expect(okResult.errMap(toUpper).map((x) => x * 2)).toMatchResult(ok(24690));
-        expect(errResult.map((x) => x * 2).errMap(toUpper)).toMatchResult(err('FAILED'));
+        expect(okResult.errMap(toUpper).map((x) => x * 2)).toMatchResult(
+          ok(24690),
+        );
+        expect(errResult.map((x) => x * 2).errMap(toUpper)).toMatchResult(
+          err('FAILED'),
+        );
       });
     });
 
@@ -118,41 +143,56 @@ describe('Result', () => {
       it('should allow working unknown Results to manipulate data in ways that also return Results', () => {
         const okResult = ok('12345') as Result<string>;
 
-        const tryToUpper: (s: string) => Result<string> = () => err('upper failed');
-        const tryToSplit: (s: string) => Result<string[]> = (s) => ok(s.split(''));
-        const tryToNumber: (s: string[]) => Result<number[]> = (s) => ok(s.map(Number));
+        const tryToUpper: (s: string) => Result<string> = () =>
+          err('upper failed');
+        const tryToSplit: (s: string) => Result<string[]> = (s) =>
+          ok(s.split(''));
+        const tryToNumber: (s: string[]) => Result<number[]> = (s) =>
+          ok(s.map(Number));
 
         expect(okResult.flatMap(tryToUpper)).toMatchResult(err('upper failed'));
-        expect(okResult.flatMap(tryToUpper).map(toSpongeBob)).toMatchResult(err('upper failed'));
+        expect(okResult.flatMap(tryToUpper).map(toSpongeBob)).toMatchResult(
+          err('upper failed'),
+        );
 
         expect(okResult.flatMap(tryToSplit).flatMap(tryToNumber)).toMatchResult(
-          ok([1, 2, 3, 4, 5])
+          ok([1, 2, 3, 4, 5]),
         );
 
         const errResult = err('failed first') as Result<string>;
 
-        expect(errResult.flatMap(tryToUpper)).toMatchResult(err('failed first'));
-        expect(errResult.flatMap((x) => tryToUpper(x)).flatMap(tryToUpper)).toMatchResult(
-          err('failed first')
+        expect(errResult.flatMap(tryToUpper)).toMatchResult(
+          err('failed first'),
         );
+        expect(
+          errResult.flatMap((x) => tryToUpper(x)).flatMap(tryToUpper),
+        ).toMatchResult(err('failed first'));
       });
     });
 
     describe('chain', () => {
       it('should allow working with unknown Results to manipulate data that return Promise Results', async () => {
         const okResult = ok('hi there') as Result<string>;
-        const tryToUpper: (s: string) => Promise<Result<string>> = async () => err('upper failed');
-        const tryToSpongeBob: (s: string) => Promise<Result<string>> = async (s) =>
-          ok(toSpongeBob(s));
+        const tryToUpper: (s: string) => Promise<Result<string>> = async () =>
+          err('upper failed');
+        const tryToSpongeBob: (s: string) => Promise<Result<string>> = async (
+          s,
+        ) => ok(toSpongeBob(s));
 
-        expect(await okResult.chain(tryToUpper)).toMatchResult(err('upper failed'));
-        expect(await okResult.chain(tryToSpongeBob)).toMatchResult(ok('Hi tHeRe'));
+        expect(await okResult.chain(tryToUpper)).toMatchResult(
+          err('upper failed'),
+        );
+        expect(await okResult.chain(tryToSpongeBob)).toMatchResult(
+          ok('Hi tHeRe'),
+        );
 
         const errResult = err('failed first') as Result<string>;
         const tryToNumber: (s: string) => Promise<Result<string>> = async () =>
           err('number failed');
 
-        expect(await errResult.chain(tryToNumber)).toMatchResult(err('failed first'));
+        expect(await errResult.chain(tryToNumber)).toMatchResult(
+          err('failed first'),
+        );
       });
     });
 
@@ -185,12 +225,12 @@ describe('Result', () => {
       const okResult2 = ok(42) as Result<number>;
       const errResult = err('failed first') as Result<string>;
 
-      expect(tupleResult(okResult, okResult2).map(([a, b]) => `${a} ${b}`)).toMatchResult(
-        ok('meaning of life 42')
-      );
-      expect(tupleResult(okResult, errResult).map(([a, b]) => a + b)).toMatchResult(
-        err('failed first')
-      );
+      expect(
+        tupleResult(okResult, okResult2).map(([a, b]) => `${a} ${b}`),
+      ).toMatchResult(ok('meaning of life 42'));
+      expect(
+        tupleResult(okResult, errResult).map(([a, b]) => a + b),
+      ).toMatchResult(err('failed first'));
     });
   });
 });

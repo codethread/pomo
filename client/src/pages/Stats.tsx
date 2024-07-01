@@ -39,12 +39,13 @@ export function Stats() {
 
   return (
     <>
-      <div className="flex flex-col justify-between h-full">
-        <div className="flex flex-col justify-center grow m-4">
+      <div className="flex h-full flex-col justify-between">
+        <div className="m-4 flex grow flex-col justify-center">
           <Summary output={output} />
           {output.completed.map(([date, duration]) => (
             <p key={date}>
-              {format(date, 'ccc')} | {formatTime(duration, { hideSeconds: true })}
+              {format(date, 'ccc')} |{' '}
+              {formatTime(duration, { hideSeconds: true })}
             </p>
           ))}
         </div>
@@ -59,7 +60,7 @@ function Raw({ stats }: { stats: Stats }) {
   const [isShown, setIsShown] = useState(false);
   if (!isShown) {
     return (
-      <div className="flex flex-row justify-center mb-4">
+      <div className="mb-4 flex flex-row justify-center">
         <Button onClick={() => setIsShown((s) => !s)} variant="tertiary">
           Show Raw
         </Button>
@@ -95,11 +96,13 @@ function RawIcon({ type }: { type: StatType }) {
 function Summary({ output }: { output: OUT }) {
   const [target, setTarget] = useState(25 * hour);
   return (
-    <div className="text-lg text-center">
+    <div className="text-center text-lg">
       <p>Week of {format(output.weekStartIso, 'MMM do')}</p>
       <p>
         Total {formatTime(output.total)}{' '}
-        <span className="text-thmBright">{Math.round((output.total / target) * 100)}%</span>{' '}
+        <span className="text-thmBright">
+          {Math.round((output.total / target) * 100)}%
+        </span>{' '}
         <span className="text-sm">({target / hour})</span>
       </p>
       <hr className="m-2" />
@@ -109,9 +112,9 @@ function Summary({ output }: { output: OUT }) {
 
 const ManualTimeSchema = z.object({
   duration: z.number().min(1, { message: '> 0' }),
-  timestamp: z
-    .string()
-    .refine((t) => Boolean(getFormatedDate(t)), { message: 'invalid timestamp' }),
+  timestamp: z.string().refine((t) => Boolean(getFormatedDate(t)), {
+    message: 'invalid timestamp',
+  }),
   statType: StatTypeSchema,
 });
 
@@ -165,18 +168,27 @@ function ManualTime() {
     <FormProvider {...methods}>
       <form
         onSubmit={methods.handleSubmit((form) => {
-          const iso = parse(form.timestamp, 'yy/MM/dd HH:mm', new Date()).toISOString();
+          const iso = parse(
+            form.timestamp,
+            'yy/MM/dd HH:mm',
+            new Date(),
+          ).toISOString();
           statsTimerComplete(form.duration * 60, form.statType, iso);
         })}
       >
-        <div className="flex flex-col border border-thmWarn rounded-lg p-2 gap-4">
+        <div className="flex flex-col gap-4 rounded-lg border border-thmWarn p-2">
           <div className="flex gap-2">
             <div className="basis-1/3">
               <FormItemNumber<ManualTimeForm> name="duration" label="Mins" />
             </div>
             <div>
-              <FormItemText<ManualTimeForm> name="timestamp" label="Timestamp" />
-              <p className="text-thmFgDim text-sm">{format(lastValidTs, timestampFormat)}</p>
+              <FormItemText<ManualTimeForm>
+                name="timestamp"
+                label="Timestamp"
+              />
+              <p className="text-sm text-thmFgDim">
+                {format(lastValidTs, timestampFormat)}
+              </p>
             </div>
           </div>
           <InputSelect<StatType>
@@ -185,8 +197,12 @@ function ManualTime() {
             initialValue={methods.getValues('statType')}
             onChange={(statType) => methods.setValue('statType', statType)}
           />
-          <div className="flex justify-around gap-4 flex-row w-fill">
-            <Button type="submit" disabled={!methods.formState.isDirty} variant="secondary">
+          <div className="w-fill flex flex-row justify-around gap-4">
+            <Button
+              type="submit"
+              disabled={!methods.formState.isDirty}
+              variant="secondary"
+            >
               Add time
             </Button>
             <Button onClick={() => setIsShown((s) => !s)} variant="tertiary">
@@ -200,7 +216,9 @@ function ManualTime() {
 }
 
 function transform(stats: Stats): OUT {
-  const weekStartIso = startOfWeek(Date.now(), { weekStartsOn: 1 }).toISOString();
+  const weekStartIso = startOfWeek(Date.now(), {
+    weekStartsOn: 1,
+  }).toISOString();
   const weekEndIso = add(weekStartIso, { weeks: 1 }).toISOString();
 
   const map = stats.completed
@@ -230,7 +248,10 @@ function transform(stats: Stats): OUT {
 const sec = 1;
 const min = 60 * sec;
 const hour = 60 * min;
-function formatTime(duration: number, { hideSeconds }: { hideSeconds?: boolean } = {}) {
+function formatTime(
+  duration: number,
+  { hideSeconds }: { hideSeconds?: boolean } = {},
+) {
   const { minutes, hours, seconds } = durationToTime(duration);
   return (
     `${formatTimerNumber(hours)}:${formatTimerNumber(minutes)}` +

@@ -36,7 +36,10 @@ export function Timer(): JSX.Element {
           variant="simple"
           heading="Timer"
           onSubmit={methods.handleSubmit((update) => {
-            storeUpdate({ timers: update, longBreakEvery: update.breakFrequency });
+            storeUpdate({
+              timers: update,
+              longBreakEvery: update.breakFrequency,
+            });
           })}
         >
           <FormItemNumber<UserForm>

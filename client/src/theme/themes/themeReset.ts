@@ -33,7 +33,7 @@ export function themeReset({ setPalette, setColors }: Themers): void {
       '--col-cyan': 'var(--col-null)',
       '--col-dark-cyan': 'var(--col-null)',
     },
-    { strict: true }
+    { strict: true },
   );
 
   setPalette(
@@ -53,6 +53,6 @@ export function themeReset({ setPalette, setColors }: Themers): void {
       '--color-warning': 'var(--col-yellow)',
       '--color-good': 'var(--col-green)',
     },
-    { strict: true }
+    { strict: true },
   );
 }

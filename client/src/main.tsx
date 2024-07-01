@@ -7,5 +7,5 @@ import { Booter } from './Booter';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Booter />
-  </StrictMode>
+  </StrictMode>,
 );

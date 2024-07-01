@@ -14,7 +14,11 @@ export interface ICountdown {
   duration: number;
 }
 
-export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Element {
+export function Countdown({
+  timerRef,
+  title,
+  duration,
+}: ICountdown): JSX.Element {
   const [state, send] = useActor(timerRef);
   const { minutes, seconds, type } = state.context;
 
@@ -31,7 +35,12 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
   return (
     <div className="timer mt-5">
       <Box style={{ gridArea: 'timer' }}>
-        <TimerProgress duration={duration} mins={minutes} seconds={seconds} state={timerState} />
+        <TimerProgress
+          duration={duration}
+          mins={minutes}
+          seconds={seconds}
+          state={timerState}
+        />
       </Box>
       <Box
         style={{
@@ -41,7 +50,9 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
           fontSize: 14,
         }}
       >
-        <p className={`text-center ${type === 'pomo' ? 'text-thmPrimary' : 'text-thmGood'}`}>
+        <p
+          className={`text-center ${type === 'pomo' ? 'text-thmPrimary' : 'text-thmGood'}`}
+        >
           {title}
         </p>
       </Box>

@@ -40,7 +40,12 @@ export interface IMainMachine {
   updateTheme: UpdateTheme;
 }
 
-const mainMachineFactory = ({ pomodoro, bridge, actions, updateTheme }: IMainMachine) =>
+const mainMachineFactory = ({
+  pomodoro,
+  bridge,
+  actions,
+  updateTheme,
+}: IMainMachine) =>
   createMachine(
     {
       id: 'main',
@@ -101,7 +106,7 @@ const mainMachineFactory = ({ pomodoro, bridge, actions, updateTheme }: IMainMac
           actions.onCompleteHook({ bridge, config, timer: data });
         },
       },
-    }
+    },
   );
 
 export type MainMachine = ReturnType<typeof mainMachineFactory>;

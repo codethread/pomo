@@ -4,7 +4,10 @@ const interval = 1000;
 class Clock {
   private complete = false;
 
-  constructor(private mins: number, private seconds: number) {}
+  constructor(
+    private mins: number,
+    private seconds: number,
+  ) {}
 
   countdown() {
     if (this.complete) return;

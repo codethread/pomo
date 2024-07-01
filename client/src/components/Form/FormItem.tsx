@@ -2,7 +2,12 @@ import { ErrorMessage } from '@hookform/error-message';
 import { IChildren, ICss } from '@shared/types';
 import classNames from 'classnames';
 import React, { useRef, useState, useId } from 'react';
-import { FieldValues, Path, useFormContext, UseFormRegister } from 'react-hook-form';
+import {
+  FieldValues,
+  Path,
+  useFormContext,
+  UseFormRegister,
+} from 'react-hook-form';
 import { IInputPassword, InputPassword } from '../Inputs/InputPassword';
 import { EyeClosed } from '../Icons/EyeClosed';
 import { EyeOpen } from '../Icons/EyeOpen';
@@ -44,7 +49,7 @@ export function FormItemCheckbox<A extends FieldValues>({
             'cursor-not-allowed': disabled,
             'text-thmError': Boolean(error?.message),
           },
-          className
+          className,
         )}
         aria-label={ariaLabel}
       >
@@ -57,8 +62,14 @@ export function FormItemCheckbox<A extends FieldValues>({
           {...register(registerOptions.name, registerOptions)}
         />
       </label>
-      {smallPrint ? <p className="text-xs">{smallPrint}</p> : null}
-      <ErrorMessage errors={errors} name={registerOptions.name as any} as={ErrorMsg} />
+      {smallPrint ?
+        <p className="text-xs">{smallPrint}</p>
+      : null}
+      <ErrorMessage
+        errors={errors}
+        name={registerOptions.name as any}
+        as={ErrorMsg}
+      />
     </div>
   );
 }
@@ -173,11 +184,9 @@ export function FormItemPassword<A extends FieldValues>({
           }}
           className="input bg-thmBackgroundBright"
         >
-          {isVisible ? (
+          {isVisible ?
             <EyeOpen color="bright" size="20px" />
-          ) : (
-            <EyeClosed color="bright" size="20px" />
-          )}
+          : <EyeClosed color="bright" size="20px" />}
         </button>
       </div>
     </FormItem>

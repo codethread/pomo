@@ -21,7 +21,7 @@ const usePomodoroService = (): PomodoroActorRef => {
   const main = useMachines();
   const pomodoro = useSelector(
     main,
-    (c) => c.children[actorIds.POMODORO] as PomodoroActorRef | null
+    (c) => c.children[actorIds.POMODORO] as PomodoroActorRef | null,
   );
 
   if (!pomodoro) throw new ActorError(main, actorIds.POMODORO);
@@ -30,7 +30,10 @@ const usePomodoroService = (): PomodoroActorRef => {
 
 export const useConfigService = (): ConfigActorRef => {
   const main = useMachines();
-  const config = useSelector(main, (c) => c.children[actorIds.CONFIG] as ConfigActorRef | null);
+  const config = useSelector(
+    main,
+    (c) => c.children[actorIds.CONFIG] as ConfigActorRef | null,
+  );
 
   if (!config) throw new ActorError(main, actorIds.CONFIG);
   return config;
@@ -43,7 +46,10 @@ export const usePomodoro = () => {
 
 export const useTimer = (): TimerActorRef | null => {
   const pomodoro = usePomodoroService();
-  const timer = useSelector(pomodoro, (c) => c.children[actorIds.TIMER] as TimerActorRef | null);
+  const timer = useSelector(
+    pomodoro,
+    (c) => c.children[actorIds.TIMER] as TimerActorRef | null,
+  );
 
   return timer;
 };

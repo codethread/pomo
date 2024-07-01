@@ -98,23 +98,36 @@ export type IBridge<T = UserConfig> = IClientLogger & {
   storeRead(): Promise<Result<T>>;
   storeUpdate(value: DeepPartial<T>): Promise<Result<T>>;
   storeReset(): Promise<Result<T>>;
-  slackSetProfile(auth: SlackAuth, status: SlackStatus): Promise<Result<SlackOk, SlackErr>>;
-  slackSetSnooze(auth: SlackAuth, minutes: number): Promise<Result<SlackOk, SlackErr>>;
+  slackSetProfile(
+    auth: SlackAuth,
+    status: SlackStatus,
+  ): Promise<Result<SlackOk, SlackErr>>;
+  slackSetSnooze(
+    auth: SlackAuth,
+    minutes: number,
+  ): Promise<Result<SlackOk, SlackErr>>;
   slackEndSnooze(auth: SlackAuth): Promise<Result<SlackOk, SlackErr>>;
-  slackSetPresence(auth: SlackAuth, state: 'active' | 'away'): Promise<Result<SlackOk, SlackErr>>;
+  slackSetPresence(
+    auth: SlackAuth,
+    state: 'active' | 'away',
+  ): Promise<Result<SlackOk, SlackErr>>;
   slackValidate(auth: SlackAuth): Promise<Result<SlackProfile, SlackErr>>;
   nodenv(): Promise<Result<Nodenv>>;
   isProd(): Promise<Result<boolean>>;
   isTest(): Promise<Result<boolean>>;
   isDev(): Promise<Result<boolean>>;
   isIntegration(): Promise<Result<boolean>>;
-  statsTimerComplete(duration: number, stat?: StatType, timestamp?: string): Promise<void>;
+  statsTimerComplete(
+    duration: number,
+    stat?: StatType,
+    timestamp?: string,
+  ): Promise<void>;
   statsRead(): Promise<Stats>;
 };
 
 export const StatTypes = ['pomo.pomo', 'other.meeting'] as const;
 export const StatTypeSchema = z.enum(StatTypes);
-export type StatType = typeof StatTypes[number];
+export type StatType = (typeof StatTypes)[number];
 export interface Stats {
   completed: Array<{
     timestamp: string;

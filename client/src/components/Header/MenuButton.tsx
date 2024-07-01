@@ -7,7 +7,9 @@ interface IBar {
 }
 
 function Bar({ wide = false, classNames }: IBar): JSX.Element {
-  return <div className={`${wide ? 'w-[35px]' : 'w-[26px]'} bar ${classNames}`} />;
+  return (
+    <div className={`${wide ? 'w-[35px]' : 'w-[26px]'} bar ${classNames}`} />
+  );
 }
 
 interface IHamburgerC {

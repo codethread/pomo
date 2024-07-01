@@ -5,7 +5,9 @@ import { slackHooks as hooks } from './slack';
 describe('slack integrations', () => {
   describe('when slack is disabled', () => {
     it('should never fire', () => {
-      const { ctx, spies } = createCtx({ config: { slack: { enabled: false } } });
+      const { ctx, spies } = createCtx({
+        config: { slack: { enabled: false } },
+      });
 
       hooks.onTickHook(ctx);
       hooks.onStartHook(ctx);
@@ -27,14 +29,20 @@ describe('slack integrations', () => {
 
         hooks.onStartHook(ctx);
 
-        expect(spies.slackSetPresence).toHaveBeenCalledWith(expect.anything(), 'away');
-        expect(spies.slackSetSnooze).toHaveBeenCalledWith(expect.anything(), ctx.timer.minutes);
+        expect(spies.slackSetPresence).toHaveBeenCalledWith(
+          expect.anything(),
+          'away',
+        );
+        expect(spies.slackSetSnooze).toHaveBeenCalledWith(
+          expect.anything(),
+          ctx.timer.minutes,
+        );
         expect(spies.slackSetProfile).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({
             emoji: ':tomato:',
             text: 'free in 17 minutes',
-          })
+          }),
         );
       });
 
@@ -51,7 +59,7 @@ describe('slack integrations', () => {
           expect.anything(),
           expect.objectContaining({
             text: 'free in 1 min',
-          })
+          }),
         );
       });
 
@@ -60,14 +68,17 @@ describe('slack integrations', () => {
 
         hooks.onStopHook(ctx);
 
-        expect(spies.slackSetPresence).toHaveBeenCalledWith(expect.anything(), 'active');
+        expect(spies.slackSetPresence).toHaveBeenCalledWith(
+          expect.anything(),
+          'active',
+        );
         expect(spies.slackEndSnooze).toHaveBeenCalledWith(expect.anything());
         expect(spies.slackSetProfile).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({
             emoji: '',
             text: '',
-          })
+          }),
         );
       });
 
@@ -76,14 +87,17 @@ describe('slack integrations', () => {
 
         hooks.onCompleteHook(ctx);
 
-        expect(spies.slackSetPresence).toHaveBeenCalledWith(expect.anything(), 'active');
+        expect(spies.slackSetPresence).toHaveBeenCalledWith(
+          expect.anything(),
+          'active',
+        );
         expect(spies.slackEndSnooze).toHaveBeenCalledWith(expect.anything());
         expect(spies.slackSetProfile).toHaveBeenCalledWith(
           expect.anything(),
           expect.objectContaining({
             emoji: '',
             text: '',
-          })
+          }),
         );
       });
     });
@@ -103,7 +117,7 @@ describe('slack integrations', () => {
         expect(spies.slackSetProfile).not.toHaveBeenCalled();
         expect(spies.slackSetPresence).not.toHaveBeenCalled();
         expect(spies.slackSetSnooze).not.toHaveBeenCalled();
-      }
+      },
     );
   });
 });

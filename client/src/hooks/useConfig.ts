@@ -31,8 +31,8 @@ export const useConfig = (): ConfigMaybe => {
     storeReset: () => {
       send({ type: 'RESET' });
     },
-    ...(state.hasTag('loading')
-      ? { loading: true, config: null }
-      : { loading: false, config: state.context }),
+    ...(state.hasTag('loading') ?
+      { loading: true, config: null }
+    : { loading: false, config: state.context }),
   };
 };

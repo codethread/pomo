@@ -97,7 +97,10 @@ describe('pomodoro machine', () => {
         const { getTimerMachine, spy } = runTest({ config });
         const timer = getTimerMachine();
 
-        expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 1, seconds: 0 });
+        expect(timer.getSnapshot()?.context).toMatchObject({
+          minutes: 1,
+          seconds: 0,
+        });
 
         timer.send({ type: 'START' });
 
@@ -109,7 +112,7 @@ describe('pomodoro machine', () => {
                 type: 'pomo',
               }),
             }),
-          })
+          }),
         );
 
         ticks(12);
@@ -122,10 +125,13 @@ describe('pomodoro machine', () => {
                 type: 'pomo',
               }),
             }),
-          })
+          }),
         );
 
-        expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 0, seconds: 48 });
+        expect(timer.getSnapshot()?.context).toMatchObject({
+          minutes: 0,
+          seconds: 48,
+        });
 
         timer.send({ type: 'PAUSE' });
 
@@ -134,12 +140,15 @@ describe('pomodoro machine', () => {
             event: expect.objectContaining({
               type: 'TIMER_PAUSE',
             }),
-          })
+          }),
         );
 
         ticks(12);
 
-        expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 0, seconds: 48 });
+        expect(timer.getSnapshot()?.context).toMatchObject({
+          minutes: 0,
+          seconds: 48,
+        });
 
         timer.send({ type: 'PLAY' });
 
@@ -148,12 +157,15 @@ describe('pomodoro machine', () => {
             event: expect.objectContaining({
               type: 'TIMER_PLAY',
             }),
-          })
+          }),
         );
 
         ticks(12);
 
-        expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 0, seconds: 36 });
+        expect(timer.getSnapshot()?.context).toMatchObject({
+          minutes: 0,
+          seconds: 36,
+        });
       });
 
       it('does not count as a completed timer when the user stops', () => {
@@ -165,7 +177,10 @@ describe('pomodoro machine', () => {
 
         ticks(12);
 
-        expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 0, seconds: 48 });
+        expect(timer.getSnapshot()?.context).toMatchObject({
+          minutes: 0,
+          seconds: 48,
+        });
 
         timer.send({ type: 'STOP' });
 
@@ -174,10 +189,13 @@ describe('pomodoro machine', () => {
             event: expect.objectContaining({
               type: 'TIMER_STOP',
             }),
-          })
+          }),
         );
 
-        expect(getTimerMachine().getSnapshot()?.context).toMatchObject({ minutes: 1, seconds: 0 });
+        expect(getTimerMachine().getSnapshot()?.context).toMatchObject({
+          minutes: 1,
+          seconds: 0,
+        });
         expect(pomoMachine.getSnapshot()?.context.completed).toStrictEqual({
           pomo: 0,
           long: 0,
@@ -192,7 +210,10 @@ describe('pomodoro machine', () => {
 
         ticks(60);
 
-        expect(getTimerMachine().getSnapshot()?.context).toMatchObject({ minutes: 1, seconds: 0 });
+        expect(getTimerMachine().getSnapshot()?.context).toMatchObject({
+          minutes: 1,
+          seconds: 0,
+        });
 
         const { value, context } = pomoMachine.getSnapshot() ?? {};
         expect(context?.completed).toStrictEqual({
@@ -306,7 +327,10 @@ describe('pomodoro machine', () => {
 
         const timer = getTimerMachine();
 
-        expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 1, seconds: 0 });
+        expect(timer.getSnapshot()?.context).toMatchObject({
+          minutes: 1,
+          seconds: 0,
+        });
 
         timer.send({ type: 'START' });
 
@@ -317,24 +341,33 @@ describe('pomodoro machine', () => {
                 type: 'short',
               }),
             }),
-          })
+          }),
         );
 
         ticks(12);
 
-        expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 0, seconds: 48 });
+        expect(timer.getSnapshot()?.context).toMatchObject({
+          minutes: 0,
+          seconds: 48,
+        });
 
         timer.send({ type: 'PAUSE' });
 
         ticks(12);
 
-        expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 0, seconds: 48 });
+        expect(timer.getSnapshot()?.context).toMatchObject({
+          minutes: 0,
+          seconds: 48,
+        });
 
         timer.send({ type: 'PLAY' });
 
         ticks(12);
 
-        expect(timer.getSnapshot()?.context).toMatchObject({ minutes: 0, seconds: 36 });
+        expect(timer.getSnapshot()?.context).toMatchObject({
+          minutes: 0,
+          seconds: 36,
+        });
       });
 
       it('should complete the break when the user stops', () => {
@@ -344,7 +377,10 @@ describe('pomodoro machine', () => {
 
         ticks(12);
 
-        expect(getTimerMachine().getSnapshot()?.context).toMatchObject({ minutes: 0, seconds: 48 });
+        expect(getTimerMachine().getSnapshot()?.context).toMatchObject({
+          minutes: 0,
+          seconds: 48,
+        });
 
         getTimerMachine().send({ type: 'STOP' });
 
@@ -356,7 +392,11 @@ describe('pomodoro machine', () => {
 
         const { context, value } = pomoMachine.getSnapshot() ?? {};
 
-        expect(context?.completed).toStrictEqual({ pomo: 1, long: 0, short: 1 });
+        expect(context?.completed).toStrictEqual({
+          pomo: 1,
+          long: 0,
+          short: 1,
+        });
         expect(value).toBe('pomo');
       });
     });
@@ -410,7 +450,7 @@ describe('pomodoro machine', () => {
                 type: 'long',
               }),
             }),
-          })
+          }),
         );
 
         ticks(config.timers.long * 60);
@@ -475,7 +515,7 @@ describe('pomodoro machine', () => {
                 seconds: 5,
               }),
             }),
-          })
+          }),
         );
 
         getTimerMachine().send({ type: '_TICK', seconds: 0, minutes: 0 });
@@ -489,7 +529,7 @@ describe('pomodoro machine', () => {
                 target: duration,
               }),
             }),
-          })
+          }),
         );
       });
     });
@@ -528,7 +568,7 @@ describe('pomodoro machine', () => {
               type: 'pomo',
             }),
           }),
-        })
+        }),
       );
 
       expect(spy).toHaveBeenCalledWith(
@@ -539,7 +579,7 @@ describe('pomodoro machine', () => {
               type: 'short',
             }),
           }),
-        })
+        }),
       );
 
       const s2 = pomoMachine.getSnapshot();

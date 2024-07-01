@@ -29,7 +29,7 @@ export function nord({ setPalette, setColors }: Themers): void {
       '--col-dark-cyan': '80 118 129',
       '--col-grey': 'var(--col-base4)',
     },
-    { strict: true }
+    { strict: true },
   );
 }
 
@@ -62,7 +62,7 @@ export function nordLight({ setPalette, setColors }: Themers): void {
       '--col-dark-cyan': '80 118 129',
       '--col-grey': 'var(--col-base4)',
     },
-    { strict: true }
+    { strict: true },
   );
 }
 

@@ -11,7 +11,12 @@ const stroke = 2;
 const radius = 50 - stroke;
 const circumference = radius * 2 * Math.PI;
 
-export function TimerProgress({ duration, mins, seconds, state }: ITimerProgress): JSX.Element {
+export function TimerProgress({
+  duration,
+  mins,
+  seconds,
+  state,
+}: ITimerProgress): JSX.Element {
   return (
     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <circle

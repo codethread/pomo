@@ -42,17 +42,17 @@ export function Setting<A extends FieldValues>({
     <Box
       className={twJoin(
         'mb-8 mt-4 border-l-2',
-        hasError ? 'border-thmError' : isDirty ? 'border-thmSecondary' : 'border-thmBackground'
+        hasError ? 'border-thmError'
+        : isDirty ? 'border-thmSecondary'
+        : 'border-thmBackground',
       )}
     >
-      <div className="mb-4 bg-thmBackgroundSubtle py-2 px-2">
-        {props.variant === 'toggle' ? (
+      <div className="mb-4 bg-thmBackgroundSubtle px-2 py-2">
+        {props.variant === 'toggle' ?
           <FormItemCheckbox<A> name={props.name}>
             <h2 className="text-lg">{heading}</h2>
           </FormItemCheckbox>
-        ) : (
-          <h2 className="text-lg">{heading}</h2>
-        )}
+        : <h2 className="text-lg">{heading}</h2>}
       </div>
       <form
         onSubmit={(e) => {
