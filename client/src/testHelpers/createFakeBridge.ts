@@ -63,6 +63,9 @@ export function createFakeBridge(
       return ok(false);
     },
     async statsTimerComplete() {},
+    async statsDelete(_id) {
+      return { completed: [] };
+    },
     async statsRead() {
       const d: Stats = {
         completed: [

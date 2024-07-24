@@ -11,6 +11,7 @@ interface StoreConfig<T> {
 export interface StoreRepository<T> {
   storeRead(): Promise<Result<T>>;
   storeUpdate(value: DeepPartial<T>): Promise<Result<T>>;
+  storePatch<Key extends keyof T>(key: Key, value: T[Key]): Promise<Result<T>>;
   storeReset(): Promise<Result<T>>;
 }
 
@@ -49,12 +50,20 @@ export async function createStore<T>(
       return ok(data as T);
     },
     async storeUpdate(updatedStore) {
-      logger.info('updating store', { KEY: updatedStore });
+      logger.info('updating store', { updatedStore });
       const originalStore = await store.get(KEY);
       const updated = merge(originalStore, updatedStore);
       await store.set(KEY, updated);
       await store.save();
       return ok(updated as T);
+    },
+    async storePatch(key, value) {
+      logger.info('patching store', { key, value });
+      const originalStore = (await store.get(KEY)) as T;
+      originalStore[key] = value;
+      await store.set(KEY, originalStore);
+      await store.save();
+      return ok(originalStore);
     },
   };
 }
@@ -69,6 +78,10 @@ export const fakeStoreRepoFactory = <T>(
     },
     async storeUpdate(updatedStore) {
       mergeMutate(store, updatedStore);
+      return Promise.resolve(ok(store));
+    },
+    async storePatch(key, value) {
+      store[key] = value;
       return Promise.resolve(ok(store));
     },
     async storeReset() {

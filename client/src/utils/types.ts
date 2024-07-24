@@ -123,6 +123,7 @@ export type IBridge<T = UserConfig> = IClientLogger & {
     timestamp?: string,
   ): Promise<void>;
   statsRead(): Promise<Stats>;
+  statsDelete(id: string): Promise<Stats>;
 };
 
 export const StatTypes = ['pomo.pomo', 'other.meeting'] as const;
