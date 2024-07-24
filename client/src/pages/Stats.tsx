@@ -1,5 +1,9 @@
 import { StatType, StatTypeSchema, StatTypes, Stats } from '@shared/types';
-import { ClockIcon, ChatAlt2Icon, XCircleIcon as CloseIcon } from '@heroicons/react/outline';
+import {
+  ClockIcon,
+  ChatAlt2Icon,
+  XCircleIcon as CloseIcon,
+} from '@heroicons/react/outline';
 import { format, startOfWeek, parse, add } from 'date-fns';
 import { useAsync } from 'react-use';
 import { useEffect, useState, useMemo } from 'react';
@@ -16,14 +20,14 @@ const timestampFormat = 'EEEE yy/MM/dd HH:mm';
 export function Stats() {
   const b = useBridge();
   const { error, value, loading } = useAsync(b.statsRead);
-  const [stats, setStats] = useState<Stats>({completed: []})
+  const [stats, setStats] = useState<Stats>({ completed: [] });
   useEffect(() => {
-    value && setStats(value)
-  }, [value])
+    value && setStats(value);
+  }, [value]);
 
   const removeStat = (id: string) => {
-    b.statsDelete(id).then(r => setStats(r))
-  }
+    b.statsDelete(id).then((r) => setStats(r));
+  };
 
   if (loading) {
     return <p>loading</p>;
@@ -64,7 +68,13 @@ export function Stats() {
   );
 }
 
-function Raw({ stats, removeStat }: { stats: Stats, removeStat: (id:string) => void }) {
+function Raw({
+  stats,
+  removeStat,
+}: {
+  stats: Stats;
+  removeStat: (id: string) => void;
+}) {
   const [isShown, setIsShown] = useState(false);
   if (!isShown) {
     return (
@@ -86,7 +96,15 @@ function Raw({ stats, removeStat }: { stats: Stats, removeStat: (id:string) => v
           <span>{format(s.timestamp, 'MM/dd HH:mm')}</span>
           <span>{formatTime(s.duration, { hideSeconds: true })}</span>
           <RawIcon type={s._tag ?? 'pomo.pomo'} />
-       <Button onClick={() => { removeStat(s.timestamp) }} variant='icon' className='h-auto w-auto content-center flex'><CloseIcon className='inline-flex w-5 text-thmError' /></Button>
+          <Button
+            onClick={() => {
+              removeStat(s.timestamp);
+            }}
+            variant="icon"
+            className="flex h-auto w-auto content-center"
+          >
+            <CloseIcon className="inline-flex w-5 text-thmError" />
+          </Button>
         </p>
       ))}
     </div>
@@ -96,9 +114,9 @@ function Raw({ stats, removeStat }: { stats: Stats, removeStat: (id:string) => v
 function RawIcon({ type }: { type: StatType }) {
   switch (type) {
     case 'pomo.pomo':
-      return <ClockIcon className=" inline-flex w-5 text-thmBright" />;
+      return <ClockIcon className="inline-flex w-5 text-thmBright" />;
     case 'other.meeting':
-      return <ChatAlt2Icon className=" inline-flex w-5 text-thmWarn" />;
+      return <ChatAlt2Icon className="inline-flex w-5 text-thmWarn" />;
   }
 }
 
@@ -129,9 +147,11 @@ const ManualTimeSchema = z.object({
 
 type ManualTimeForm = z.infer<typeof ManualTimeSchema>;
 
-
 function ManualTime() {
-const now = useMemo(() => format(new Date().toISOString(), 'yy/MM/dd HH:mm'), [])
+  const now = useMemo(
+    () => format(new Date().toISOString(), 'yy/MM/dd HH:mm'),
+    [],
+  );
   const methods = useForm<ManualTimeForm>({
     defaultValues: {
       timestamp: now,
