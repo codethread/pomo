@@ -1,8 +1,8 @@
 import { StatType, StatTypeSchema, StatTypes, Stats } from '@shared/types';
-import { ClockIcon, ChatAlt2Icon } from '@heroicons/react/outline';
+import { ClockIcon, ChatAlt2Icon, XCircleIcon as CloseIcon } from '@heroicons/react/outline';
 import { format, startOfWeek, parse, add } from 'date-fns';
 import { useAsync } from 'react-use';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { FormItemNumber, FormItemText } from '@client/components/Form/FormItem';
 import { z } from 'zod';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -15,7 +15,15 @@ const timestampFormat = 'EEEE yy/MM/dd HH:mm';
 
 export function Stats() {
   const b = useBridge();
-  const { error, value: stats, loading } = useAsync(b.statsRead);
+  const { error, value, loading } = useAsync(b.statsRead);
+  const [stats, setStats] = useState<Stats>({completed: []})
+  useEffect(() => {
+    value && setStats(value)
+  }, [value])
+
+  const removeStat = (id: string) => {
+    b.statsDelete(id).then(r => setStats(r))
+  }
 
   if (loading) {
     return <p>loading</p>;
@@ -51,12 +59,12 @@ export function Stats() {
         </div>
       </div>
       <ManualTime />
-      <Raw stats={stats} />
+      <Raw stats={stats} removeStat={removeStat} />
     </>
   );
 }
 
-function Raw({ stats }: { stats: Stats }) {
+function Raw({ stats, removeStat }: { stats: Stats, removeStat: (id:string) => void }) {
   const [isShown, setIsShown] = useState(false);
   if (!isShown) {
     return (
@@ -78,6 +86,7 @@ function Raw({ stats }: { stats: Stats }) {
           <span>{format(s.timestamp, 'MM/dd HH:mm')}</span>
           <span>{formatTime(s.duration, { hideSeconds: true })}</span>
           <RawIcon type={s._tag ?? 'pomo.pomo'} />
+       <Button onClick={() => { removeStat(s.timestamp) }} variant='icon' className='h-auto w-auto content-center flex'><CloseIcon className='inline-flex w-5 text-thmError' /></Button>
         </p>
       ))}
     </div>
@@ -87,14 +96,14 @@ function Raw({ stats }: { stats: Stats }) {
 function RawIcon({ type }: { type: StatType }) {
   switch (type) {
     case 'pomo.pomo':
-      return <ClockIcon className="mr-2 inline-flex w-5 text-thmBright" />;
+      return <ClockIcon className=" inline-flex w-5 text-thmBright" />;
     case 'other.meeting':
-      return <ChatAlt2Icon className="mr-2 inline-flex w-5 text-thmError" />;
+      return <ChatAlt2Icon className=" inline-flex w-5 text-thmWarn" />;
   }
 }
 
 function Summary({ output }: { output: OUT }) {
-  const [target, setTarget] = useState(25 * hour);
+  const [target] = useState(25 * hour);
   return (
     <div className="text-center text-lg">
       <p>Week of {format(output.weekStartIso, 'MMM do')}</p>
@@ -120,9 +129,9 @@ const ManualTimeSchema = z.object({
 
 type ManualTimeForm = z.infer<typeof ManualTimeSchema>;
 
-const now = format(new Date().toISOString(), 'yy/MM/dd HH:mm');
 
 function ManualTime() {
+const now = useMemo(() => format(new Date().toISOString(), 'yy/MM/dd HH:mm'), [])
   const methods = useForm<ManualTimeForm>({
     defaultValues: {
       timestamp: now,

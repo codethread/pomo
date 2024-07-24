@@ -77,6 +77,15 @@ export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
     async statsRead() {
       return stats.storeRead().then((r) => r.expect('could not read stats'));
     },
+    async statsDelete(id) {
+      const s = await stats.storeRead();
+      const { completed } = s.expect('could not read stats');
+      const res = await stats.storePatch(
+        'completed',
+        completed.filter((c) => c.timestamp !== id),
+      );
+      return res.expect('could not update stats');
+    },
     ...bridge,
   };
 }
