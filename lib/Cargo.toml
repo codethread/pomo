@@ -8,7 +8,7 @@ repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]
-chrono = "0.4.31"
+chrono = "0.4.38"
 serde = {workspace = true}
 timer = "0.2.0"
-crossbeam = "0.8.3"
+crossbeam = "0.8.4"
