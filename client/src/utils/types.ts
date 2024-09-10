@@ -14,6 +14,7 @@ export type IClientLogger = {
 export type TimerType = keyof UserConfig['timers'];
 
 export const emptyConfig: UserConfig = {
+  status: { running: false },
   timers: {
     pomo: 25,
     short: 5,
@@ -34,6 +35,11 @@ export const emptyStats: Stats = {
 };
 
 export const UserConfigSchema = z.object({
+  status: z
+    .object({
+      running: z.boolean(),
+    })
+    .optional(),
   timers: z.object({
     pomo: z.number(),
     short: z.number(),
