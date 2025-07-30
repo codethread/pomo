@@ -1,14 +1,20 @@
 import { formatTrayTime } from '@shared/formatTrayTime';
-import { TimerHooks } from '@shared/types';
+import { TimerHooks, type IBridge } from '@shared/types';
 
 export const osHooks: TimerHooks = {
-  onTickHook: ({ bridge, timer, config: { displayTimerInStatusBar } }) => {
+  onTickHook: ({
+    bridge,
+    timer,
+    config: { displayTimerInStatusBar, macos },
+  }) => {
     if (displayTimerInStatusBar) {
       bridge.setTrayTitle(formatTrayTime(timer));
     }
+    if (macos?.hooks.onTickHook) runAllHooks(bridge, macos.hooks.onTickHook);
   },
-  onStartHook: ({ bridge }) => {
+  onStartHook: ({ bridge, config: { macos } }) => {
     bridge.setTrayIcon('active');
+    if (macos?.hooks.onStartHook) runAllHooks(bridge, macos.hooks.onStartHook);
   },
   onPauseHook: () => {},
   onPlayHook: () => {},
@@ -22,3 +28,9 @@ export const osHooks: TimerHooks = {
     bridge.setTrayIcon('inactive');
   },
 };
+
+async function runAllHooks(bridge: IBridge, cmds: string[]): Promise<void> {
+  for (const cmd of cmds) {
+    await bridge.macosShorcutsRun(cmd);
+  }
+}

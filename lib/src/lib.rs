@@ -33,9 +33,7 @@ impl App {
     pub fn start(&mut self, time: timer::TimePayload) {
         let id = time.id.clone();
         // one day will have multple timers, for now will just use one
-        if self.timers.contains_key(&id) {
-            println!("timer exists {}", &id)
-        } else {
+        if let std::collections::hash_map::Entry::Vacant(e) = self.timers.entry(id.clone()) {
             let emitter = self.emitter.clone();
             let (timer_sender, timer_reciever) = channel::unbounded::<Events>();
 
@@ -47,8 +45,10 @@ impl App {
             };
             std::thread::spawn(move || run_timer(t, emitter));
 
-            self.current = Some(id.clone());
-            self.timers.insert(id, timer_sender);
+            self.current = Some(id);
+            e.insert(timer_sender);
+        } else {
+            println!("timer exists {}", &id)
         }
     }
 

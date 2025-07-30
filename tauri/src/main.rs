@@ -19,6 +19,8 @@ fn main() {
             commands::play,
             commands::update,
             commands::is_dev,
+            commands::macos_shorcuts_run,
+            commands::macos_shortcuts_list
         ],
         "../client/src/utils/commands.ts",
     )

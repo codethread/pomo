@@ -41,6 +41,12 @@ export function createFakeBridge(
     ...store,
     ...slack,
     ...logger,
+    async macosShortcutsList() {
+      return ['shortcut a', 'shortcut b'];
+    },
+    async macosShorcutsRun(mode) {
+      return null;
+    },
     async openExternal() {
       return Promise.resolve();
     },

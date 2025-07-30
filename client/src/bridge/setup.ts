@@ -5,7 +5,7 @@ import { slackRepository } from './slack';
 import { open } from '@tauri-apps/api/shell';
 import { appWindow } from '@tauri-apps/api/window';
 import { prodClient } from './http';
-import { isDev } from '@shared/commands';
+import { isDev, macosShorcutsRun, macosShortcutsList } from '@shared/commands';
 
 export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
   const logger: IClientLogger = {
@@ -39,6 +39,8 @@ export async function setupBridge(bridge?: Partial<IBridge>): Promise<IBridge> {
     ...logger,
     ...store,
     ...slack,
+    macosShortcutsList,
+    macosShorcutsRun,
     async openExternal(url) {
       await open(url);
       return Promise.resolve();

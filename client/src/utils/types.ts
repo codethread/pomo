@@ -3,6 +3,7 @@ import z from 'zod';
 import { Nodenv } from '@shared/asserts';
 import { ThemeNameSchema } from '@client/theme/updateTheme';
 import { SlackProfile } from '@client/bridge/slack';
+import type { macosShorcutsRun, macosShortcutsList } from '@shared/commands';
 
 export type IClientLogger = {
   debug(...msg: any): Promise<void>;
@@ -12,6 +13,16 @@ export type IClientLogger = {
 };
 
 export type TimerType = keyof UserConfig['timers'];
+
+const timerHooks = [
+  'onStartHook',
+  'onTickHook',
+  'onPauseHook',
+  'onPlayHook',
+  'onStopHook',
+  'onCompleteHook',
+] as const;
+type TimerHook = (typeof timerHooks)[number];
 
 export const emptyConfig: UserConfig = {
   status: { running: false },
@@ -62,6 +73,14 @@ export const UserConfigSchema = z.object({
     })
     .optional(),
   theme: ThemeNameSchema,
+  macos: z
+    .object({
+      /** MacOS shortcuts available on to the pomo app */
+      shortcuts: z.string().array(),
+      /** a list of shortcuts from the `shortcuts` list, that will be run in order for each of the timerHooks, such as `onCompleteHook` */
+      hooks: z.record(z.enum(timerHooks), z.string().array()),
+    })
+    .optional(),
 });
 
 export type UserConfig = z.infer<typeof UserConfigSchema>;
@@ -130,6 +149,8 @@ export type IBridge<T = UserConfig> = IClientLogger & {
   ): Promise<void>;
   statsRead(): Promise<Stats>;
   statsDelete(id: string): Promise<Stats>;
+  macosShorcutsRun: typeof macosShorcutsRun;
+  macosShortcutsList: typeof macosShortcutsList;
 };
 
 export const StatTypes = ['pomo.pomo', 'other.meeting'] as const;
@@ -178,14 +199,7 @@ export interface HookContext {
 
 type Hook = (context: HookContext) => void;
 
-export interface TimerHooks {
-  onStartHook: Hook;
-  onTickHook: Hook;
-  onPauseHook: Hook;
-  onPlayHook: Hook;
-  onStopHook: Hook;
-  onCompleteHook: Hook;
-}
+export type TimerHooks = Record<TimerHook, Hook>;
 
 export interface IChildren {
   children: React.ReactNode;

@@ -1,4 +1,4 @@
-import { StatType, StatTypeSchema, StatTypes, Stats } from '@shared/types';
+import { StatType, StatTypeSchema, StatTypes, type Stats } from '@shared/types';
 import {
   ClockIcon,
   ChatAlt2Icon,

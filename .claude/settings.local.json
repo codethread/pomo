@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(volta run pnpm list:*)",
+      "Bash(volta run pnpm add:*)",
+      "Bash(cargo clippy:*)"
+    ],
+    "deny": []
+  }
+}

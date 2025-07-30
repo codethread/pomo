@@ -1,7 +1,5 @@
-use std::path::PathBuf;
-
 use tauri::{
-    AppHandle, CustomMenuItem, Icon, Manager, PhysicalPosition, State, SystemTray, SystemTrayEvent,
+    AppHandle, CustomMenuItem, Icon, Manager, PhysicalPosition, SystemTray, SystemTrayEvent,
     SystemTrayMenu,
 };
 

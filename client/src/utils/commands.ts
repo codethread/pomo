@@ -34,4 +34,12 @@ export function isDev() {
     return invoke()<boolean>("is_dev")
 }
 
+export function macosShorcutsRun(mode: string) {
+    return invoke()<null>("macos_shorcuts_run", { mode })
+}
+
+export function macosShortcutsList() {
+    return invoke()<string[]>("macos_shortcuts_list")
+}
+
 

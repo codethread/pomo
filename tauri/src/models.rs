@@ -17,7 +17,7 @@ impl State {
                         println!("tick {:?}", &time);
                     }
                     if time.complete {
-                        tray.set_icon(get_icon(crate::tray::Icons::Ready));
+                        let _ = tray.set_icon(get_icon(crate::tray::Icons::Ready));
                     }
                     window
                         .emit_all(&format!("tick_{}", &time.id), time.clone())
