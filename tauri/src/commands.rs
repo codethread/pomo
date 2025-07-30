@@ -59,17 +59,28 @@ pub fn is_dev() -> bool {
 #[tauri::command]
 #[specta]
 pub fn macos_shorcuts_run(mode: String) -> Result<(), String> {
-    let status = Command::new("shortcuts").arg("run").arg(&mode).status();
+    let output = Command::new("shortcuts").arg("run").arg(&mode).output();
 
-    match status {
-        Ok(exit_status) => {
-            if exit_status.success() {
+    match output {
+        Ok(output) => {
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            
+            println!("shortcuts run {} - stdout: {}", mode, stdout);
+            println!("shortcuts run {} - stderr: {}", mode, stderr);
+            
+            if output.status.success() {
                 Ok(())
             } else {
-                Err(format!("Failed to run shortcut {mode}"))
+                let error_msg = if !stderr.is_empty() {
+                    format!("Failed to run shortcut {}: {}", mode, stderr.trim())
+                } else {
+                    format!("Failed to run shortcut {} with exit code: {:?}", mode, output.status.code())
+                };
+                Err(error_msg)
             }
         }
-        Err(_) => Err(format!("Failed to run shortcut {mode}")),
+        Err(e) => Err(format!("Failed to execute shortcut command {}: {}", mode, e)),
     }
 }
 
@@ -80,8 +91,13 @@ pub fn macos_shortcuts_list() -> Result<Vec<String>, String> {
 
     match output {
         Ok(output) => {
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            
+            println!("shortcuts list - stdout: {}", stdout);
+            println!("shortcuts list - stderr: {}", stderr);
+            
             if output.status.success() {
-                let stdout = String::from_utf8_lossy(&output.stdout);
                 let shortcuts: Vec<String> = stdout
                     .lines()
                     .map(|line| line.trim().to_string())
@@ -89,9 +105,14 @@ pub fn macos_shortcuts_list() -> Result<Vec<String>, String> {
                     .collect();
                 Ok(shortcuts)
             } else {
-                Err("Failed to list shortcuts".to_string())
+                let error_msg = if !stderr.is_empty() {
+                    format!("Failed to list shortcuts: {}", stderr.trim())
+                } else {
+                    format!("Failed to list shortcuts with exit code: {:?}", output.status.code())
+                };
+                Err(error_msg)
             }
         }
-        Err(_) => Err("Failed to execute shortcuts list command".to_string()),
+        Err(e) => Err(format!("Failed to execute shortcuts list command: {}", e)),
     }
 }

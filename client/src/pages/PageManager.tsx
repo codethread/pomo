@@ -7,11 +7,13 @@ import { Header } from '@client/components/Header/Header';
 import { Slack } from '@client/components/Settings/Slack';
 import { Timer } from '@client/components/Settings/Timer';
 import { Theme } from '@client/components/Settings/Theme';
+import { MacOS } from '@client/components/Settings/MacOS';
 
 export type Pages =
   | 'Slack Settings'
   | 'Theme Settings'
   | 'Timer Settings'
+  | 'MacOS Settings'
   | 'Timer'
   | 'Stats';
 
@@ -62,6 +64,8 @@ function Page({ page }: { page: Pages }): JSX.Element {
       return <Slack />;
     case 'Theme Settings':
       return <Theme />;
+    case 'MacOS Settings':
+      return <MacOS />;
     case 'Stats':
       return <Stats />;
     default:

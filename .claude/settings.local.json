@@ -3,7 +3,9 @@
     "allow": [
       "Bash(volta run pnpm list:*)",
       "Bash(volta run pnpm add:*)",
-      "Bash(cargo clippy:*)"
+      "Bash(cargo clippy:*)",
+      "Bash(volta run pnpm check:*)",
+      "Bash(volta run pnpm format:client:*)"
     ],
     "deny": []
   }

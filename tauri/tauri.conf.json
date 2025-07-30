@@ -73,10 +73,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 300,
         "resizable": false,
         "title": "pomo",
         "width": 300,
+        "height": 300,
         "visible": false,
         "alwaysOnTop": true,
         "skipTaskbar": true,

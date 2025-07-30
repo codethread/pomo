@@ -7,6 +7,7 @@ import {
   ClockIcon,
   PencilIcon,
   ChartPieIcon,
+  DesktopComputerIcon,
 } from '@heroicons/react/solid';
 
 interface INavigation {
@@ -41,6 +42,12 @@ export function Navigation({ onNavigate, page }: INavigation): JSX.Element {
           page={page}
           name="Theme Settings"
           Icon={PencilIcon}
+        />
+        <NavItem
+          onNavigate={onNavigate}
+          page={page}
+          name="MacOS Settings"
+          Icon={DesktopComputerIcon}
         />
         <NavItem
           onNavigate={onNavigate}

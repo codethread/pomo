@@ -78,7 +78,7 @@ export const UserConfigSchema = z.object({
       /** MacOS shortcuts available on to the pomo app */
       shortcuts: z.string().array(),
       /** a list of shortcuts from the `shortcuts` list, that will be run in order for each of the timerHooks, such as `onCompleteHook` */
-      hooks: z.record(z.enum(timerHooks), z.string().array()),
+      hooks: z.record(z.enum(timerHooks), z.string().optional()),
     })
     .optional(),
 });

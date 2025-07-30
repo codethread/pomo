@@ -20,7 +20,7 @@ fn main() {
             commands::update,
             commands::is_dev,
             commands::macos_shorcuts_run,
-            commands::macos_shortcuts_list
+            commands::macos_shortcuts_list,
         ],
         "../client/src/utils/commands.ts",
     )
@@ -38,6 +38,8 @@ fn main() {
             commands::play,
             commands::update,
             commands::is_dev,
+            commands::macos_shorcuts_run,
+            commands::macos_shortcuts_list,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
